@@ -4,6 +4,8 @@ Three ways to plug FreshGen Link into GoHighLevel. Pick based on what you're bui
 
 Quick context: MCP (Model Context Protocol) is just the plumbing that lets GHL's AI call outside tools — in this case, your FreshGen Link server. You don't need to understand how it works to use it. You just need your MCP URL and one of the three paths below.
 
+**Contents:** [Which path do I need?](#which-path-do-i-need) · [Before you start](#before-you-start) · [Path 1: Ask AI](#path-1-ask-ai-primary) · [Path 2: Workflow AI Agent](#path-2-workflow-ai-agent) · [Path 3: Agent Studio Superagent](#path-3-agent-studio-superagent) · [If a connection won't work](#if-a-connection-wont-work) · [Notes](#notes) · [What each tool does](#what-each-tool-does)
+
 ## Which path do I need?
 
 | Path | Use it for |
@@ -12,7 +14,7 @@ Quick context: MCP (Model Context Protocol) is just the plumbing that lets GHL's
 | **2. Workflow AI Agent** | Automations — generation as a step inside a workflow, e.g. auto-creating a hero image when a new contact comes in. |
 | **3. Agent Studio Superagent** | Custom agents you're building and publishing, including client-facing ones. |
 
-If you're not sure, you want Path 1.
+If you're not sure, you want Path 1. It covers the vast majority of real use — someone typing a request into Ask AI and getting media back. The other two paths exist for when generation needs to run without a person asking for it in the moment.
 
 ## Before you start
 
@@ -36,7 +38,7 @@ That's it. Every path below uses that same URL — you're just pasting it into a
    - **Name:** "FreshGen" (or your brand name)
    - **MCP server URL:** your `https://your-app.vercel.app/mcp/<secret>` URL
 5. Click **Add MCP**. Leave the Advanced section alone — the defaults are correct.
-6. Tick every tool in the list.
+6. If GHL shows a tool list after adding, tick every tool.
 
 <!-- screenshot: Add custom MCP form filled in with name and URL -->
 
@@ -47,7 +49,7 @@ Done. Two fields, and your AI agent can generate images and video whenever it's 
 Paste these into Ask AI, one at a time:
 
 - **"Generate a 16:9 image of a modern kitchen at golden hour."**
-  Expect an image back in under a minute — the agent shares the URL and usually shows it inline.
+  Expect an image back in under a minute — the agent shares the link (and shows the image inline where GHL supports it).
 
 - **"Make a 5-second video of steam rising from a coffee cup."**
   Expect the agent to say the render has started and will take **2–5 minutes.** That's correct — it won't come back instantly. Ask again shortly: *"is my video ready?"* — the agent checks and returns the finished clip.
@@ -115,6 +117,14 @@ Same fixes apply no matter which path you used — full detail is in the README'
 
 - **"Test Connection" fails in Path 2** — almost always Transport Type isn't set to `HTTP Streamable`, or Authentication isn't set to `None`. Double-check both fields.
 - **Tools list is empty right after adding the connection** — give it a few seconds and reopen the tool picker. If it's still empty, remove the connection and re-add it.
+
+A couple more that are specific to how GHL handles connections:
+
+**Do I need to reconnect if I change `BRAND_NAME` later?**
+No. The MCP URL doesn't change when you update `BRAND_NAME` — only the display name on your landing page, dashboard, and inside GHL changes. Your existing connection keeps working.
+
+**Can I connect the same server to more than one GHL location?**
+Yes. Paste the same MCP URL into Ask AI (or Workflow, or Superagent) on each sub-account that should have access. All locations share the same Kie.ai balance and credit spend, since they're hitting the same deployed server.
 
 ## Notes
 

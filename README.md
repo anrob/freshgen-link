@@ -4,6 +4,16 @@ FreshGen Link is a self-hosted MCP server that plugs Kie.ai's image and video ge
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanrob%2Ffreshgen-link&env=KIE_API_KEY,MCP_SECRET&envDescription=Your%20Kie.ai%20API%20key%2C%20plus%20a%20long%20random%20secret%20that%20becomes%20part%20of%20your%20private%20URL&envLink=https%3A%2F%2Fkie.ai%2Fapi-key&project-name=freshgen-link&repository-name=freshgen-link)
 
+**Contents:** [What you get](#what-you-get) · [Before you deploy](#before-you-deploy) · [After deploying](#after-deploying) · [Connect to GoHighLevel](#connect-to-gohighlevel) · [Environment variables](#environment-variables) · [Which model should I use](#which-model-should-i-use) · [What it costs to run](#what-it-costs-to-run) · [Your media expires](#your-media-expires) · [A note on security](#a-note-on-security) · [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Running it locally](#running-it-locally-optional) · [Support](#support) · [License](#license)
+
+## Quick start
+
+1. **Deploy** — click the button above, paste your Kie.ai key and a made-up secret.
+2. **Connect** — copy your MCP URL from the dashboard, paste it into GHL's Ask AI connectors.
+3. **Generate** — ask your GHL AI agent for an image or video. That's the whole loop.
+
+Everything below is the detail behind those three steps.
+
 ## What you get
 
 - **Five tools your GHL AI agent can call right away:** `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`.
@@ -68,6 +78,34 @@ Want it inside a Workflow AI Agent for automations, or a custom Agent Studio Sup
 
 Change any of these anytime in Vercel: your project → **Settings → Environment Variables**, then redeploy for the change to take effect.
 
+## Which model should I use
+
+`list_models` always has the live, authoritative list — ask your GHL agent "what models are available?" anytime. For reference:
+
+**Image models**
+
+| Model | Best for | Price |
+|---|---|---|
+| `gpt-image-2` (default) | Text, logos, typography | ~$0.04 |
+| `nano-banana-pro` | Best photorealism and likeness | ~$0.09 |
+| `nano-banana` | Cheapest drafts | ~$0.02 |
+| `nano-banana-2` | Fast, all-round | ~$0.04 |
+| `seedream-4` | Stylized art | ~$0.03 |
+| `imagen-4` | Clean commercial looks (no reference images) | ~$0.03 |
+
+**Video models**
+
+| Model | Best for | Price |
+|---|---|---|
+| `kling-2-1-std` (default) | Fast and cheapest | ~$0.25 per 5s |
+| `kling-3-0` | Flagship quality, up to 4K, end-frame support | ~$0.42+ per 5s |
+| `kling-2-6` | Native audio | ~$0.50 per 5s |
+| `seedance-2` | Cinematic | ~$1.20+ per 5s |
+| `wan-2-6` | HD on a budget | varies |
+| `grok-imagine` | Longer clips, cheap | varies |
+
+You don't have to pick one — describe what you want and the default model handles most requests well. Mention a model by name if you want a specific look.
+
 ## What it costs to run
 
 Two bills, and only one of them is usually real money.
@@ -93,6 +131,10 @@ Two ways to keep what you make:
 
 - **Download it.** Works with zero setup.
 - **Auto-save to your GHL Media Library.** Set `GHL_PIT` and `GHL_LOCATION_ID` in your Vercel project's environment variables, and a sixth tool appears — `save_to_media_library`. It copies generated media into GHL permanently. Create the PIT in GHL: **Settings → Private Integrations → New**, with the "View/Edit Media" scopes.
+
+## A note on security
+
+There's no login, no password field, no OAuth screen anywhere in this setup — and that's intentional, not a shortcut. Your `MCP_SECRET` inside the URL **is** the credential. Anyone who has the full URL can call the tools on your Kie.ai account; anyone who doesn't have it can't even find the endpoint to try it against. Guard the URL the way you'd guard a password: don't paste it into public channels, screenshots, or support tickets.
 
 ## FAQ
 
@@ -120,6 +162,10 @@ No. You click the deploy button, paste two values, and copy a URL into GHL. If y
 
 Yes — deploy it again under a different Vercel project name with a different `MCP_SECRET` for a second brand, client, or location. Each deployment is fully independent, with its own key, secret, and billing.
 
+**Is this only for images and video?**
+
+Yes, on purpose. FreshGen Link does one thing — AI image and video generation through Kie.ai — and does it well. It isn't a general-purpose AI toolbox.
+
 ## Troubleshooting
 
 | Problem | Fix |
@@ -131,10 +177,30 @@ Yes — deploy it again under a different Vercel project name with a different `
 | **MCP URL unreachable from GHL** | In Vercel, go to your project → **Settings → Deployment Protection**. It must be **OFF** for production — if it's on, Vercel blocks GHL's servers before they ever reach your MCP endpoint. |
 | **Deploy fails on Vercel** | Almost always a missing required env var. Check `KIE_API_KEY` and `MCP_SECRET` are both set, then redeploy. |
 | **Test image button does nothing** | Check `check_credits` first — a $0 balance can fail quietly. Top up and try again. |
+| **"Test Connection" times out** in GHL | The first request after idle can be slow (cold start). Wait 10 seconds and try again before assuming it's broken. |
+| **Everything worked, then suddenly stopped** | Check `check_credits` — the most common cause of a sudden stop is simply running out of balance. |
+
+## Running it locally (optional)
+
+Most buyers don't need this — the deploy button is the intended path, and it's the only path that comes with support. If you want to poke at the code before deploying, or you're comfortable running it yourself:
+
+```
+git clone <your-fork-url>
+cd freshgen-link
+npm install
+cp .env.example .env.local   # fill in KIE_API_KEY and MCP_SECRET
+npm run dev
+```
+
+Runs on `http://localhost:3000` by default. Requires Node 20+.
 
 ## Support
 
 Something not working, and it isn't listed above? Reach out to whoever you bought this from — that's the "support" part of what you paid for.
+
+## License
+
+MIT. Do whatever you want with the code — see [LICENSE](LICENSE).
 
 ---
 

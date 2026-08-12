@@ -2,7 +2,18 @@
 
 Internal notes for Fresh — pricing math, positioning, tiers, and scripts. Not for the buyer.
 
-Use this whenever a GHL agency owner is already paying for AI image/video generation inside GHL, is curious about AI tools for client work, or asks some version of "why not just use what's built in."
+## Where this comes up
+
+- A GHL agency owner posts in a Facebook group asking about AI image tools for client sites or ads.
+- Someone complains about Agent Studio credit costs, or running out of AI credits mid-month.
+- A prospect on a discovery call is already doing manual image/video work for clients and hasn't automated it.
+- Anyone asks "does GHL have an AI image generator" — yes, and it's expensive; this is the cheaper alternative.
+
+## Opening line
+
+"You know GHL's built-in AI image and video generation? You're paying reseller markup on that. This is the same idea, except it's your own server, your own API key, and you pay Kie.ai's raw price — about a tenth of the cost on video."
+
+**Text/DM version:** "Quick one — GHL's AI image/video generator marks up what it charges you pretty hard. There's a way to run the same thing through your own server at Kie.ai's raw price instead, about 10x cheaper on video. Want me to send a 60-second video showing it?"
 
 ## The math
 
@@ -11,10 +22,17 @@ GHL's native Agent Studio generation is expensive — it's a resold markup on to
 | | GHL native (Agent Studio) | FreshGen Link (via Kie.ai) |
 |---|---|---|
 | Image | $0.04 – $0.12 each | **$0.02 – $0.09** each |
-| Video | $0.15 – $0.40 **per second** | **~$0.05/sec** (kling default, ~$0.25 for 5s) |
-| 10-second video | **$1.50 – $4.00** | **~$0.50** |
+| Video | $0.15 – $0.40 **per second** | **~$0.025/sec** measured (kling default, ~$0.13 for 5s) |
+| 10-second video | **$1.50 – $4.00** | **~$0.25** |
 
 Headline: **video runs about 10x cheaper** through FreshGen Link than GHL's cheapest native option. Images run 2–4x cheaper. The gap exists because GHL's price is a reseller markup on top of a model provider — FreshGen Link removes the reseller and bills the client's own wallet at Kie.ai's raw, wholesale rate.
+
+At real volume, that gap turns into actual money:
+
+| Monthly usage | GHL native | FreshGen Link | Saved |
+|---|---|---|---|
+| 100 images | $4 – $12 | $2 – $9 | up to ~$10 |
+| 20 ten-second video clips | $30 – $80 | ~$5 | **$25 – $75** |
 
 ## Who this is for
 
@@ -23,6 +41,12 @@ GHL agency owners already generating (or wanting to generate) images or video fo
 - Already running client work through Workflow AI Agents or Ask AI.
 - Doing enough volume that per-generation savings add up — an agency running a handful of images a month won't feel this the way one running weekly ad creative or content batches will.
 - Comfortable clicking a deploy button and following a README — or willing to pay for the Done-for-you tier if not.
+
+**Who NOT to pitch this to, at least not yet:**
+
+- Agency owners who've never touched GHL's Workflow or Ask AI features — they need the GHL basics first, not this.
+- Anyone allergic to "one more thing to manage" — if Vercel and GitHub sound like a headache no matter how simple, that's a Tier 2 conversation or a pass, not a Tier 1 sale.
+- Solo operators doing one image a month by hand in Canva — the savings won't outweigh the setup for them yet.
 
 ## Positioning
 
@@ -44,6 +68,8 @@ You deploy it and connect it on a screen-share. Includes moving them to Vercel P
 **Tier 3 — White-label, $X (top tier)**
 Everything in Tier 2, plus `BRAND_NAME` set to their brand and an accent-color pass so it reads as their own product end to end — landing page, dashboard, all of it. Best pitched to agencies reselling this downstream to their own clients.
 
+**Lead with Tier 1** in cold outreach or DMs — low friction, let the product sell itself. Upgrade conversations to Tier 2 or 3 tend to happen naturally once someone has seen it work and doesn't want to DIY the Vercel/GitHub part, or wants their own brand on it.
+
 ## Objection scripts
 
 **"The code is public — anyone can just copy it."**
@@ -55,6 +81,9 @@ It's free for personal, non-commercial use — that's Vercel's own terms, not mi
 **"Why not just use Higgsfield from the catalog?"**
 You can — it's a fine tool. But it's their subscription, their account, their pricing, and none of it belongs to you. This is yours: your server, your API key, at-cost pricing, your brand on it if you want. Different thing entirely.
 
+**"Is this going to break every time GHL changes something?"**
+The three connection paths — Ask AI, Workflow, Superagent — are all standard GHL MCP connectors, not a hack bolted onto the side. If GHL changes how MCP connectors work, that's a platform-wide change GHL has to support either way. This ships fixes like any other tool would.
+
 ## 60-second Loom script
 
 1. **Click Deploy.** Show the button, one click, that's it.
@@ -64,4 +93,12 @@ You can — it's a fine tool. But it's their subscription, their account, their 
 5. **Open the `/s/<secret>` dashboard, hit the test button.** Show the $0.04 test image landing in real time.
 6. **Copy the URL, paste into GHL → Ask AI → + Add custom MCP, generate an image live.** End on the finished image showing up inside GHL chat.
 
-Keep it moving. No dead air, no explaining what MCP stands for. Show the outcome, not the mechanism. This is the video to send cold in a DM — most conversions come from watching it, not from reading the README first.
+Keep it moving. No dead air, no explaining what MCP stands for. Show the outcome, not the mechanism. Send it cold in a DM with the opening line above as the message — don't over-explain in text and let the video do the convincing.
+
+## Quick reference
+
+- Images: **$0.02–$0.09** (FreshGen) vs **$0.04–$0.12** (GHL native)
+- Video: **~$0.025/sec measured** (FreshGen) vs **$0.15–$0.40/sec** (GHL native)
+- Vercel Hobby = free but non-commercial only; Pro = $20/mo, included from Tier 2 up
+- Three tiers: Self-serve, Done-for-you, White-label
+- The whole pitch in one line: your server, your key, at-cost pricing, no lock-in
