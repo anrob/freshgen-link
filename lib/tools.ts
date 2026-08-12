@@ -38,8 +38,60 @@ async function pollTask(taskId: string, budgetMs: number) {
   return status;
 }
 
-const imageModelIds = KIE_MODELS.map((m) => m.id) as [string, ...string[]];
-const videoModelIds = VIDEO_MODELS.map((m) => m.id) as [string, ...string[]];
+const imageModelIds = KIE_MODELS.map((m) => m.id);
+const videoModelIds = VIDEO_MODELS.map((m) => m.id);
+
+// ── Forgiving input coercion ────────────────────────────────────────────────
+// Agent-driven clients (GHL's included) routinely send "2k" for "2K", numbers
+// for string durations, "16x9" for "16:9", or model names with stray case.
+// A strict schema turns each of those into an instant opaque failure the
+// agent cannot recover from — so normalize aggressively and fall back to
+// defaults instead of rejecting.
+
+const str = (v: unknown): string | undefined =>
+  typeof v === "string" && v.trim() ? v.trim() : undefined;
+
+const looseImageResolution = z.preprocess((v) => {
+  const s = str(v)?.toUpperCase();
+  return s && ["1K", "2K", "4K"].includes(s) ? s : undefined;
+}, z.enum(["1K", "2K", "4K"]).optional());
+
+const looseVideoResolution = z.preprocess((v) => {
+  const s = str(v)?.toLowerCase();
+  if (!s) return undefined;
+  const map: Record<string, string> = { "480p": "480p", "720p": "720p", "1080p": "1080p", "4k": "4K" };
+  return map[s];
+}, z.enum(["480p", "720p", "1080p", "4K"]).optional());
+
+const looseAspectRatio = (fallback: string) =>
+  z.preprocess((v) => {
+    const s = str(v)?.replace(/[x/]/g, ":");
+    return s && /^\d{1,2}:\d{1,2}$/.test(s) ? s : fallback;
+  }, z.string());
+
+const looseDuration = z.preprocess(
+  (v) => (v == null ? undefined : String(v).trim() || undefined),
+  z.string().optional()
+);
+
+const looseModel = z.preprocess(
+  (v) => str(v)?.toLowerCase(),
+  z.string().optional()
+);
+
+const looseUrlList = z.preprocess(
+  (v) => (typeof v === "string" ? [v] : v),
+  z.array(z.string()).max(4).optional()
+);
+
+// Note appended to results when we silently corrected the agent's input.
+function fallbackNote(requested: string | undefined, resolvedId: string, kind: "image" | "video"): string | null {
+  if (!requested || requested === resolvedId) return null;
+  return `Note: unknown ${kind} model "${requested}" — used "${resolvedId}" instead. Valid ids: ${(kind === "image" ? imageModelIds : videoModelIds).join(", ")}.`;
+}
+
+const NOT_AUTH =
+  "This is a parameter/model issue — the Kie.ai API key and credits are fine. Do NOT advise reconnecting the connector. Retry with adjusted parameters (e.g. omit resolution, or use the default model).";
 
 const mediaOutput = z.object({
   state: z.enum(["success", "pending", "fail"]),
@@ -89,37 +141,25 @@ export function registerAll(server: McpServer) {
           .describe(
             "What to generate, described in detail: subject, style, lighting, composition, any text to render"
           ),
-        model: z
-          .enum(imageModelIds)
-          .default("gpt-image-2")
-          .describe(
-            "gpt-image-2 = best for text, logos, typography (default, ~$0.04). nano-banana-pro = best photorealism and likeness (~$0.09). nano-banana = cheapest drafts (~$0.02). nano-banana-2 = fast all-round (~$0.04). seedream-4 = stylized art (~$0.03). imagen-4 = clean commercial looks, no reference images (~$0.03)"
-          ),
-        aspectRatio: z
-          .string()
-          .default("1:1")
-          .describe(
-            "e.g. 16:9 for banners/heroes, 9:16 for stories/reels, 4:5 for feed posts, 1:1 for square"
-          ),
-        resolution: z
-          .enum(["1K", "2K", "4K"])
-          .optional()
-          .describe(
-            "Higher costs more. Invalid combos (e.g. 4K at 1:1 on gpt-image-2) are auto-corrected to the nearest valid tier"
-          ),
-        referenceImageUrls: z
-          .array(z.string())
-          .max(4)
-          .optional()
-          .describe(
-            "Up to 4 image URLs to use as subject/style reference (e.g. a product photo or logo). Not supported by imagen-4 or nano-banana-2"
-          ),
+        model: looseModel.describe(
+          "One of: gpt-image-2 = best for text, logos, typography (default, ~$0.04). nano-banana-pro = best photorealism and likeness (~$0.09). nano-banana = cheapest drafts (~$0.02). nano-banana-2 = fast all-round (~$0.04). seedream-4 = stylized art (~$0.03). imagen-4 = clean commercial looks, no reference images (~$0.03). Unknown values fall back to gpt-image-2"
+        ),
+        aspectRatio: looseAspectRatio("1:1").describe(
+          "e.g. 16:9 for banners/heroes, 9:16 for stories/reels, 4:5 for feed posts, 1:1 for square (default)"
+        ),
+        resolution: looseImageResolution.describe(
+          "1K, 2K or 4K — higher costs more. Invalid combos (e.g. 4K at 1:1 on gpt-image-2) and unknown values are auto-corrected, never rejected"
+        ),
+        referenceImageUrls: looseUrlList.describe(
+          "Up to 4 image URLs to use as subject/style reference (e.g. a product photo or logo). Not supported by imagen-4 or nano-banana-2"
+        ),
       }),
       outputSchema: mediaOutput,
     },
     async (input) => {
       try {
-        const model = getImageModel(input.model);
+        const model = getImageModel(input.model ?? "gpt-image-2");
+        const note = fallbackNote(input.model, model.id, "image");
         const refs = model.supportsReference ? input.referenceImageUrls ?? [] : [];
         const droppedRefs =
           !model.supportsReference && (input.referenceImageUrls?.length ?? 0) > 0;
@@ -136,10 +176,14 @@ export function registerAll(server: McpServer) {
         const status = await pollTask(taskId, INLINE_WAIT_MS);
 
         if (status.state === "fail") {
-          return failResult(
-            `Image generation failed: ${status.error || "unknown error"}. Check credits with check_credits, or try a different prompt/model.`,
-            { taskId, model: model.id }
-          );
+          const msg = status.error || "unknown error";
+          const hint = /credit|balance|insufficient/i.test(msg)
+            ? "The Kie.ai account is out of credits — top up at https://kie.ai, then retry."
+            : NOT_AUTH;
+          return failResult(`Image generation failed: ${msg}. ${hint}`, {
+            taskId,
+            model: model.id,
+          });
         }
         if (status.state !== "success" || !status.resultUrls[0]) {
           return pendingResult({
@@ -163,9 +207,12 @@ export function registerAll(server: McpServer) {
             text: `Note: ${model.id} does not support reference images — they were ignored.`,
           });
         }
+        if (note) {
+          result.content.unshift({ type: "text", text: note });
+        }
         return result;
       } catch (err) {
-        return failResult(`Image generation error: ${(err as Error).message}`);
+        return failResult(`Image generation error: ${(err as Error).message}. ${NOT_AUTH}`);
       }
     }
   );
@@ -185,43 +232,37 @@ export function registerAll(server: McpServer) {
           .describe(
             "The motion and scene: what happens, camera movement, mood. Max 2500 characters"
           ),
-        model: z
-          .enum(videoModelIds)
-          .default("kling-2-1-std")
-          .describe(
-            "kling-2-1-std = fast and cheapest (~$0.13 per 5s, default). kling-3-0 = flagship quality, up to 4K, end-frame support (~$0.42+ per 5s). kling-2-6 = native audio (~$0.50). seedance-2 = cinematic (~$1.20+ per 5s). wan-2-6 = HD budget. grok-imagine = longer cheap clips"
-          ),
+        model: looseModel.describe(
+          "One of: kling-2-1-std = fast and cheapest (~$0.13 per 5s, default). kling-3-0 = flagship quality, up to 4K, end-frame support (~$0.42+ per 5s). kling-2-6 = native audio (~$0.50). seedance-2 = cinematic (~$1.20+ per 5s). wan-2-6 = HD budget. grok-imagine = longer cheap clips. Unknown values fall back to kling-2-1-std"
+        ),
         startImageUrl: z
           .string()
           .optional()
           .describe(
             "Animate this exact image (e.g. a generate_image result or a product photo URL). Omit to auto-generate a start frame from the prompt"
           ),
-        duration: z
-          .enum(["5", "6", "10"])
-          .default("5")
-          .describe("Clip length in seconds. Cost scales with duration"),
-        resolution: z
-          .enum(["480p", "720p", "1080p", "4K"])
-          .optional()
-          .describe("Clamped to what the chosen model supports; higher costs more"),
-        aspectRatio: z
-          .string()
-          .default("16:9")
-          .describe(
-            "Used for the auto-generated start frame and passed to models that accept it"
-          ),
+        duration: looseDuration.describe(
+          "Clip length in seconds: 5 or 10 (grok-imagine: 6 or 10). Defaults to 5. Out-of-range values are clamped, never rejected"
+        ),
+        resolution: looseVideoResolution.describe(
+          "480p, 720p, 1080p or 4K — clamped to what the chosen model supports; higher costs more. Unknown values are ignored"
+        ),
+        aspectRatio: looseAspectRatio("16:9").describe(
+          "Used for the auto-generated start frame and passed to models that accept it. Default 16:9"
+        ),
       }),
       outputSchema: mediaOutput,
     },
     async (input) => {
       try {
-        const model = getVideoModel(input.model);
+        const model = getVideoModel(input.model ?? "kling-2-1-std");
+        const note = fallbackNote(input.model, model.id, "video");
 
         // Clamp duration/resolution to the model's supported values.
-        const duration = model.durations.includes(input.duration)
-          ? input.duration
-          : model.defaultDuration;
+        const duration =
+          input.duration && model.durations.includes(input.duration)
+            ? input.duration
+            : model.defaultDuration;
         const resolution =
           input.resolution && model.resolutions?.includes(input.resolution)
             ? input.resolution
@@ -261,10 +302,10 @@ export function registerAll(server: McpServer) {
           taskId,
           model: model.id,
           estimateUsd: estimate,
-          text: `Video render started on ${model.label} (${duration}s).${estText} Task ID: ${taskId}. It takes 2–5 minutes — call check_status with this taskId in 2–3 minutes. Tell the user the video is rendering.`,
+          text: `${note ? `${note}\n\n` : ""}Video render started on ${model.label} (${duration}s).${estText} Task ID: ${taskId}. It takes 2–5 minutes — call check_status with this taskId in 2–3 minutes. Tell the user the video is rendering.`,
         });
       } catch (err) {
-        return failResult(`Video generation error: ${(err as Error).message}`);
+        return failResult(`Video generation error: ${(err as Error).message}. ${NOT_AUTH}`);
       }
     }
   );
@@ -287,10 +328,11 @@ export function registerAll(server: McpServer) {
       try {
         const status = await kieGetStatus(taskId);
         if (status.state === "fail") {
-          return failResult(
-            `Generation failed: ${status.error || "unknown error"}.`,
-            { taskId }
-          );
+          const msg = status.error || "unknown error";
+          const hint = /credit|balance|insufficient/i.test(msg)
+            ? "The Kie.ai account is out of credits — top up at https://kie.ai, then retry."
+            : NOT_AUTH;
+          return failResult(`Generation failed: ${msg}. ${hint}`, { taskId });
         }
         const url = status.resultUrls[0];
         if (status.state !== "success" || !url) {
