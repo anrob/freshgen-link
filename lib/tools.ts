@@ -120,7 +120,7 @@ export function registerAll(server: McpServer) {
     "generate_image",
     {
       description:
-        "Generate an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. Usually returns the finished image URL within 45 seconds — share it with the user as both a markdown image and a plain link. The URL expires in about 14 days, so remind the user to download it (or use save_to_media_library if that tool is available). If the result says it is still generating, call check_status with the returned taskId after 30–60 seconds. For multiple images, call this tool once per image.",
+        "Start generating an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. This tool returns a taskId IMMEDIATELY — it never returns the finished image. You MUST call check_status with that taskId after 30–60 seconds to get the image URL; if still processing, wait and check again. Tell the user the image is being generated. When you get the URL, share it as both a markdown image and a plain link; it expires in ~14 days, so suggest downloading it (or use save_to_media_library if available). For multiple images, call this tool once per image.",
       inputSchema: z.object({
         prompt: z
           .string()
@@ -177,7 +177,7 @@ export function registerAll(server: McpServer) {
             kind: "image",
             taskId,
             model: model.id,
-            text: `Still generating (state: ${status.state}). Task ID: ${taskId}. Call check_status with this taskId in 30–60 seconds to get the image.`,
+            text: `${note ? `${note}\n\n` : ""}Image generation started on ${model.label} (state: ${status.state}). Task ID: ${taskId}. Call check_status with this taskId in 30–60 seconds to get the image URL. Tell the user the image is being generated.`,
           });
         }
         const result = await mediaResult({
