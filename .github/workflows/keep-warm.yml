@@ -1,0 +1,21 @@
+# Keeps the Vercel function warm so the first real tool call from GoHighLevel
+# (whose runtime abandons calls after ~1.5s) never lands on a cold start.
+# The ping is unauthenticated — a 401 still executes the function and warms it.
+# Free on GitHub's scheduler; every fork/deploy of this repo inherits it.
+name: keep-warm
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Warm the MCP function
+        # ⚠️ CHANGE THE URL BELOW to your own deployment
+        # (https://YOUR-APP.vercel.app/mcp/warmup) after deploying.
+        run: |
+          curl -s -o /dev/null -w "mcp warm ping: %{http_code}\n" \
+            -X POST "https://freshgen-link.vercel.app/mcp/warmup" \
+            -H "content-type: application/json" \
+            -d '{"jsonrpc":"2.0","id":1,"method":"ping"}' || true

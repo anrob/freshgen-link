@@ -160,7 +160,15 @@ export function registerAll(server: McpServer) {
           resolutionParam: model.resolutionParam,
         });
 
-        const status = await pollTask(taskId, INLINE_WAIT_MS);
+        // INLINE_WAIT_MS <= 1 → answer with the taskId only, no status check.
+        // GHL's runtime abandons tool calls after ~1.5s, so every millisecond
+        // of the first response counts; check_status carries the rest.
+        const status =
+          INLINE_WAIT_MS > 1
+            ? await pollTask(taskId, INLINE_WAIT_MS)
+            : ({ state: "waiting", resultUrls: [], raw: null } as Awaited<
+                ReturnType<typeof pollTask>
+              >);
 
         if (status.state === "fail") {
           const msg = status.error || "unknown error";
