@@ -61,16 +61,11 @@ export async function mediaResult(input: MediaResultInput): Promise<CallToolResu
     `This URL expires in ~14 days — download it or save it to the media library now.`,
   ];
 
-  const content: Content[] = [
-    { type: "text", text: lines.join("\n") },
-    {
-      type: "resource_link",
-      uri: url,
-      name: `${model} ${kind}`,
-      mimeType: isImage ? "image/png" : "video/mp4",
-      annotations: { audience: ["user"], priority: 0.9 },
-    },
-  ];
+  // Text + (small) image blocks ONLY — 2024-era content types. GHL's custom-MCP
+  // pipeline (via Anthropic's hosted connector) rejects 2025-06-18 features:
+  // resource_link content and structuredContent break the entire agent turn
+  // with an opaque 400, so results stay deliberately old-school.
+  const content: Content[] = [{ type: "text", text: lines.join("\n") }];
 
   if (isImage) {
     const b64 = await smallImageBase64(url);
@@ -79,22 +74,11 @@ export async function mediaResult(input: MediaResultInput): Promise<CallToolResu
         type: "image",
         data: b64.data,
         mimeType: b64.mimeType,
-        annotations: { audience: ["user"], priority: 0.9 },
       });
     }
   }
 
-  return {
-    content,
-    structuredContent: {
-      state: "success" as const,
-      kind,
-      url,
-      model,
-      taskId,
-      ...(credits != null ? { credits, costUsd: credits * USD_PER_CREDIT } : {}),
-    },
-  };
+  return { content };
 }
 
 export function pendingResult(input: {
@@ -107,23 +91,16 @@ export function pendingResult(input: {
 }): CallToolResult {
   return {
     content: [{ type: "text", text: input.text }],
-    structuredContent: {
-      state: "pending" as const,
-      taskId: input.taskId,
-      ...(input.kind ? { kind: input.kind } : {}),
-      ...(input.model ? { model: input.model } : {}),
-      ...(input.estimateUsd != null ? { estimatedCostUsd: input.estimateUsd } : {}),
-    },
   };
 }
 
 export function failResult(
   message: string,
-  extra?: Record<string, unknown>
+  _extra?: Record<string, unknown>
 ): CallToolResult {
+  console.log(`[mcp] tool error: ${message.slice(0, 150)}`);
   return {
     content: [{ type: "text", text: message }],
-    structuredContent: { state: "fail" as const, ...extra },
     isError: true,
   };
 }

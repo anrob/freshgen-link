@@ -93,17 +93,6 @@ function fallbackNote(requested: string | undefined, resolvedId: string, kind: "
 const NOT_AUTH =
   "This is a parameter/model issue — the Kie.ai API key and credits are fine. Do NOT advise reconnecting the connector. Retry with adjusted parameters (e.g. omit resolution, or use the default model).";
 
-const mediaOutput = z.object({
-  state: z.enum(["success", "pending", "fail"]),
-  kind: z.enum(["image", "video"]).optional(),
-  url: z.string().optional(),
-  taskId: z.string().optional(),
-  model: z.string().optional(),
-  credits: z.number().optional(),
-  costUsd: z.number().optional(),
-  estimatedCostUsd: z.number().optional(),
-});
-
 // Generate a start frame for a video (or the test image). Shared helper.
 export async function generateFrame(opts: {
   prompt: string;
@@ -130,7 +119,6 @@ export function registerAll(server: McpServer) {
   server.registerTool(
     "generate_image",
     {
-      title: "Generate image",
       description:
         "Generate an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. Usually returns the finished image URL within 45 seconds — share it with the user as both a markdown image and a plain link. The URL expires in about 14 days, so remind the user to download it (or use save_to_media_library if that tool is available). If the result says it is still generating, call check_status with the returned taskId after 30–60 seconds. For multiple images, call this tool once per image.",
       inputSchema: z.object({
@@ -154,7 +142,6 @@ export function registerAll(server: McpServer) {
           "Up to 4 image URLs to use as subject/style reference (e.g. a product photo or logo). Not supported by imagen-4 or nano-banana-2"
         ),
       }),
-      outputSchema: mediaOutput,
     },
     async (input) => {
       try {
@@ -221,7 +208,6 @@ export function registerAll(server: McpServer) {
   server.registerTool(
     "generate_video",
     {
-      title: "Generate video",
       description:
         "Start rendering a short AI video clip (5–10 seconds) from a text prompt. If startImageUrl is provided, that exact image is animated; otherwise a start frame is generated first (adds ~$0.04 and ~30s). IMPORTANT: this tool only STARTS the render — it returns a taskId immediately, never the finished video. You MUST call check_status with that taskId after 2–3 minutes to get the video URL; if it is still processing, wait and check again. Always tell the user: the video is rendering, roughly how long to wait, and the estimated cost from this result (typically $0.25–$1.20 per clip, real money from the connected Kie.ai account).",
       inputSchema: z.object({
@@ -251,7 +237,6 @@ export function registerAll(server: McpServer) {
           "Used for the auto-generated start frame and passed to models that accept it. Default 16:9"
         ),
       }),
-      outputSchema: mediaOutput,
     },
     async (input) => {
       try {
@@ -314,7 +299,6 @@ export function registerAll(server: McpServer) {
   server.registerTool(
     "check_status",
     {
-      title: "Check generation status",
       description:
         "Check whether an image or video generation is finished, using the taskId returned by generate_image or generate_video. If finished, this returns the media URL and the real cost — share both with the user (the URL expires in ~14 days). If still processing, wait 1–2 minutes and call again; video clips typically take 2–5 minutes total. If it failed, the error message says why (e.g. insufficient credits or a blocked prompt).",
       inputSchema: z.object({
@@ -322,7 +306,6 @@ export function registerAll(server: McpServer) {
           .string()
           .describe("The taskId from a previous generate_image or generate_video result"),
       }),
-      outputSchema: mediaOutput,
     },
     async ({ taskId }) => {
       try {
@@ -360,11 +343,9 @@ export function registerAll(server: McpServer) {
   server.registerTool(
     "check_credits",
     {
-      title: "Check credit balance",
       description:
         "Check the remaining Kie.ai credit balance on the connected account, in both credits and US dollars. Use this when the user asks about balance or spend, before large batches, or after a generation fails with an insufficient-credit error. Credits are topped up at kie.ai. Free to call.",
       inputSchema: z.object({}),
-      outputSchema: z.object({ credits: z.number(), usd: z.number() }),
     },
     async () => {
       try {
@@ -378,7 +359,6 @@ export function registerAll(server: McpServer) {
               text: `Balance: ${credits.toLocaleString()} credits ≈ $${dollars.toFixed(2)} (1 credit = $0.005). Top up at https://kie.ai`,
             },
           ],
-          structuredContent: { credits, usd: Number(dollars.toFixed(2)) },
         };
       } catch (err) {
         return failResult(`Could not fetch credits: ${(err as Error).message}`);
@@ -390,7 +370,6 @@ export function registerAll(server: McpServer) {
   server.registerTool(
     "list_models",
     {
-      title: "List available models",
       description:
         "List every available image and video model: what each is best at, approximate price, and supported options (resolutions, durations, reference-image support). Instant and free — call this when the user asks what is possible, which model to pick, or what things cost.",
       inputSchema: z.object({
@@ -432,23 +411,6 @@ export function registerAll(server: McpServer) {
       );
       return {
         content: [{ type: "text" as const, text: parts.join("\n\n") }],
-        structuredContent: {
-          imageModels: KIE_MODELS.map((m) => ({
-            id: m.id,
-            bestFor: m.bestFor,
-            price: m.priceNote,
-            resolutions: m.resolutions ?? null,
-            supportsReference: m.supportsReference,
-          })),
-          videoModels: VIDEO_MODELS.map((m) => ({
-            id: m.id,
-            bestFor: m.bestFor,
-            price: m.priceNote,
-            durations: m.durations,
-            resolutions: m.resolutions ?? null,
-            supportsEndFrame: m.supportsEndFrame,
-          })),
-        },
       };
     }
   );
@@ -458,7 +420,6 @@ export function registerAll(server: McpServer) {
     server.registerTool(
       "save_to_media_library",
       {
-        title: "Save to GHL Media Library",
         description:
           "Save a generated image or video into this GoHighLevel account's Media Library so it never expires (generated URLs die after about 14 days). Pass the media URL from a finished generation. Returns a permanent GHL-hosted URL — prefer sharing that permanent URL with the user, and use it in funnels, emails, and social posts.",
         inputSchema: z.object({
@@ -482,11 +443,6 @@ export function registerAll(server: McpServer) {
                   : `Saved to the GHL Media Library (file id: ${saved.fileId ?? "unknown"}). Open Media Storage in GHL to use it.`,
               },
             ],
-            structuredContent: {
-              state: "success",
-              ghlUrl: permanent ?? null,
-              fileId: saved.fileId ?? null,
-            },
           };
         } catch (err) {
           return failResult(`Save to media library failed: ${(err as Error).message}`);
