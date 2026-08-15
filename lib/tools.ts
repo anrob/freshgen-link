@@ -131,7 +131,7 @@ export function registerAll(server: McpServer) {
     "generate_image",
     {
       description: inline
-        ? `Generate an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. This call WAITS for the render and usually returns the finished image directly (typically 15–45 seconds — do not abandon it early). If it returns a taskId instead of an image (an unusually slow render), call check_status with that taskId after 30 seconds to get the image URL. When you have the URL, share it as both a markdown image and a plain link; it expires in ~14 days.${autoSaveNote} For multiple images, call this tool once per image.`
+        ? `Generate an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. This call WAITS for the render and usually returns the finished image directly (typically 15–45 seconds — do not abandon it early). If the result contains "Image generated." and a URL, the job is COMPLETE — do NOT call check_status; just show the image to the user. Only if the result says the render is still in progress and gives a taskId (an unusually slow render), call check_status with that taskId ONCE after 30 seconds. When you have the URL, share it as both a markdown image and a plain link; it expires in ~14 days.${autoSaveNote} For multiple images, call this tool once per image.`
         : "Start generating an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. This tool returns a taskId IMMEDIATELY — it never returns the finished image. You MUST call check_status with that taskId after 30–60 seconds to get the image URL; if still processing, wait and check again. Tell the user the image is being generated. When you get the URL, share it as both a markdown image and a plain link; it expires in ~14 days, so suggest downloading it (or use save_to_media_library if available). For multiple images, call this tool once per image." +
           autoSaveNote,
       inputSchema: z.object({
@@ -329,7 +329,7 @@ export function registerAll(server: McpServer) {
     "check_status",
     {
       description:
-        "Check whether an image or video generation is finished, using the taskId returned by generate_image or generate_video. If finished, this returns the media URL and the real cost — share both with the user (the URL expires in ~14 days). If still processing, wait 1–2 minutes and call again; video clips typically take 2–5 minutes total. If it failed, the error message says why (e.g. insufficient credits or a blocked prompt).",
+        "Check whether an image or video generation is finished, using the taskId returned by generate_image or generate_video. Only call this when a previous result said the job was still in progress — if you already have a media URL, the job is done and there is nothing to check; do NOT call this again for a finished task. If finished, this returns the media URL and the real cost — share both with the user (the URL expires in ~14 days). If still processing, wait 1–2 minutes before calling again (never back-to-back); video clips typically take 2–5 minutes total. If it failed, the error message says why (e.g. insufficient credits or a blocked prompt).",
       inputSchema: z.object({
         taskId: z
           .string()
@@ -350,7 +350,7 @@ export function registerAll(server: McpServer) {
         if (status.state !== "success" || !url) {
           return pendingResult({
             taskId,
-            text: `Still ${status.state}. Check again in a minute or two.`,
+            text: `Still ${status.state}. Do not call check_status again right away — wait at least a minute (video: 2–3 minutes), then check once more.`,
           });
         }
         const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(url);
