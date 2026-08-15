@@ -20,6 +20,8 @@ import {
 } from "./kie-video";
 import { ghlEnabled, ghlSaveMedia } from "./ghl";
 import { kieCallbackUrl } from "./callback";
+import { licenseStatus, notActivatedMessage } from "./license";
+import { dedupedTask, requestKey } from "./dedupe";
 import { failResult, mediaResult, pendingResult, usd } from "./results";
 
 // ── Tunables (adjust after the live-GHL milestone) ──────────────────────────
@@ -98,6 +100,15 @@ function fallbackNote(requested: string | undefined, resolvedId: string, kind: "
 const NOT_AUTH =
   "This is a parameter/model issue — the Kie.ai API key and credits are fine. Do NOT advise reconnecting the connector. Retry with adjusted parameters (e.g. omit resolution, or use the default model).";
 
+// Returns a failure result when this deployment isn't licensed, else null.
+// Applied to the tools that cost money or deliver the product's value; the
+// free informational tools stay open so setup and debugging still work.
+async function licenseBlock() {
+  const lic = await licenseStatus();
+  if (lic.ok) return null;
+  return failResult(notActivatedMessage(lic.reason));
+}
+
 // Generate a start frame for a video (or the test image). Shared helper.
 export async function generateFrame(opts: {
   prompt: string;
@@ -105,13 +116,23 @@ export async function generateFrame(opts: {
   waitMs?: number;
 }): Promise<{ url?: string; taskId: string; credits?: number }> {
   const model = getImageModel("gpt-image-2");
-  const taskId = await kieCreateTask({
-    model: model.slug,
+  // Deduped: a retry arriving while the frame is still rendering must not pay
+  // for a second frame (the video path generates one before every clip).
+  const key = requestKey({
+    kind: "frame",
     prompt: opts.prompt,
     aspectRatio: opts.aspectRatio,
-    resolution: normalizeResolution(model.id, opts.aspectRatio, "1K"),
-    resolutionParam: model.resolutionParam,
   });
+  const { taskId } = await dedupedTask(key, () =>
+    kieCreateTask({
+      model: model.slug,
+      prompt: opts.prompt,
+      aspectRatio: opts.aspectRatio,
+      resolution: normalizeResolution(model.id, opts.aspectRatio, "1K"),
+      resolutionParam: model.resolutionParam,
+      callBackUrl: kieCallbackUrl(),
+    })
+  );
   const status = await pollTask(taskId, opts.waitMs ?? INLINE_WAIT_MS);
   if (status.state === "fail") {
     throw new Error(status.error || "Frame generation failed");
@@ -157,22 +178,38 @@ export function registerAll(server: McpServer) {
       }),
     },
     async (input) => {
+      const blocked = await licenseBlock();
+      if (blocked) return blocked;
       try {
         const model = getImageModel(input.model ?? "gpt-image-2");
         const note = fallbackNote(input.model, model.id, "image");
         const refs = model.supportsReference ? input.referenceImageUrls ?? [] : [];
         const droppedRefs =
           !model.supportsReference && (input.referenceImageUrls?.length ?? 0) > 0;
-        const taskId = await kieCreateTask({
-          model: refs.length ? model.refSlug ?? model.slug : model.slug,
+        const resolution = normalizeResolution(model.id, input.aspectRatio, input.resolution);
+
+        // Reuse an identical in-flight job rather than paying for it twice.
+        const dedupe = requestKey({
+          kind: "image",
+          model: model.id,
           prompt: input.prompt,
-          imageUrls: refs.length ? refs : undefined,
-          imageParam: model.refImageParam,
+          refs,
           aspectRatio: input.aspectRatio,
-          resolution: normalizeResolution(model.id, input.aspectRatio, input.resolution),
-          resolutionParam: model.resolutionParam,
-          callBackUrl: kieCallbackUrl(),
+          resolution,
         });
+        const { taskId, reused } = await dedupedTask(dedupe, () =>
+          kieCreateTask({
+            model: refs.length ? model.refSlug ?? model.slug : model.slug,
+            prompt: input.prompt,
+            imageUrls: refs.length ? refs : undefined,
+            imageParam: model.refImageParam,
+            aspectRatio: input.aspectRatio,
+            resolution,
+            resolutionParam: model.resolutionParam,
+            callBackUrl: kieCallbackUrl(),
+          })
+        );
+        if (reused) console.log(`[dedupe] image request reused task ${taskId}`);
 
         // INLINE_WAIT_MS <= 1 → answer with the taskId only, no status check.
         // GHL's runtime abandons tool calls after ~1.5s, so every millisecond
@@ -264,6 +301,8 @@ export function registerAll(server: McpServer) {
       }),
     },
     async (input) => {
+      const blocked = await licenseBlock();
+      if (blocked) return blocked;
       try {
         const model = getVideoModel(input.model ?? "kling-2-1-std");
         const note = fallbackNote(input.model, model.id, "video");
@@ -296,16 +335,30 @@ export function registerAll(server: McpServer) {
           startUrl = frame.url;
         }
 
-        // 2) Fire the video task — never wait for it.
-        const taskId = await kieCreateVideoTask({
+        // 2) Fire the video task — never wait for it. Deduped: video is the
+        // expensive path ($0.25–$1.20 a clip), so a retry storm here is the
+        // one that actually costs money.
+        const videoKey = requestKey({
+          kind: "video",
           model: model.id,
           prompt: input.prompt,
-          startFrameUrl: startUrl,
+          startUrl,
           duration,
           resolution,
           aspectRatio: input.aspectRatio,
-          callBackUrl: kieCallbackUrl(),
         });
+        const { taskId, reused } = await dedupedTask(videoKey, () =>
+          kieCreateVideoTask({
+            model: model.id,
+            prompt: input.prompt,
+            startFrameUrl: startUrl,
+            duration,
+            resolution,
+            aspectRatio: input.aspectRatio,
+            callBackUrl: kieCallbackUrl(),
+          })
+        );
+        if (reused) console.log(`[dedupe] video request reused task ${taskId}`);
         const estimate = estimateVideoCost(model.id, duration, resolution);
         const estText = estimate != null ? ` Estimated cost ≈ $${estimate.toFixed(2)} (actual cost is reported when finished).` : "";
         const autoSaveText = ghlEnabled()
@@ -460,6 +513,8 @@ export function registerAll(server: McpServer) {
         }),
       },
       async ({ url, name }) => {
+        const blocked = await licenseBlock();
+        if (blocked) return blocked;
         try {
           const saved = await ghlSaveMedia(url, name);
           const permanent = saved.ghlUrl;

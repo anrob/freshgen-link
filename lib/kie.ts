@@ -204,6 +204,12 @@ export async function kieGetStatus(taskId: string): Promise<KieStatus> {
     throw new Error(`Kie recordInfo ${res.status}: ${text}`);
   }
   const json = await res.json();
+  // Kie reports auth/quota failures as HTTP 200 with an error code in the BODY.
+  // Without this the fallback below reads them as state "waiting", so a revoked
+  // or exhausted key looks indistinguishable from a slow render.
+  if (json?.code && Number(json.code) !== 200 && json?.data == null) {
+    throw new Error(`Kie recordInfo: ${json.code} ${json.msg ?? "request rejected"}`);
+  }
   const data = json?.data ?? json;
   const stateRaw = String(data?.state ?? data?.status ?? "waiting").toLowerCase();
   const state =

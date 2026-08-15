@@ -6,6 +6,7 @@ import CopyField from "@/components/CopyField";
 import RefreshButton from "@/components/RefreshButton";
 import TestImageButton from "@/components/TestImageButton";
 import { ghlEnabled } from "@/lib/ghl";
+import { licenseStatus } from "@/lib/license";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +47,8 @@ export default async function Dashboard({
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
   const mcpUrl = `${proto}://${host}/mcp/${secret}`;
 
+  const license = await licenseStatus();
+
   let credits: number | null = null;
   let creditsError = "";
   if (process.env.KIE_API_KEY) {
@@ -68,9 +71,43 @@ export default async function Dashboard({
         <div className="masthead-note">{host}</div>
       </header>
 
+      {!license.ok && (
+        <section className="section">
+          <div className="card" style={{ borderColor: "#b42318" }}>
+            <div className="kicker" style={{ color: "#b42318" }}>
+              Not activated
+            </div>
+            <p style={{ margin: "8px 0 0" }}>
+              Image and video generation is disabled on this deployment.
+              {license.reason ? ` ${license.reason}` : ""}
+            </p>
+            <p className="caption" style={{ marginTop: 12 }}>
+              Add your license key in Vercel → your project →{" "}
+              <strong>Settings → Environment Variables</strong> →{" "}
+              <code>LICENSE_KEY</code>, then <strong>redeploy</strong>. Your key
+              was emailed to you on purchase.
+            </p>
+          </div>
+        </section>
+      )}
+
       <section className="section">
         <div className="kicker">Setup status</div>
         <div className="card">
+          <CheckRow
+            ok={license.ok}
+            label={
+              <>
+                <code>LICENSE_KEY</code> —{" "}
+                {license.ok
+                  ? license.degraded
+                    ? "active (could not reach Gumroad — running on trust)"
+                    : "active"
+                  : "not activated"}
+              </>
+            }
+            fix={`Paste the license key from your purchase email. ${envFix}`}
+          />
           <CheckRow
             ok={Boolean(process.env.KIE_API_KEY)}
             label={

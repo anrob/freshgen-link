@@ -1,21 +1,45 @@
-MIT License
+FreshGen Link — Source-Available License
+Copyright (c) 2026 Larry Scott (FreshGen). All rights reserved.
 
-Copyright (c) 2026 Larry Scott (FreshGen)
+This software is source-available, not open source. The source is published so
+that buyers can read, audit, and self-host it. It is not free to use.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. LICENSE REQUIRED
+   Use of this software in any form requires a valid license key purchased from
+   the copyright holder. One license key covers one deployment.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+2. WHAT YOU MAY DO
+   With a valid license key, you may:
+   - Deploy and run this software for your own business or for your own clients.
+   - Modify it for your own use, including white-labeling it under your own
+     brand.
+   - Keep running your deployment indefinitely under the license you purchased.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+3. WHAT YOU MAY NOT DO
+   - Remove, disable, bypass, or otherwise circumvent the license verification
+     in this software, or distribute a version with it removed or disabled.
+   - Redistribute, resell, sublicense, or publish this source code, in whole or
+     in substantial part, with or without modification.
+   - Share your license key, or use one license key across deployments beyond
+     what you purchased.
+
+4. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE.
+
+5. THIRD-PARTY COSTS
+   This software calls third-party APIs (Kie.ai, GoHighLevel) using credentials
+   you supply. All usage charges incurred on those accounts are yours. The
+   copyright holder is not responsible for third-party charges, including those
+   caused by client software retrying requests.
+
+6. TERMINATION
+   This license terminates automatically if you breach section 3. On
+   termination you must stop using the software and delete your deployments.
+
+For licensing questions or additional deployments, contact the copyright holder.

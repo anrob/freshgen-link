@@ -2,13 +2,13 @@
 
 FreshGen Link is a self-hosted MCP server that plugs Kie.ai's image and video generation straight into GoHighLevel's AI tools — Ask AI, Workflow AI Agents, and Agent Studio Superagents. You deploy it to your own Vercel account in one click, connect your own Kie.ai API key, and every generation bills at Kie's raw price straight to your wallet. No subscription, no per-seat fee, no middleman markup.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanrob%2Ffreshgen-link&env=KIE_API_KEY,MCP_SECRET&envDescription=Your%20Kie.ai%20API%20key%2C%20plus%20a%20long%20random%20secret%20that%20becomes%20part%20of%20your%20private%20URL&envLink=https%3A%2F%2Fkie.ai%2Fapi-key&project-name=freshgen-link&repository-name=freshgen-link)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanrob%2Ffreshgen-link&env=LICENSE_KEY,KIE_API_KEY,MCP_SECRET&envDescription=Your%20license%20key%20from%20purchase%2C%20your%20Kie.ai%20API%20key%2C%20and%20a%20long%20random%20secret%20that%20becomes%20part%20of%20your%20private%20URL&envLink=https%3A%2F%2Fkie.ai%2Fapi-key&project-name=freshgen-link&repository-name=freshgen-link)
 
 **Contents:** [What you get](#what-you-get) · [Before you deploy](#before-you-deploy) · [After deploying](#after-deploying) · [Connect to GoHighLevel](#connect-to-gohighlevel) · [Environment variables](#environment-variables) · [Which model should I use](#which-model-should-i-use) · [What it costs to run](#what-it-costs-to-run) · [Your media expires](#your-media-expires) · [A note on security](#a-note-on-security) · [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Running it locally](#running-it-locally-optional) · [Support](#support) · [License](#license)
 
 ## Quick start
 
-1. **Deploy** — click the button above, paste your Kie.ai key and a made-up secret.
+1. **Deploy** — click the button above, paste your license key, your Kie.ai key, and a made-up secret.
 2. **Connect** — copy your MCP URL from the dashboard, paste it into GHL's Ask AI connectors.
 3. **Generate** — ask your GHL AI agent for an image or video. That's the whole loop.
 
@@ -23,8 +23,9 @@ Everything below is the detail behind those three steps.
 
 ## Before you deploy
 
-You need three things:
+You need four things:
 
+- **Your license key.** Emailed to you when you bought FreshGen Link — looks like `85DE7B55-4A6E4E5A-8E5A0FDF-1BE4E0FC`. One key covers one deployment. Generation stays switched off until it's set.
 - **A Kie.ai account and API key.** Grab one at [kie.ai/api-key](https://kie.ai/api-key) — takes about two minutes.
 - **A few dollars of prepaid Kie.ai credit.** Images start around $0.02, video around $0.25 a clip. $10 covers a lot of testing.
 - **A free GitHub account.** The deploy button clones this repo straight into your own GitHub, then deploys that copy to Vercel. If you don't have GitHub yet, Vercel will prompt you to sign up — free, takes a minute.
@@ -70,6 +71,7 @@ Want it inside a Workflow AI Agent for automations, or a custom Agent Studio Sup
 
 | Variable | Required | What it does |
 |---|---|---|
+| `LICENSE_KEY` | Yes | Your purchase license key. Generation is disabled without it. |
 | `KIE_API_KEY` | Yes | Your Kie.ai API key. Every generation bills to this account. |
 | `MCP_SECRET` | Yes | 30+ random characters. Becomes part of your private MCP and dashboard URLs. |
 | `BRAND_NAME` | No | White-labels the landing page, dashboard, and GHL-facing name. Defaults to "FreshGen". |
@@ -144,7 +146,11 @@ Yes. It lives in your own Vercel project's environment variables — your Vercel
 
 **Why is the code public if I'm paying for this?**
 
-The Vercel deploy button requires a public GitHub repo — that's a Vercel limitation, not a choice made here. What you're actually paying for is the packaged product: the one-click deploy, the dashboard, the docs, and support when something breaks. The code being readable doesn't mean the product is free to assemble yourself.
+The Vercel deploy button requires a public GitHub repo — that's a Vercel limitation, not a choice made here. Readable isn't the same as free: the code is source-available under a paid license (see [LICENSE](LICENSE)), and a valid license key is required to run it. What you're paying for is the packaged product — the one-click deploy, the dashboard, the docs, and support when something breaks.
+
+**What happens if my license key is missing or invalid?**
+
+The server still connects to GoHighLevel and the informational tools (`list_models`, `check_credits`) keep working, but `generate_image`, `generate_video`, and `save_to_media_library` return an "not activated" message instead of running. Add a valid `LICENSE_KEY` in Vercel and redeploy. Your dashboard shows activation status at a glance.
 
 **Can I white-label it?**
 
@@ -175,7 +181,8 @@ Yes, on purpose. FreshGen Link does one thing — AI image and video generation 
 | **"Insufficient credits" error** | Your prepaid Kie.ai balance ran out. Top up at [kie.ai](https://kie.ai). |
 | **Dashboard shows 404** | Wrong secret in the URL. Double-check `https://your-app.vercel.app/s/<secret>` matches your `MCP_SECRET` exactly, no extra characters. |
 | **MCP URL unreachable from GHL** | In Vercel, go to your project → **Settings → Deployment Protection**. It must be **OFF** for production — if it's on, Vercel blocks GHL's servers before they ever reach your MCP endpoint. |
-| **Deploy fails on Vercel** | Almost always a missing required env var. Check `KIE_API_KEY` and `MCP_SECRET` are both set, then redeploy. |
+| **Deploy fails on Vercel** | Almost always a missing required env var. Check `LICENSE_KEY`, `KIE_API_KEY` and `MCP_SECRET` are all set, then redeploy. |
+| **"Not activated" from every generation tool** | `LICENSE_KEY` is missing, mistyped, or the purchase was refunded. Re-copy it from your purchase email, set it in Vercel, and redeploy. |
 | **Test image button does nothing** | Check `check_credits` first — a $0 balance can fail quietly. Top up and try again. |
 | **"Test Connection" times out** in GHL | The first request after idle can be slow (cold start). Wait 10 seconds and try again before assuming it's broken. |
 | **Everything worked, then suddenly stopped** | Check `check_credits` — the most common cause of a sudden stop is simply running out of balance. |
@@ -200,7 +207,7 @@ Something not working, and it isn't listed above? Reach out to whoever you bough
 
 ## License
 
-MIT. Do whatever you want with the code — see [LICENSE](LICENSE).
+Source-available, not open source. You may run and modify it for your own business (including white-labeling it) with a valid license key; you may not redistribute it or strip out the license check. Full terms in [LICENSE](LICENSE).
 
 ---
 
