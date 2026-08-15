@@ -209,6 +209,8 @@ export type CreateVideoTaskInput = {
   // Models with aspect_ratio:"adaptive" (Seedance) keep it — the aspect flows
   // through the start frame instead.
   aspectRatio?: string;
+  // Kie POSTs the task result here when it completes (top-level field).
+  callBackUrl?: string;
 };
 
 // Create a Kie image-to-video task and return its taskId. Poll it with
@@ -265,7 +267,11 @@ export async function kieCreateVideoTask(input: CreateVideoTaskInput): Promise<s
     if (hasEnd && model.endParam) inputObj[model.endParam] = input.endFrameUrl;
   }
 
-  const body = { model: model.slug, input: inputObj };
+  const body = {
+    model: model.slug,
+    ...(input.callBackUrl ? { callBackUrl: input.callBackUrl } : {}),
+    input: inputObj,
+  };
 
   const res = await fetch(`${KIE_BASE}/api/v1/jobs/createTask`, {
     method: "POST",

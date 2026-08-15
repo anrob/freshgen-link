@@ -52,7 +52,7 @@ Paste these into Ask AI, one at a time:
   Expect an image back in under a minute — the agent shares the link (and shows the image inline where GHL supports it).
 
 - **"Make a 5-second video of steam rising from a coffee cup."**
-  Expect the agent to say the render has started and will take **2–5 minutes.** That's correct — it won't come back instantly. Ask again shortly: *"is my video ready?"* — the agent checks and returns the finished clip.
+  Expect the agent to say the render has started and will take **2–5 minutes.** That's correct — it won't come back instantly. Ask again shortly: *"is my video ready?"* — the agent checks and returns the finished clip. (If you've connected a GHL Private Integration Token, the finished clip also lands in **Media Storage** automatically — no need to ask at all.)
 
 - **"How many credits do I have left?"**
   Instant answer — your Kie.ai balance in both credits and dollars.
@@ -142,7 +142,7 @@ Yes. Paste the same MCP URL into Ask AI (or Workflow, or Superagent) on each sub
 | `check_status` | Checks whether a generation is finished, using its task ID. |
 | `check_credits` | Checks the remaining Kie.ai balance, in credits and dollars. Free and instant. |
 | `list_models` | Lists every available image and video model — what each is best at and roughly what it costs. |
-| `save_to_media_library` | Only appears if `GHL_PIT` and `GHL_LOCATION_ID` are set. Copies a generated file into the GHL Media Library so it never expires. |
+| `save_to_media_library` | Only appears if `GHL_PIT` and `GHL_LOCATION_ID` are set. Copies any file URL into the GHL Media Library so it never expires. Finished generations are saved there automatically — this tool is for manual/extra saves. |
 
 ## Next steps
 

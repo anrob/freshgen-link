@@ -17,7 +17,7 @@ Everything below is the detail behind those three steps.
 ## What you get
 
 - **Five tools your GHL AI agent can call right away:** `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`.
-- **A sixth tool, `save_to_media_library`,** that appears automatically once you connect a GHL Private Integration Token — generated media gets copied into your permanent GHL Media Library instead of expiring.
+- **Automatic saves to your GHL Media Library** once you connect a GHL Private Integration Token — every finished image and video gets copied into your permanent Media Library on its own, no extra step. (A sixth tool, `save_to_media_library`, also appears for saving arbitrary URLs manually.)
 - **A private dashboard** with a copy-URL button, your live Kie.ai credit balance, a one-click test image, and a walkthrough for connecting to GHL.
 - **Works everywhere GHL accepts an MCP connector:** Ask AI, Workflow AI Agents, and Agent Studio Superagents.
 
@@ -73,7 +73,7 @@ Want it inside a Workflow AI Agent for automations, or a custom Agent Studio Sup
 | `KIE_API_KEY` | Yes | Your Kie.ai API key. Every generation bills to this account. |
 | `MCP_SECRET` | Yes | 30+ random characters. Becomes part of your private MCP and dashboard URLs. |
 | `BRAND_NAME` | No | White-labels the landing page, dashboard, and GHL-facing name. Defaults to "FreshGen". |
-| `GHL_PIT` | No | GoHighLevel Private Integration Token. Set together with `GHL_LOCATION_ID` to enable `save_to_media_library`. |
+| `GHL_PIT` | No | GoHighLevel Private Integration Token. Set together with `GHL_LOCATION_ID` to enable automatic Media Library saves plus the `save_to_media_library` tool. |
 | `GHL_LOCATION_ID` | No | The GHL location (sub-account) generated media gets saved into. |
 
 Change any of these anytime in Vercel: your project → **Settings → Environment Variables**, then redeploy for the change to take effect.
@@ -130,7 +130,7 @@ Kie.ai generation URLs **die after about 14 days.** That's normal — it's how K
 Two ways to keep what you make:
 
 - **Download it.** Works with zero setup.
-- **Auto-save to your GHL Media Library.** Set `GHL_PIT` and `GHL_LOCATION_ID` in your Vercel project's environment variables, and a sixth tool appears — `save_to_media_library`. It copies generated media into GHL permanently. Create the PIT in GHL: **Settings → Private Integrations → New**, with the "View/Edit Media" scopes.
+- **Auto-save to your GHL Media Library.** Set `GHL_PIT` and `GHL_LOCATION_ID` in your Vercel project's environment variables, and every finished generation is copied into your GHL Media Library **automatically** the moment it completes — images and video both, even if nobody asks for it again in chat. Create the PIT in GHL: **Settings → Private Integrations → New**, with the "View/Edit Media" scopes.
 
 ## A note on security
 
@@ -152,7 +152,7 @@ Yes — set the `BRAND_NAME` environment variable and it replaces "FreshGen" on 
 
 **My video didn't come back — is something broken?**
 
-No — video takes **2 to 5 minutes** to render. `generate_video` starts the job and hands your GHL agent a task ID; it isn't supposed to return the finished clip immediately. Just ask the agent to check again in a couple of minutes ("is my video ready yet?") and it will look it up.
+No — video takes **2 to 5 minutes** to render. `generate_video` starts the job and hands your GHL agent a task ID; it isn't supposed to return the finished clip immediately. Ask the agent to check again in a couple of minutes ("is my video ready yet?") — or, if you've connected a GHL Private Integration Token, just open **Media Storage**: the finished clip lands there automatically without anyone asking.
 
 **Do I need to know how to code?**
 

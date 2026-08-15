@@ -25,3 +25,20 @@ export function pathAuthorized(pathSecret: string | undefined): boolean {
   if (!expected || !pathSecret) return false;
   return safeEq(decodeURIComponent(pathSecret), expected);
 }
+
+/**
+ * Token for the Kie completion-webhook path. Derived from MCP_SECRET (no new
+ * env var to configure) but distinct from it, so the URL we hand to Kie never
+ * contains the real secret that guards the MCP endpoint and dashboard.
+ */
+export function callbackToken(): string | undefined {
+  const secret = process.env.MCP_SECRET;
+  if (!secret) return undefined;
+  return createHash("sha256").update(`${secret}:kie-callback`).digest("hex").slice(0, 32);
+}
+
+/** Verifies a Kie callback path token. */
+export function callbackAuthorized(pathToken: string | undefined): boolean {
+  const expected = callbackToken();
+  return !!expected && !!pathToken && safeEq(decodeURIComponent(pathToken), expected);
+}

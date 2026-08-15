@@ -138,6 +138,9 @@ export type CreateTaskInput = {
   // is sent under. Both must be set for the resolution to be applied.
   resolution?: string;
   resolutionParam?: string;
+  // Kie POSTs the task result here when it completes (top-level field,
+  // verified vs Kie docs). Payload mirrors recordInfo.
+  callBackUrl?: string;
 };
 
 export async function kieCreateTask(input: CreateTaskInput): Promise<string> {
@@ -147,6 +150,7 @@ export async function kieCreateTask(input: CreateTaskInput): Promise<string> {
   const imageParam = input.imageParam || "image_urls";
   const body: Record<string, unknown> = {
     model: input.model,
+    ...(input.callBackUrl ? { callBackUrl: input.callBackUrl } : {}),
     input: {
       prompt: input.prompt,
       ...(input.imageUrls?.length ? { [imageParam]: input.imageUrls } : {}),

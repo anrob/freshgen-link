@@ -7,6 +7,7 @@
 
 import type { CallToolResult } from "@modelcontextprotocol/server";
 import { USD_PER_CREDIT } from "./kie";
+import { ghlEnabled } from "./ghl";
 
 export const MAX_BASE64_BYTES = 900_000; // stay far under Vercel's 4.5MB response cap
 const FETCH_TIMEOUT_MS = 8_000;
@@ -58,7 +59,9 @@ export async function mediaResult(input: MediaResultInput): Promise<CallToolResu
     ...(isImage ? [`![${snippet.replace(/[\[\]]/g, "")}](${url})`, ""] : []),
     `Direct URL: ${url}`,
     `Model: ${model}${cost ? ` · Cost: ${cost} (${credits} credits)` : ""}`,
-    `This URL expires in ~14 days — download it or save it to the media library now.`,
+    ghlEnabled()
+      ? `This URL expires in ~14 days, but a permanent copy is being saved to the GHL Media Library automatically — it will appear in Media Storage shortly.`
+      : `This URL expires in ~14 days — download it or save it to the media library now.`,
   ];
 
   // Text + (small) image blocks ONLY — 2024-era content types. GHL's custom-MCP

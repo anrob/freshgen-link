@@ -19,9 +19,14 @@ import {
   kieCreateVideoTask,
 } from "./kie-video";
 import { ghlEnabled, ghlSaveMedia } from "./ghl";
+import { kieCallbackUrl } from "./callback";
 import { failResult, mediaResult, pendingResult, usd } from "./results";
 
 // ── Tunables (adjust after the live-GHL milestone) ──────────────────────────
+// INLINE_WAIT_MS > 1 → generate_image waits for the render and returns the
+// finished image in one call (GHL holds tool calls open since their 2026-08
+// runtime fix). Set INLINE_WAIT_MS=1 in env to fall back to instant-return
+// (taskId only) if a client starts killing long tool calls again.
 const INLINE_WAIT_MS = Number(process.env.INLINE_WAIT_MS) || 45_000;
 const POLL_MS = 3_000;
 
@@ -115,12 +120,20 @@ export async function generateFrame(opts: {
 }
 
 export function registerAll(server: McpServer) {
+  const inline = INLINE_WAIT_MS > 1;
+  const autoSave = ghlEnabled();
+  const autoSaveNote = autoSave
+    ? " Finished media is also saved automatically into the GHL Media Library (permanent copy) — mention that to the user."
+    : "";
+
   // ── generate_image ────────────────────────────────────────────────────────
   server.registerTool(
     "generate_image",
     {
-      description:
-        "Start generating an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. This tool returns a taskId IMMEDIATELY — it never returns the finished image. You MUST call check_status with that taskId after 30–60 seconds to get the image URL; if still processing, wait and check again. Tell the user the image is being generated. When you get the URL, share it as both a markdown image and a plain link; it expires in ~14 days, so suggest downloading it (or use save_to_media_library if available). For multiple images, call this tool once per image.",
+      description: inline
+        ? `Generate an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. This call WAITS for the render and usually returns the finished image directly (typically 15–45 seconds — do not abandon it early). If it returns a taskId instead of an image (an unusually slow render), call check_status with that taskId after 30 seconds to get the image URL. When you have the URL, share it as both a markdown image and a plain link; it expires in ~14 days.${autoSaveNote} For multiple images, call this tool once per image.`
+        : "Start generating an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. This tool returns a taskId IMMEDIATELY — it never returns the finished image. You MUST call check_status with that taskId after 30–60 seconds to get the image URL; if still processing, wait and check again. Tell the user the image is being generated. When you get the URL, share it as both a markdown image and a plain link; it expires in ~14 days, so suggest downloading it (or use save_to_media_library if available). For multiple images, call this tool once per image." +
+          autoSaveNote,
       inputSchema: z.object({
         prompt: z
           .string()
@@ -158,6 +171,7 @@ export function registerAll(server: McpServer) {
           aspectRatio: input.aspectRatio,
           resolution: normalizeResolution(model.id, input.aspectRatio, input.resolution),
           resolutionParam: model.resolutionParam,
+          callBackUrl: kieCallbackUrl(),
         });
 
         // INLINE_WAIT_MS <= 1 → answer with the taskId only, no status check.
@@ -217,7 +231,10 @@ export function registerAll(server: McpServer) {
     "generate_video",
     {
       description:
-        "Start rendering a short AI video clip (5–10 seconds) from a text prompt. If startImageUrl is provided, that exact image is animated; otherwise a start frame is generated first (adds ~$0.04 and ~30s). IMPORTANT: this tool only STARTS the render — it returns a taskId immediately, never the finished video. You MUST call check_status with that taskId after 2–3 minutes to get the video URL; if it is still processing, wait and check again. Always tell the user: the video is rendering, roughly how long to wait, and the estimated cost from this result (typically $0.25–$1.20 per clip, real money from the connected Kie.ai account).",
+        "Start rendering a short AI video clip (5–10 seconds) from a text prompt. If startImageUrl is provided, that exact image is animated; otherwise a start frame is generated first (adds ~$0.04 and ~30s). IMPORTANT: this tool only STARTS the render — it returns a taskId immediately, never the finished video. You MUST call check_status with that taskId after 2–3 minutes to get the video URL; if it is still processing, wait and check again. Always tell the user: the video is rendering, roughly how long to wait, and the estimated cost from this result (typically $0.25–$1.20 per clip, real money from the connected Kie.ai account)." +
+        (ghlEnabled()
+          ? " The finished clip is ALSO saved automatically into the GHL Media Library — tell the user it will appear in Media Storage in a few minutes even if they don't ask again."
+          : ""),
       inputSchema: z.object({
         prompt: z
           .string()
@@ -287,15 +304,19 @@ export function registerAll(server: McpServer) {
           duration,
           resolution,
           aspectRatio: input.aspectRatio,
+          callBackUrl: kieCallbackUrl(),
         });
         const estimate = estimateVideoCost(model.id, duration, resolution);
         const estText = estimate != null ? ` Estimated cost ≈ $${estimate.toFixed(2)} (actual cost is reported when finished).` : "";
+        const autoSaveText = ghlEnabled()
+          ? " When it finishes it is saved automatically into the GHL Media Library — tell the user it will appear in Media Storage in a few minutes."
+          : "";
         return pendingResult({
           kind: "video",
           taskId,
           model: model.id,
           estimateUsd: estimate,
-          text: `${note ? `${note}\n\n` : ""}Video render started on ${model.label} (${duration}s).${estText} Task ID: ${taskId}. It takes 2–5 minutes — call check_status with this taskId in 2–3 minutes. Tell the user the video is rendering.`,
+          text: `${note ? `${note}\n\n` : ""}Video render started on ${model.label} (${duration}s).${estText} Task ID: ${taskId}. It takes 2–5 minutes — call check_status with this taskId in 2–3 minutes. Tell the user the video is rendering.${autoSaveText}`,
         });
       } catch (err) {
         return failResult(`Video generation error: ${(err as Error).message}. ${NOT_AUTH}`);
@@ -429,7 +450,7 @@ export function registerAll(server: McpServer) {
       "save_to_media_library",
       {
         description:
-          "Save a generated image or video into this GoHighLevel account's Media Library so it never expires (generated URLs die after about 14 days). Pass the media URL from a finished generation. Returns a permanent GHL-hosted URL — prefer sharing that permanent URL with the user, and use it in funnels, emails, and social posts.",
+          "Save any image or video URL into this GoHighLevel account's Media Library so it never expires (generated URLs die after about 14 days). NOTE: finished generations are already saved there automatically — use this tool only to save an external/arbitrary URL, or to re-save something under a specific filename. Returns a permanent GHL-hosted URL — prefer sharing that permanent URL with the user, and use it in funnels, emails, and social posts.",
         inputSchema: z.object({
           url: z.string().describe("The media URL from a finished generation"),
           name: z
