@@ -4,6 +4,7 @@
 
 import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
+import type { McpContext } from "./mcp-context";
 import {
   KIE_MODELS,
   USD_PER_CREDIT,
@@ -114,6 +115,11 @@ export async function generateFrame(opts: {
   prompt: string;
   aspectRatio: string;
   waitMs?: number;
+  // Per-location GHL save target, when called from an MCP request context.
+  // Omitted by the dashboard's "prove it works" test button, which has no
+  // per-request location — that call falls back to the env default same as
+  // any other unlocated request.
+  locationId?: string;
 }): Promise<{ url?: string; taskId: string; credits?: number }> {
   const model = getImageModel("gpt-image-2");
   // Deduped: a retry arriving while the frame is still rendering must not pay
@@ -130,7 +136,7 @@ export async function generateFrame(opts: {
       aspectRatio: opts.aspectRatio,
       resolution: normalizeResolution(model.id, opts.aspectRatio, "1K"),
       resolutionParam: model.resolutionParam,
-      callBackUrl: kieCallbackUrl(),
+      callBackUrl: kieCallbackUrl(opts.locationId),
     })
   );
   const status = await pollTask(taskId, opts.waitMs ?? INLINE_WAIT_MS);
@@ -140,9 +146,17 @@ export async function generateFrame(opts: {
   return { url: status.resultUrls[0], taskId, credits: status.credits };
 }
 
-export function registerAll(server: McpServer) {
-  const inline = INLINE_WAIT_MS > 1;
-  const autoSave = ghlEnabled();
+export function registerAll(server: McpServer, ctx: McpContext) {
+  // ?mode=instant on this request forces the same behavior as
+  // INLINE_WAIT_MS=1 globally — GHL's Agent Studio Superagent times out tool
+  // calls around 30s and retries them, so it needs the taskId-first path
+  // regardless of what the deployment's default is configured for.
+  const inline = ctx.mode === "instant" ? false : INLINE_WAIT_MS > 1;
+  // Wait budget for the generate_image poll AND for generate_video's start-
+  // frame step — both need to give up almost immediately in instant mode so
+  // neither can block past a short tool-call timeout.
+  const waitMs = inline ? INLINE_WAIT_MS : 1;
+  const autoSave = ghlEnabled(ctx.locationId);
   const autoSaveNote = autoSave
     ? " Finished media is also saved automatically into the GHL Media Library (permanent copy) — mention that to the user."
     : "";
@@ -206,20 +220,21 @@ export function registerAll(server: McpServer) {
             aspectRatio: input.aspectRatio,
             resolution,
             resolutionParam: model.resolutionParam,
-            callBackUrl: kieCallbackUrl(),
+            callBackUrl: kieCallbackUrl(ctx.locationId),
           })
         );
         if (reused) console.log(`[dedupe] image request reused task ${taskId}`);
 
-        // INLINE_WAIT_MS <= 1 → answer with the taskId only, no status check.
-        // GHL's runtime abandons tool calls after ~1.5s, so every millisecond
-        // of the first response counts; check_status carries the rest.
-        const status =
-          INLINE_WAIT_MS > 1
-            ? await pollTask(taskId, INLINE_WAIT_MS)
-            : ({ state: "waiting", resultUrls: [], raw: null } as Awaited<
-                ReturnType<typeof pollTask>
-              >);
+        // inline=false (INLINE_WAIT_MS<=1 globally, or this request asked for
+        // ?mode=instant) → answer with the taskId only, no status check. GHL's
+        // runtime (or Superagent's shorter timeout) abandons tool calls early,
+        // so every millisecond of the first response counts; check_status
+        // carries the rest.
+        const status = inline
+          ? await pollTask(taskId, INLINE_WAIT_MS)
+          : ({ state: "waiting", resultUrls: [], raw: null } as Awaited<
+              ReturnType<typeof pollTask>
+            >);
 
         if (status.state === "fail") {
           const msg = status.error || "unknown error";
@@ -246,6 +261,7 @@ export function registerAll(server: McpServer) {
           model: model.id,
           taskId,
           credits: status.credits,
+          autoSave,
         });
         if (droppedRefs) {
           result.content.unshift({
@@ -269,7 +285,7 @@ export function registerAll(server: McpServer) {
     {
       description:
         "Start rendering a short AI video clip (5–10 seconds) from a text prompt. If startImageUrl is provided, that exact image is animated; otherwise a start frame is generated first (adds ~$0.04 and ~30s). IMPORTANT: this tool only STARTS the render — it returns a taskId immediately, never the finished video. You MUST call check_status with that taskId after 2–3 minutes to get the video URL; if it is still processing, wait and check again. Always tell the user: the video is rendering, roughly how long to wait, and the estimated cost from this result (typically $0.25–$1.20 per clip, real money from the connected Kie.ai account)." +
-        (ghlEnabled()
+        (autoSave
           ? " The finished clip is ALSO saved automatically into the GHL Media Library — tell the user it will appear in Media Storage in a few minutes even if they don't ask again."
           : ""),
       inputSchema: z.object({
@@ -323,6 +339,8 @@ export function registerAll(server: McpServer) {
           const frame = await generateFrame({
             prompt: input.prompt,
             aspectRatio: input.aspectRatio,
+            waitMs,
+            locationId: ctx.locationId,
           });
           if (!frame.url) {
             return pendingResult({
@@ -355,13 +373,13 @@ export function registerAll(server: McpServer) {
             duration,
             resolution,
             aspectRatio: input.aspectRatio,
-            callBackUrl: kieCallbackUrl(),
+            callBackUrl: kieCallbackUrl(ctx.locationId),
           })
         );
         if (reused) console.log(`[dedupe] video request reused task ${taskId}`);
         const estimate = estimateVideoCost(model.id, duration, resolution);
         const estText = estimate != null ? ` Estimated cost ≈ $${estimate.toFixed(2)} (actual cost is reported when finished).` : "";
-        const autoSaveText = ghlEnabled()
+        const autoSaveText = autoSave
           ? " When it finishes it is saved automatically into the GHL Media Library — tell the user it will appear in Media Storage in a few minutes."
           : "";
         return pendingResult({
@@ -414,6 +432,7 @@ export function registerAll(server: McpServer) {
           model: "kie",
           taskId,
           credits: status.credits,
+          autoSave,
         });
       } catch (err) {
         return failResult(`Status check error: ${(err as Error).message}`);
@@ -498,7 +517,7 @@ export function registerAll(server: McpServer) {
   );
 
   // ── save_to_media_library (only when GHL vars are configured) ─────────────
-  if (ghlEnabled()) {
+  if (autoSave) {
     server.registerTool(
       "save_to_media_library",
       {
@@ -516,7 +535,7 @@ export function registerAll(server: McpServer) {
         const blocked = await licenseBlock();
         if (blocked) return blocked;
         try {
-          const saved = await ghlSaveMedia(url, name);
+          const saved = await ghlSaveMedia(url, name, ctx.locationId);
           const permanent = saved.ghlUrl;
           return {
             content: [

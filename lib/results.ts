@@ -7,7 +7,6 @@
 
 import type { CallToolResult } from "@modelcontextprotocol/server";
 import { USD_PER_CREDIT } from "./kie";
-import { ghlEnabled } from "./ghl";
 
 export const MAX_BASE64_BYTES = 900_000; // stay far under Vercel's 4.5MB response cap
 const FETCH_TIMEOUT_MS = 8_000;
@@ -19,6 +18,11 @@ export type MediaResultInput = {
   model: string;
   taskId: string;
   credits?: number;
+  // Whether THIS request's context (env default, or a per-location URL) will
+  // auto-save the finished media to GHL — callers resolve it once (usually
+  // via ghlEnabled(ctx.locationId) in registerAll) and pass it straight
+  // through, since this module has no request context of its own.
+  autoSave?: boolean;
 };
 
 type Content = CallToolResult["content"][number];
@@ -48,7 +52,7 @@ async function smallImageBase64(
 }
 
 export async function mediaResult(input: MediaResultInput): Promise<CallToolResult> {
-  const { kind, url, prompt, model, taskId, credits } = input;
+  const { kind, url, prompt, model, taskId, credits, autoSave } = input;
   const cost = usd(credits);
   const snippet = prompt.length > 60 ? `${prompt.slice(0, 60)}…` : prompt;
   const isImage = kind === "image";
@@ -59,7 +63,7 @@ export async function mediaResult(input: MediaResultInput): Promise<CallToolResu
     ...(isImage ? [`![${snippet.replace(/[\[\]]/g, "")}](${url})`, ""] : []),
     `Direct URL: ${url}`,
     `Model: ${model}${cost ? ` · Cost: ${cost} (${credits} credits)` : ""}`,
-    ghlEnabled()
+    autoSave
       ? `This URL expires in ~14 days, but a permanent copy is being saved to the GHL Media Library automatically — it will appear in Media Storage shortly.`
       : `This URL expires in ~14 days — download it or save it to the media library now.`,
   ];

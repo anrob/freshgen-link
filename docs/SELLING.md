@@ -59,7 +59,7 @@ Nobody else is selling "you own the server, you own the key" for GHL AI media ge
 
 ## Tiers
 
-**Tier 1 — Self-serve, $X**
+**Tier 1 — Self-serve, $47 (founder pricing — raise to $97 after three testimonials)**
 Deploy link + docs. They click Deploy, follow the README, connect it themselves. You're selling the packaging, not your time. Delivery: instant, the moment they pay.
 
 **Tier 2 — Done-for-you install, $X**
@@ -94,6 +94,16 @@ The three connection paths — Ask AI, Workflow, Superagent — are all standard
 6. **Copy the URL, paste into GHL → Ask AI → + Add custom MCP, generate an image live.** End on the finished image showing up inside GHL chat.
 
 Keep it moving. No dead air, no explaining what MCP stands for. Show the outcome, not the mechanism. Send it cold in a DM with the opening line above as the message — don't over-explain in text and let the video do the convincing.
+
+## Seller dashboard
+
+URL: `/s/<secret>/sales` — same secret as the regular `/s/<secret>` control room. The page only renders when `GUMROAD_ACCESS_TOKEN` is set on the deployment; every buyer's copy is missing that env var, so the route 404s for them (same not-your-page treatment as a wrong secret). This is deliberate — **never mention this section in buyer-facing docs, and never add `GUMROAD_ACCESS_TOKEN` to `.env.example`.** It only ever gets set on Fresh's own Vercel project.
+
+**Creating the token:** Gumroad → Settings → Advanced → Applications → New application. Name it anything (e.g. "FreshGen Link seller dashboard"). Redirect URI can be `http://localhost` — Gumroad requires something there but it's never actually used for this flow. Generate access token, copy it, then Vercel → this project → Settings → Environment Variables → `GUMROAD_ACCESS_TOKEN` → redeploy.
+
+**What it shows:** every sale of this product — date, email, amount paid, a masked license key, and a derived status (Active / Disabled / Refunded / Chargeback / Disputed). Summary tiles for total sales, revenue, refunds/chargebacks, and active keys. Per-row Disable/Enable buttons that call Gumroad directly, no need to leave the page.
+
+**Key-sharing playbook:** buyer looks like they're passing their license key around → hit Disable on that row → contact them. Their deployment doesn't fail closed instantly — FreshGen Link caches a verified license for `RECHECK_MS` (6 hours, see `lib/license.ts`) per warm Vercel instance, so it can take up to ~6h for a Disable to actually show up as "not activated" on their end. If it's a false alarm or they clear it up, hit Enable — same ~6h lag before their deployment recognizes it's active again.
 
 ## Quick reference
 

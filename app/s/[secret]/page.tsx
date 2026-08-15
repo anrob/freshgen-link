@@ -5,7 +5,7 @@ import { kieGetCredits, USD_PER_CREDIT } from "@/lib/kie";
 import CopyField from "@/components/CopyField";
 import RefreshButton from "@/components/RefreshButton";
 import TestImageButton from "@/components/TestImageButton";
-import { ghlEnabled } from "@/lib/ghl";
+import LocationUrlBuilder from "@/components/LocationUrlBuilder";
 import { licenseStatus } from "@/lib/license";
 
 export const dynamic = "force-dynamic";
@@ -137,14 +137,19 @@ export default async function Dashboard({
             }
           />
           <CheckRow
-            ok={ghlEnabled()}
+            ok={Boolean(process.env.GHL_PIT)}
             optional
             label={
               <>
-                Media Library tool — {ghlEnabled() ? "active" : "inactive (optional)"}
+                Media Library tool —{" "}
+                {process.env.GHL_PIT
+                  ? process.env.GHL_LOCATION_ID
+                    ? "active"
+                    : "active for per-location URLs (no default location set)"
+                  : "inactive (optional)"}
               </>
             }
-            fix={`Set GHL_PIT and GHL_LOCATION_ID to enable save_to_media_library. ${envFix}`}
+            fix={`Set GHL_PIT; then either GHL_LOCATION_ID or use per-location URLs. ${envFix}`}
           />
         </div>
       </section>
@@ -157,6 +162,27 @@ export default async function Dashboard({
             Transport: HTTP (Streamable) · Auth: None — the link itself is the
             key. Treat it like a password.
           </p>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="kicker">Per-location &amp; Superagent URLs</div>
+        <div className="card">
+          <p>
+            One deployment can serve every sub-account in your agency. Paste a
+            sub-account&apos;s Location ID below to get its own MCP URL — media
+            generated through that URL saves straight into that sub-account&apos;s
+            Media Library. This needs an agency-level Private Integration
+            Token (or a PIT that has access to those sub-accounts) set as{" "}
+            <code>GHL_PIT</code>.
+          </p>
+          <p className="caption" style={{ marginTop: 8 }}>
+            Find a Location ID in GHL: Settings → Business Profile (Location
+            ID).
+          </p>
+          <div style={{ marginTop: 18 }}>
+            <LocationUrlBuilder baseUrl={`${proto}://${host}`} secret={secret} />
+          </div>
         </div>
       </section>
 
@@ -250,14 +276,23 @@ export default async function Dashboard({
         <details>
           <summary>Agent Studio Superagent → Ask AI</summary>
           <div className="details-body">
+            <div className="note">
+              Use the INSTANT-mode URL, not the standard one — Superagent
+              times out long tool calls. Instant mode returns a task id at
+              once; the finished media auto-saves to the Media Library, or
+              fetch it with <code>check_status</code>. Build one in{" "}
+              <strong>Per-location &amp; Superagent URLs</strong> above (tick{" "}
+              <strong>Instant mode</strong>), or just add{" "}
+              <code>?mode=instant</code> to your standard URL.
+            </div>
             <ol>
               <li>
                 Agent Studio → your Superagent → <strong>+ Add app</strong> →{" "}
                 <strong>+ Add custom MCP</strong>.
               </li>
               <li>
-                Server name: <strong>{brand}</strong> · Server URL: paste your
-                URL → <strong>Add MCP</strong>.
+                Server name: <strong>{brand}</strong> · Server URL: paste your{" "}
+                <strong>instant-mode</strong> URL → <strong>Add MCP</strong>.
               </li>
               <li>Enable the tools, then publish the agent to Production.</li>
               <li>
@@ -275,7 +310,10 @@ export default async function Dashboard({
 
       <footer className="footer">
         <span>{brand} Link v1.0.0</span>
-        <span>
+        <span style={{ display: "flex", gap: 16 }}>
+          {process.env.GUMROAD_ACCESS_TOKEN && (
+            <a href={`/s/${secret}/sales`}>Sales</a>
+          )}
           <a href="https://github.com/anrob/freshgen-link" rel="noreferrer">
             Docs
           </a>

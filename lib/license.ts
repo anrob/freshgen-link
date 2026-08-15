@@ -16,7 +16,7 @@
 // bounded by the buyer's own Kie.ai wallet — they pay for their own usage
 // either way; the license is what pays for the packaging and support.
 
-const GUMROAD_PRODUCT_ID = process.env.GUMROAD_PRODUCT_ID || "J7GddYMuxwoHag0VPEHI7g==";
+export const GUMROAD_PRODUCT_ID = process.env.GUMROAD_PRODUCT_ID || "J7GddYMuxwoHag0VPEHI7g==";
 const VERIFY_URL = "https://api.gumroad.com/v2/licenses/verify";
 const RECHECK_MS = 6 * 60 * 60 * 1000; // 6 hours
 const TIMEOUT_MS = 6_000;

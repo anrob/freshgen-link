@@ -4,7 +4,7 @@ FreshGen Link is a self-hosted MCP server that plugs Kie.ai's image and video ge
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanrob%2Ffreshgen-link&env=LICENSE_KEY,KIE_API_KEY,MCP_SECRET&envDescription=Your%20license%20key%20from%20purchase%2C%20your%20Kie.ai%20API%20key%2C%20and%20a%20long%20random%20secret%20that%20becomes%20part%20of%20your%20private%20URL&envLink=https%3A%2F%2Fkie.ai%2Fapi-key&project-name=freshgen-link&repository-name=freshgen-link)
 
-**Contents:** [What you get](#what-you-get) · [Before you deploy](#before-you-deploy) · [After deploying](#after-deploying) · [Connect to GoHighLevel](#connect-to-gohighlevel) · [Environment variables](#environment-variables) · [Which model should I use](#which-model-should-i-use) · [What it costs to run](#what-it-costs-to-run) · [Your media expires](#your-media-expires) · [A note on security](#a-note-on-security) · [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Running it locally](#running-it-locally-optional) · [Support](#support) · [License](#license)
+**Contents:** [What you get](#what-you-get) · [Before you deploy](#before-you-deploy) · [After deploying](#after-deploying) · [Connect to GoHighLevel](#connect-to-gohighlevel) · [Environment variables](#environment-variables) · [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies) · [Which URL for which GHL surface](#which-url-for-which-ghl-surface) · [Which model should I use](#which-model-should-i-use) · [What it costs to run](#what-it-costs-to-run) · [Your media expires](#your-media-expires) · [A note on security](#a-note-on-security) · [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Running it locally](#running-it-locally-optional) · [Support](#support) · [License](#license)
 
 ## Quick start
 
@@ -75,10 +75,34 @@ Want it inside a Workflow AI Agent for automations, or a custom Agent Studio Sup
 | `KIE_API_KEY` | Yes | Your Kie.ai API key. Every generation bills to this account. |
 | `MCP_SECRET` | Yes | 30+ random characters. Becomes part of your private MCP and dashboard URLs. |
 | `BRAND_NAME` | No | White-labels the landing page, dashboard, and GHL-facing name. Defaults to "FreshGen". |
-| `GHL_PIT` | No | GoHighLevel Private Integration Token. Set together with `GHL_LOCATION_ID` to enable automatic Media Library saves plus the `save_to_media_library` tool. |
-| `GHL_LOCATION_ID` | No | The GHL location (sub-account) generated media gets saved into. |
+| `GHL_PIT` | No | GoHighLevel Private Integration Token. Enables automatic Media Library saves plus the `save_to_media_library` tool once a location is available — either `GHL_LOCATION_ID` below or a per-location URL. |
+| `GHL_LOCATION_ID` | No | The **default** GHL location (sub-account) generated media gets saved into. Optional if you use per-location URLs — see [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies). |
 
 Change any of these anytime in Vercel: your project → **Settings → Environment Variables**, then redeploy for the change to take effect.
+
+## Multiple sub-accounts (agencies)
+
+One deployment can serve every sub-account you manage — you don't need a separate Vercel project per client.
+
+- **Default URL** — `https://your-app.vercel.app/mcp/<secret>` — saves to whatever `GHL_LOCATION_ID` you've set (or nowhere, if you've left it unset).
+- **Per-location URL** — `https://your-app.vercel.app/mcp/<secret>/<locationId>` — saves straight into that Location ID's Media Library instead. Paste any sub-account's Location ID in and it just works.
+- **Instant mode** — add `?mode=instant` to either URL to make `generate_image` return a task id immediately instead of waiting for the render. Use it for Agent Studio Superagent — see [Which URL for which GHL surface](#which-url-for-which-ghl-surface) below.
+
+This needs an **agency-level Private Integration Token** — a `GHL_PIT` that has access to every sub-account you plan to point a URL at, not just one location's own PIT. Create it at **Agency Settings → Private Integrations → New**, with the "View/Edit Media" scopes, authorized against the sub-accounts you'll use.
+
+Your dashboard has a **Per-location & Superagent URLs** builder that generates these URLs for you — paste a Location ID, tick Instant mode if you need it, copy the result. Find a Location ID in GHL: **Settings → Business Profile** (Location ID).
+
+Only deploy a second, fully separate copy of FreshGen Link if a client needs their own `KIE_API_KEY` or separate billing — otherwise one deployment plus per-location URLs covers it.
+
+## Which URL for which GHL surface
+
+| GHL surface | URL to use | Why |
+|---|---|---|
+| Ask AI | Standard URL | Holds the tool call open — you get the finished image back inline. |
+| Workflow AI Agent | Standard URL | Same — the workflow step holds open for the render. |
+| Agent Studio Superagent | **Instant-mode URL** (`?mode=instant`) | Superagent times out tool calls around 30 seconds and retries them. Instant mode returns a task id immediately instead of getting killed mid-render — the agent (or the auto-save) picks up the finished media afterward. |
+
+Not sure which you're using? If you followed [Connect to GoHighLevel](#connect-to-gohighlevel) Path 1 or 2 above, you want the standard URL. Superagent is its own path — click-by-click steps are in [docs/GHL-SETUP.md](docs/GHL-SETUP.md).
 
 ## Which model should I use
 
@@ -132,7 +156,7 @@ Kie.ai generation URLs **die after about 14 days.** That's normal — it's how K
 Two ways to keep what you make:
 
 - **Download it.** Works with zero setup.
-- **Auto-save to your GHL Media Library.** Set `GHL_PIT` and `GHL_LOCATION_ID` in your Vercel project's environment variables, and every finished generation is copied into your GHL Media Library **automatically** the moment it completes — images and video both, even if nobody asks for it again in chat. Create the PIT in GHL: **Settings → Private Integrations → New**, with the "View/Edit Media" scopes.
+- **Auto-save to your GHL Media Library.** Set `GHL_PIT` in your Vercel project's environment variables — plus either `GHL_LOCATION_ID`, or a per-location URL (see [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies)) — and every finished generation is copied into your GHL Media Library **automatically** the moment it completes — images and video both, even if nobody asks for it again in chat. Create the PIT in GHL: **Settings → Private Integrations → New**, with the "View/Edit Media" scopes.
 
 ## A note on security
 
@@ -166,7 +190,7 @@ No. You click the deploy button, paste two values, and copy a URL into GHL. If y
 
 **Can I run more than one?**
 
-Yes — deploy it again under a different Vercel project name with a different `MCP_SECRET` for a second brand, client, or location. Each deployment is fully independent, with its own key, secret, and billing.
+You mostly don't need to. One deployment can serve every GHL sub-account you manage — see [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies) for the per-location URL pattern. Only deploy a second, fully separate copy if a client needs their own `KIE_API_KEY` or separate billing — deploy it again under a different Vercel project name with a different `MCP_SECRET`, and it's fully independent.
 
 **Is this only for images and video?**
 
@@ -186,6 +210,8 @@ Yes, on purpose. FreshGen Link does one thing — AI image and video generation 
 | **Test image button does nothing** | Check `check_credits` first — a $0 balance can fail quietly. Top up and try again. |
 | **"Test Connection" times out** in GHL | The first request after idle can be slow (cold start). Wait 10 seconds and try again before assuming it's broken. |
 | **Everything worked, then suddenly stopped** | Check `check_credits` — the most common cause of a sudden stop is simply running out of balance. |
+| **Media saved to the wrong sub-account** | The URL you connected has the wrong (or no) Location ID in it. Build the correct one in your dashboard's **Per-location & Superagent URLs** section and reconnect with that URL. |
+| **Superagent says the tool timed out and retries** | You're using the standard URL. Switch to the instant-mode URL (`?mode=instant`) — see [Which URL for which GHL surface](#which-url-for-which-ghl-surface). |
 
 ## Running it locally (optional)
 

@@ -290,6 +290,39 @@ a {
   min-width: 0;
 }
 
+/* ── Text input (location URL builder etc.) ── */
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.text-input {
+  width: 100%;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+}
+.text-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 14.5px;
+  cursor: pointer;
+}
+
 /* ── Stats ── */
 .stat {
   font-family: var(--font-display), Georgia, serif;

@@ -10,8 +10,9 @@
 // finished media lands in the Media Library even if the agent goes silent.
 
 import { callbackAuthorized } from "@/lib/auth";
-import { ghlEnabled, ghlSaveMedia } from "@/lib/ghl";
+import { ghlSaveMedia } from "@/lib/ghl";
 import { kieGetStatus } from "@/lib/kie";
+import { isValidLocationId } from "@/lib/mcp-context";
 
 export async function POST(
   req: Request,
@@ -21,6 +22,12 @@ export async function POST(
   if (!callbackAuthorized(token)) {
     return new Response("Unauthorized", { status: 401 });
   }
+
+  // kieCallbackUrl() stamps ?loc=<locationId> only when the task was created
+  // through a per-location MCP URL; an invalid value (tampered/truncated) is
+  // treated the same as absent rather than trusted or rejected outright.
+  const rawLoc = new URL(req.url).searchParams.get("loc") ?? undefined;
+  const locationId = rawLoc && isValidLocationId(rawLoc) ? rawLoc : undefined;
 
   let taskId: string | undefined;
   try {
@@ -37,7 +44,17 @@ export async function POST(
     // fall through — no taskId
   }
   if (!taskId) return new Response("Missing taskId", { status: 400 });
-  if (!ghlEnabled()) return Response.json({ ok: true, saved: 0, reason: "ghl not configured" });
+  if (!process.env.GHL_PIT) {
+    return Response.json({ ok: true, saved: 0, reason: "ghl not configured" });
+  }
+  if (!locationId && !process.env.GHL_LOCATION_ID) {
+    // PIT is set (auto-save is generally on), but this specific task has no
+    // location — path location was missing/invalid AND there's no env
+    // default to fall back to. Nothing safe to save into; don't error, Kie
+    // doesn't need to retry a callback that will never resolve.
+    console.log(`[callback] no location for task ${taskId} — skipping save`);
+    return Response.json({ ok: true, saved: 0, reason: "no location" });
+  }
 
   try {
     const status = await kieGetStatus(taskId);
@@ -52,7 +69,7 @@ export async function POST(
       try {
         const ext = url.split("?")[0].split(".").pop() || "png";
         const suffix = status.resultUrls.length > 1 ? `-${i + 1}` : "";
-        await ghlSaveMedia(url, `freshgen-${taskId.slice(0, 12)}${suffix}.${ext}`);
+        await ghlSaveMedia(url, `freshgen-${taskId.slice(0, 12)}${suffix}.${ext}`, locationId);
         saved++;
       } catch (err) {
         failures.push((err as Error).message.slice(0, 200));
