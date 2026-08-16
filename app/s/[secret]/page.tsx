@@ -308,9 +308,35 @@ export default async function Dashboard({
         </details>
       </section>
 
+      <section className="section">
+        <div className="kicker">Ask AI skill (optional, recommended)</div>
+        <div className="card">
+          <p>
+            A skill file that teaches Ask AI when and how to use these tools —
+            and adds slash commands like <code>/image</code>, <code>/adset</code>{" "}
+            and <code>/video</code>, plus a BRAND block so every generation
+            matches your style.
+          </p>
+          <p style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <a className="btn" href="/ask-ai-skill.html">
+              Read the guide
+            </a>
+            <a
+              className="btn ghost"
+              href="https://github.com/anrob/freshgen-link/tree/main/docs/ask-ai-skill"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Get the skill files
+            </a>
+          </p>
+        </div>
+      </section>
+
       <footer className="footer">
         <span>{brand} Link v1.0.0</span>
         <span style={{ display: "flex", gap: 16 }}>
+          <a href="/ask-ai-skill.html">Skill guide</a>
           {process.env.GUMROAD_ACCESS_TOKEN && (
             <a href={`/s/${secret}/sales`}>Sales</a>
           )}
