@@ -4,7 +4,7 @@ FreshGen Link is a self-hosted MCP server that plugs Kie.ai's image and video ge
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanrob%2Ffreshgen-link&env=LICENSE_KEY,KIE_API_KEY,MCP_SECRET&envDescription=Your%20license%20key%20from%20purchase%2C%20your%20Kie.ai%20API%20key%2C%20and%20a%20long%20random%20secret%20that%20becomes%20part%20of%20your%20private%20URL&envLink=https%3A%2F%2Fkie.ai%2Fapi-key&project-name=freshgen-link&repository-name=freshgen-link)
 
-**Contents:** [What you get](#what-you-get) · [Before you deploy](#before-you-deploy) · [After deploying](#after-deploying) · [Connect to GoHighLevel](#connect-to-gohighlevel) · [Environment variables](#environment-variables) · [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies) · [Which URL for which GHL surface](#which-url-for-which-ghl-surface) · [Which model should I use](#which-model-should-i-use) · [What it costs to run](#what-it-costs-to-run) · [Your media expires](#your-media-expires) · [A note on security](#a-note-on-security) · [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Running it locally](#running-it-locally-optional) · [Support](#support) · [License](#license)
+**Contents:** [What you get](#what-you-get) · [Before you deploy](#before-you-deploy) · [After deploying](#after-deploying) · [Connect to GoHighLevel](#connect-to-gohighlevel) · [Ask AI skill](#ask-ai-skill-optional-recommended) · [Environment variables](#environment-variables) · [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies) · [Which URL for which GHL surface](#which-url-for-which-ghl-surface) · [Which model should I use](#which-model-should-i-use) · [What it costs to run](#what-it-costs-to-run) · [Your media expires](#your-media-expires) · [A note on security](#a-note-on-security) · [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Running it locally](#running-it-locally-optional) · [Support](#support) · [License](#license)
 
 ## Quick start
 
@@ -27,7 +27,7 @@ You need four things:
 
 - **Your license key.** Emailed to you when you bought FreshGen Link — looks like `85DE7B55-4A6E4E5A-8E5A0FDF-1BE4E0FC`. One key covers one deployment. Generation stays switched off until it's set.
 - **A Kie.ai account and API key.** Grab one at [kie.ai/api-key](https://kie.ai/api-key) — takes about two minutes.
-- **A few dollars of prepaid Kie.ai credit.** Images start around $0.02, video around $0.25 a clip. $10 covers a lot of testing.
+- **A few dollars of prepaid Kie.ai credit.** Images start around $0.02, video from about $0.13 a clip. $10 covers a lot of testing.
 - **A free GitHub account.** The deploy button clones this repo straight into your own GitHub, then deploys that copy to Vercel. If you don't have GitHub yet, Vercel will prompt you to sign up — free, takes a minute.
 
 You'll also set an `MCP_SECRET` during deploy. In plain words:
@@ -66,6 +66,12 @@ Fastest path — connect through **Ask AI**:
 Two fields, done. Your GHL AI agent can now generate images and video on request.
 
 Want it inside a Workflow AI Agent for automations, or a custom Agent Studio Superagent instead? Full click-by-click steps for all three connection paths live in **[docs/GHL-SETUP.md](docs/GHL-SETUP.md)**.
+
+## Ask AI skill (optional, recommended)
+
+A packaged Agent Skill that teaches Ask AI exactly how and when to use these tools — which command to run, which model fits the request, and the money and retry rules that keep it from double-billing. It adds `/image`, `/adset`, `/video`, `/animate`, `/variations`, `/status`, `/credits`, `/models`, `/save`, `/brand`, and `/help` commands, plus a BRAND block you fill in once so every generation matches your colors, style, and voice automatically.
+
+To install: download [`docs/ask-ai-skill/SKILL.md`](docs/ask-ai-skill/SKILL.md), edit the BRAND block near the bottom with your brand's details, then upload it in Ask AI's Skills panel.
 
 ## Environment variables
 
@@ -123,7 +129,7 @@ Not sure which you're using? If you followed [Connect to GoHighLevel](#connect-t
 
 | Model | Best for | Price |
 |---|---|---|
-| `kling-2-1-std` (default) | Fast and cheapest | ~$0.25 per 5s |
+| `kling-2-1-std` (default) | Fast and cheapest | ~$0.13 per 5s (measured) |
 | `kling-3-0` | Flagship quality, up to 4K, end-frame support | ~$0.42+ per 5s |
 | `kling-2-6` | Native audio | ~$0.50 per 5s |
 | `seedance-2` | Cinematic | ~$1.20+ per 5s |
