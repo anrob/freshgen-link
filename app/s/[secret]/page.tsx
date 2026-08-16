@@ -337,6 +337,8 @@ export default async function Dashboard({
         <span>{brand} Link v1.0.0</span>
         <span style={{ display: "flex", gap: 16 }}>
           <a href="/ask-ai-skill.html">Skill guide</a>
+          <a href="/terms.html">Terms</a>
+          <a href="/privacy.html">Privacy</a>
           {process.env.GUMROAD_ACCESS_TOKEN && (
             <a href={`/s/${secret}/sales`}>Sales</a>
           )}

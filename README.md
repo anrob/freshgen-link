@@ -246,6 +246,10 @@ Something not working, and it isn't listed above? Reach out to whoever you bough
 
 Source-available, not open source. You may run and modify it for your own business (including white-labeling it) with a valid license key; you may not redistribute it or strip out the license check. Full terms in [LICENSE](LICENSE).
 
+## Terms and privacy
+
+By purchasing, deploying, or using FreshGen Link you agree to the [Terms of Service](docs/legal/TERMS.md) and acknowledge the [Privacy Policy](docs/legal/PRIVACY.md). Both are also served by every deployment at `/terms.html` and `/privacy.html`. Short version: the software is provided as is, you operate your own copy on your own accounts, generation costs are billed by Kie.ai to you, and we never see your prompts, media, or keys.
+
 ---
 
 That covers everything from first deploy to first generation. Bookmark this file, or better, bookmark your dashboard — it's the fastest place to check that everything's still healthy.

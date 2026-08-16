@@ -147,10 +147,12 @@ export default function Landing() {
         <span>
           {brand} Link · powered by Kie.ai · runs on your Vercel
         </span>
-        <span>
+        <span style={{ display: "flex", gap: 16 }}>
           <a href="https://kie.ai" rel="noreferrer">
             Get a Kie.ai key
           </a>
+          <a href="/terms.html">Terms</a>
+          <a href="/privacy.html">Privacy</a>
         </span>
       </footer>
     </div>
