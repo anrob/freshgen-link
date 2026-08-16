@@ -10,6 +10,8 @@
   --radius: 3px;
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
+  /* System serif for display type — no build-time font download (see layout.tsx). */
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
 }
 
 * {
