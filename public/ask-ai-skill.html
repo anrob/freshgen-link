@@ -412,6 +412,7 @@
             <li><a href="#cmd-help">/help</a></li>
           </ul>
         </li>
+        <li><a href="#model-skills">One skill per model</a></li>
         <li><a href="#model-pricing">Which model, what it costs</a></li>
         <li><a href="#platform-sizes">Which size for which platform</a></li>
         <li><a href="#prompts">Writing better prompts</a></li>
@@ -856,6 +857,32 @@
         </article>
 
       </div>
+    </section>
+
+    <section class="section" id="model-skills" aria-labelledby="model-skills-h2">
+      <p class="kicker">Optional</p>
+      <h2 id="model-skills-h2">One skill per model</h2>
+      <p class="lede">If your team likes to pick the model themselves, there is also a skill for each of the twelve models. Upload the ones you want from <code>docs/ask-ai-skill/models/</code> and name each after its model id, so the slash menu reads <code>/gpt-image-2</code>, <code>/kling-3-0</code>, and so on. Each one locks the model, exposes only the flags that model actually supports, and carries prompting tips written for that model &mdash; plus the same brand block and money rules as everything else.</p>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th scope="col">Command</th><th scope="col">Best for</th><th scope="col">Flags</th><th scope="col">Approx. cost</th></tr></thead>
+          <tbody>
+            <tr><td><code>/gpt-image-2</code></td><td>Text, logos, typography, signs, menus</td><td><code>--ar --res --ref</code></td><td class="num">~$0.04</td></tr>
+            <tr><td><code>/nano-banana-pro</code></td><td>Photorealism, people, likeness, product shots</td><td><code>--ar --res --ref</code></td><td class="num">~$0.09</td></tr>
+            <tr><td><code>/nano-banana</code></td><td>Cheap drafts and quick concepts</td><td><code>--ar --ref</code></td><td class="num">~$0.02</td></tr>
+            <tr><td><code>/nano-banana-2</code></td><td>Fast all-round, low price</td><td><code>--ar</code></td><td class="num">~$0.04</td></tr>
+            <tr><td><code>/seedream-4</code></td><td>Stylized art, illustration, bold color</td><td><code>--ar --res --ref</code></td><td class="num">~$0.03</td></tr>
+            <tr><td><code>/imagen-4</code></td><td>Clean commercial photo look</td><td><code>--ar</code></td><td class="num">~$0.03</td></tr>
+            <tr><td><code>/kling-2-1-std</code></td><td>Fast, cheap clips (the default)</td><td><code>--from --sec --ar</code></td><td class="num">~$0.13 / 5s</td></tr>
+            <tr><td><code>/kling-3-0</code></td><td>Flagship quality, up to 4K</td><td><code>--from --sec --res --ar</code></td><td class="num">~$0.42&ndash;0.56 / 5s</td></tr>
+            <tr><td><code>/kling-2-6</code></td><td>Clips with native audio</td><td><code>--from --sec --ar</code></td><td class="num">~$0.50 / 5s</td></tr>
+            <tr><td><code>/seedance-2</code></td><td>Cinematic motion</td><td><code>--from --sec --res --ar</code></td><td class="num">~$1.20 / 5s</td></tr>
+            <tr><td><code>/wan-2-6</code></td><td>HD on a budget</td><td><code>--from --sec --res --ar</code></td><td class="num">~$0.50&ndash;0.75 / 5s</td></tr>
+            <tr><td><code>/grok-imagine</code></td><td>Longer cheap clips (6&ndash;10s)</td><td><code>--from --sec --res --ar</code></td><td class="num">~$0.30 / 6s</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="lede" style="font-size:14.5px; margin-top:14px;">Example: <code>/gpt-image-2 a chalkboard menu that reads "Tacos $3 &middot; Horchata $2", warm café light --ar 4:5</code>. Video model skills quote the cost before they start, exactly like <code>/video</code>.</p>
     </section>
 
     <section class="section" id="model-pricing" aria-labelledby="model-pricing-h2">

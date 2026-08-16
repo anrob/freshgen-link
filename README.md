@@ -74,9 +74,10 @@ A packaged Agent Skill that teaches Ask AI exactly how and when to use these too
 Two ways to install — pick one:
 
 - **One skill (simplest):** download [`docs/ask-ai-skill/SKILL.md`](docs/ask-ai-skill/SKILL.md), edit the BRAND block near the bottom, upload it in Ask AI's Skills panel. Ask AI shows one slash-menu entry per skill, so you pick the FreshGen chip and type the command after it: `/FreshGen /adset summer roofing promo`.
-- **One skill per command (real `/image`, `/adset`, `/video`… in the slash menu):** upload each `SKILL.md` from [`docs/ask-ai-skill/commands/`](docs/ask-ai-skill/commands/) as its own skill (11 files, or grab `freshgen-ask-ai-commands.zip` from the same folder). Name each skill after its command so the menu reads `/image`, `/adset`, etc. Edit the BRAND block in the five generating commands (`image`, `variations`, `adset`, `video`, `animate`) — they're identical, so paste the same block into each.
+- **One skill per command (real `/image`, `/adset`, `/video`… in the slash menu):** upload each `SKILL.md` from [`docs/ask-ai-skill/commands/`](docs/ask-ai-skill/commands/) as its own skill (11 files). Name each skill after its command so the menu reads `/image`, `/adset`, etc. Edit the BRAND block in the five generating commands (`image`, `variations`, `adset`, `video`, `animate`) — they're identical, so paste the same block into each.
+- **One skill per model (optional):** [`docs/ask-ai-skill/models/`](docs/ask-ai-skill/models/) has a skill for each of the twelve models — `/gpt-image-2`, `/nano-banana-pro`, `/kling-3-0`, and so on. Each locks the model, exposes only the flags that model supports, and carries prompting tips written for it. Upload the ones your team will actually use.
 
-Both are generated from the same master, so the rules are identical either way.
+`freshgen-ask-ai-skills.zip` in the same folder has all 23 command + model skills. Everything is generated from the same master and the server's own model definitions, so the rules and prices are identical either way.
 
 ## Environment variables
 
