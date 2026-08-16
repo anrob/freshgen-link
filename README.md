@@ -71,7 +71,12 @@ Want it inside a Workflow AI Agent for automations, or a custom Agent Studio Sup
 
 A packaged Agent Skill that teaches Ask AI exactly how and when to use these tools — which command to run, which model fits the request, and the money and retry rules that keep it from double-billing. It adds `/image`, `/adset`, `/video`, `/animate`, `/variations`, `/status`, `/credits`, `/models`, `/save`, `/brand`, and `/help` commands, plus a BRAND block you fill in once so every generation matches your colors, style, and voice automatically.
 
-To install: download [`docs/ask-ai-skill/SKILL.md`](docs/ask-ai-skill/SKILL.md), edit the BRAND block near the bottom with your brand's details, then upload it in Ask AI's Skills panel.
+Two ways to install — pick one:
+
+- **One skill (simplest):** download [`docs/ask-ai-skill/SKILL.md`](docs/ask-ai-skill/SKILL.md), edit the BRAND block near the bottom, upload it in Ask AI's Skills panel. Ask AI shows one slash-menu entry per skill, so you pick the FreshGen chip and type the command after it: `/FreshGen /adset summer roofing promo`.
+- **One skill per command (real `/image`, `/adset`, `/video`… in the slash menu):** upload each `SKILL.md` from [`docs/ask-ai-skill/commands/`](docs/ask-ai-skill/commands/) as its own skill (11 files, or grab `freshgen-ask-ai-commands.zip` from the same folder). Name each skill after its command so the menu reads `/image`, `/adset`, etc. Edit the BRAND block in the five generating commands (`image`, `variations`, `adset`, `video`, `animate`) — they're identical, so paste the same block into each.
+
+Both are generated from the same master, so the rules are identical either way.
 
 ## Environment variables
 
