@@ -1,9 +1,11 @@
 ---
 name: nano-banana-pro
-description: FreshGen — generate an image with the Nano Banana Pro (Gemini 3) model (`nano-banana-pro`), best for photorealism, people, product shots with a reference image. Use when the user types /nano-banana-pro, names this model, or the request clearly fits it. Real money (about $0.09 / image (1K)), billed to the connected Kie.ai account.
+description: nano-banana-pro — FreshGen Nano Banana Pro (Gemini 3) image model. Generate an image with the Nano Banana Pro (Gemini 3) model (`nano-banana-pro`), best for photorealism, people, product shots with a reference image. Use when the user types /nano-banana-pro, names this model, or the request clearly fits it. Real money (about $0.09 / image (1K)), billed to the connected Kie.ai account.
 ---
 
-# FreshGen /nano-banana-pro — Nano Banana Pro (Gemini 3)
+# nano-banana-pro
+
+**Skill name:** `nano-banana-pro` — FreshGen /nano-banana-pro: Nano Banana Pro (Gemini 3).
 
 ## What FreshGen is
 

@@ -1,9 +1,11 @@
 ---
 name: credits
-description: FreshGen /credits — report the connected Kie.ai balance in credits and dollars. Use when the user types /credits or asks about balance, spend, or how much generation is left.
+description: credits — FreshGen /credits: report the connected Kie.ai balance in credits and dollars. Use when the user types /credits or asks about balance, spend, or how much generation is left.
 ---
 
-# FreshGen /credits — Kie.ai balance
+# credits
+
+**Skill name:** `credits` — FreshGen /credits: Kie.ai balance.
 
 ## What FreshGen is
 

@@ -1,9 +1,11 @@
 ---
 name: adset
-description: FreshGen /adset — one concept rendered across ad/social sizes (1:1, 9:16, 16:9 by default). Use when the user types /adset, or asks for an ad set, campaign creatives, all the sizes, or the same image for feed + story + banner.
+description: adset — FreshGen /adset: one concept rendered across ad/social sizes (1:1, 9:16, 16:9 by default). Use when the user types /adset, or asks for an ad set, campaign creatives, all the sizes, or the same image for feed + story + banner.
 ---
 
-# FreshGen /adset — one concept, every size
+# adset
+
+**Skill name:** `adset` — FreshGen /adset: one concept, every size.
 
 ## What FreshGen is
 

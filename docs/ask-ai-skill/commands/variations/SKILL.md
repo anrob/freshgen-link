@@ -1,9 +1,11 @@
 ---
 name: variations
-description: FreshGen /variations — several genuinely different takes on one image concept. Use when the user types /variations, or asks for options, alternatives, a few versions, or 'show me some ideas' for an image.
+description: variations — FreshGen /variations: several genuinely different takes on one image concept. Use when the user types /variations, or asks for options, alternatives, a few versions, or 'show me some ideas' for an image.
 ---
 
-# FreshGen /variations — several different takes
+# variations
+
+**Skill name:** `variations` — FreshGen /variations: several different takes.
 
 ## What FreshGen is
 

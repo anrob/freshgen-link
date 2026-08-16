@@ -1,9 +1,11 @@
 ---
 name: models
-description: FreshGen /models — list the available image and video models, what each is best at, and what they cost. Use when the user types /models or asks which model to use, what's available, or prices.
+description: models — FreshGen /models: list the available image and video models, what each is best at, and what they cost. Use when the user types /models or asks which model to use, what's available, or prices.
 ---
 
-# FreshGen /models — which model, what cost
+# models
+
+**Skill name:** `models` — FreshGen /models: which model, what cost.
 
 ## What FreshGen is
 

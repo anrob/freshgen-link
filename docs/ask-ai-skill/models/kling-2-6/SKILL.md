@@ -1,9 +1,11 @@
 ---
 name: kling-2-6
-description: FreshGen — render a short video with the Kling 2.6 (audio) model (`kling-2-6`), best for clips with native audio. Use when the user types /kling-2-6, names this model, or the request clearly fits it. Real money (about $0.50 / 5s), billed to the connected Kie.ai account; quote the cost before starting.
+description: kling-2-6 — FreshGen Kling 2.6 (audio) video model. Render a short video with the Kling 2.6 (audio) model (`kling-2-6`), best for clips with native audio. Use when the user types /kling-2-6, names this model, or the request clearly fits it. Real money (about $0.50 / 5s), billed to the connected Kie.ai account; quote the cost before starting.
 ---
 
-# FreshGen /kling-2-6 — Kling 2.6 (audio)
+# kling-2-6
+
+**Skill name:** `kling-2-6` — FreshGen /kling-2-6: Kling 2.6 (audio).
 
 ## What FreshGen is
 

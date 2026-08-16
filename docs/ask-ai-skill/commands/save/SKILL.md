@@ -1,9 +1,11 @@
 ---
 name: save
-description: FreshGen /save — copy an image or video URL into the GoHighLevel Media Library permanently. Use when the user types /save or asks to keep, store, or save a generated or external media file.
+description: save — FreshGen /save: copy an image or video URL into the GoHighLevel Media Library permanently. Use when the user types /save or asks to keep, store, or save a generated or external media file.
 ---
 
-# FreshGen /save — save to the Media Library
+# save
+
+**Skill name:** `save` — FreshGen /save: save to the Media Library.
 
 ## What FreshGen is
 

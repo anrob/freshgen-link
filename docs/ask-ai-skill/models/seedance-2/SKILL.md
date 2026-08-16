@@ -1,9 +1,11 @@
 ---
 name: seedance-2
-description: FreshGen — render a short video with the Seedance 2.0 model (`seedance-2`), best for cinematic motion, start+end frames. Use when the user types /seedance-2, names this model, or the request clearly fits it. Real money (about $1.20 / 5s at 720p), billed to the connected Kie.ai account; quote the cost before starting.
+description: seedance-2 — FreshGen Seedance 2.0 video model. Render a short video with the Seedance 2.0 model (`seedance-2`), best for cinematic motion, start+end frames. Use when the user types /seedance-2, names this model, or the request clearly fits it. Real money (about $1.20 / 5s at 720p), billed to the connected Kie.ai account; quote the cost before starting.
 ---
 
-# FreshGen /seedance-2 — Seedance 2.0
+# seedance-2
+
+**Skill name:** `seedance-2` — FreshGen /seedance-2: Seedance 2.0.
 
 ## What FreshGen is
 

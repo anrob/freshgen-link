@@ -1,9 +1,11 @@
 ---
 name: brand
-description: FreshGen /brand — show the brand style block that gets applied to every generation. Use when the user types /brand or asks what brand settings, colors, or style FreshGen is using.
+description: brand — FreshGen /brand: show the brand style block that gets applied to every generation. Use when the user types /brand or asks what brand settings, colors, or style FreshGen is using.
 ---
 
-# FreshGen /brand — show the brand block
+# brand
+
+**Skill name:** `brand` — FreshGen /brand: show the brand block.
 
 ## What FreshGen is
 

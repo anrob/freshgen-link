@@ -1,9 +1,11 @@
 ---
 name: kling-3-0
-description: FreshGen — render a short video with the Kling 3.0 model (`kling-3-0`), best for flagship quality, up to 4K, supports an end frame. Use when the user types /kling-3-0, names this model, or the request clearly fits it. Real money (about 720p $0.42 · 1080p $0.56 / 5s), billed to the connected Kie.ai account; quote the cost before starting.
+description: kling-3-0 — FreshGen Kling 3.0 video model. Render a short video with the Kling 3.0 model (`kling-3-0`), best for flagship quality, up to 4K, supports an end frame. Use when the user types /kling-3-0, names this model, or the request clearly fits it. Real money (about 720p $0.42 · 1080p $0.56 / 5s), billed to the connected Kie.ai account; quote the cost before starting.
 ---
 
-# FreshGen /kling-3-0 — Kling 3.0
+# kling-3-0
+
+**Skill name:** `kling-3-0` — FreshGen /kling-3-0: Kling 3.0.
 
 ## What FreshGen is
 

@@ -1,9 +1,11 @@
 ---
 name: kling-2-1-std
-description: FreshGen — render a short video with the Kling 2.1 Standard model (`kling-2-1-std`), best for fast, cheap clips — the default. Use when the user types /kling-2-1-std, names this model, or the request clearly fits it. Real money (about $0.13 / 5s (measured)), billed to the connected Kie.ai account; quote the cost before starting.
+description: kling-2-1-std — FreshGen Kling 2.1 Standard video model. Render a short video with the Kling 2.1 Standard model (`kling-2-1-std`), best for fast, cheap clips — the default. Use when the user types /kling-2-1-std, names this model, or the request clearly fits it. Real money (about $0.13 / 5s (measured)), billed to the connected Kie.ai account; quote the cost before starting.
 ---
 
-# FreshGen /kling-2-1-std — Kling 2.1 Standard
+# kling-2-1-std
+
+**Skill name:** `kling-2-1-std` — FreshGen /kling-2-1-std: Kling 2.1 Standard.
 
 ## What FreshGen is
 

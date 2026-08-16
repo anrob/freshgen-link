@@ -1,9 +1,11 @@
 ---
 name: animate
-description: FreshGen /animate — turn an existing image URL into a short video. Use when the user types /animate, or asks to animate, bring to life, or add motion to an image they already have.
+description: animate — FreshGen /animate: turn an existing image URL into a short video. Use when the user types /animate, or asks to animate, bring to life, or add motion to an image they already have.
 ---
 
-# FreshGen /animate — video from an existing image
+# animate
+
+**Skill name:** `animate` — FreshGen /animate: video from an existing image.
 
 ## What FreshGen is
 

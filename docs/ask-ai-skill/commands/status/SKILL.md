@@ -1,9 +1,11 @@
 ---
 name: status
-description: FreshGen /status — check whether an image or video generation is finished, using its taskId. Use when the user types /status, asks 'is my video ready', or wants the result of an earlier generation.
+description: status — FreshGen /status: check whether an image or video generation is finished, using its taskId. Use when the user types /status, asks 'is my video ready', or wants the result of an earlier generation.
 ---
 
-# FreshGen /status — check a render
+# status
+
+**Skill name:** `status` — FreshGen /status: check a render.
 
 ## What FreshGen is
 

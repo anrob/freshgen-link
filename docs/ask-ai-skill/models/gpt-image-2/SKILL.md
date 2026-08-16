@@ -1,9 +1,11 @@
 ---
 name: gpt-image-2
-description: FreshGen — generate an image with the GPT Image 2 model (`gpt-image-2`), best for text, logos, typography, signs, menus — anything with words in it. Use when the user types /gpt-image-2, names this model, or the request clearly fits it. Real money (about $0.04 / image (1K)), billed to the connected Kie.ai account.
+description: gpt-image-2 — FreshGen GPT Image 2 image model. Generate an image with the GPT Image 2 model (`gpt-image-2`), best for text, logos, typography, signs, menus — anything with words in it. Use when the user types /gpt-image-2, names this model, or the request clearly fits it. Real money (about $0.04 / image (1K)), billed to the connected Kie.ai account.
 ---
 
-# FreshGen /gpt-image-2 — GPT Image 2
+# gpt-image-2
+
+**Skill name:** `gpt-image-2` — FreshGen /gpt-image-2: GPT Image 2.
 
 ## What FreshGen is
 

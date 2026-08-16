@@ -1,9 +1,11 @@
 ---
 name: image
-description: FreshGen /image — generate ONE AI image with generate_image. Use when the user types /image, or asks to create, make, generate, design or render a single picture, photo, graphic, hero image, banner, thumbnail, product shot or social visual.
+description: image — FreshGen /image: generate ONE AI image with generate_image. Use when the user types /image, or asks to create, make, generate, design or render a single picture, photo, graphic, hero image, banner, thumbnail, product shot or social visual.
 ---
 
-# FreshGen /image — one image
+# image
+
+**Skill name:** `image` — FreshGen /image: one image.
 
 ## What FreshGen is
 

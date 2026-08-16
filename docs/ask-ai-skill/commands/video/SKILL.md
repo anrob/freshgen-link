@@ -1,9 +1,11 @@
 ---
 name: video
-description: FreshGen /video — start a short AI video render with generate_video. Use when the user types /video, or asks for a clip, reel, short video, motion ad, or animation from a text description.
+description: video — FreshGen /video: start a short AI video render with generate_video. Use when the user types /video, or asks for a clip, reel, short video, motion ad, or animation from a text description.
 ---
 
-# FreshGen /video — short video from text
+# video
+
+**Skill name:** `video` — FreshGen /video: short video from text.
 
 ## What FreshGen is
 

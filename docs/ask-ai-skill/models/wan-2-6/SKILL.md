@@ -1,9 +1,11 @@
 ---
 name: wan-2-6
-description: FreshGen — render a short video with the Wan 2.6 model (`wan-2-6`), best for HD on a budget. Use when the user types /wan-2-6, names this model, or the request clearly fits it. Real money (about $0.50–0.75 / 5s), billed to the connected Kie.ai account; quote the cost before starting.
+description: wan-2-6 — FreshGen Wan 2.6 video model. Render a short video with the Wan 2.6 model (`wan-2-6`), best for HD on a budget. Use when the user types /wan-2-6, names this model, or the request clearly fits it. Real money (about $0.50–0.75 / 5s), billed to the connected Kie.ai account; quote the cost before starting.
 ---
 
-# FreshGen /wan-2-6 — Wan 2.6
+# wan-2-6
+
+**Skill name:** `wan-2-6` — FreshGen /wan-2-6: Wan 2.6.
 
 ## What FreshGen is
 

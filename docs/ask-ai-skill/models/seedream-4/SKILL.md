@@ -1,9 +1,11 @@
 ---
 name: seedream-4
-description: FreshGen — generate an image with the Seedream 4.0 model (`seedream-4`), best for stylized art, illustration, bold color. Use when the user types /seedream-4, names this model, or the request clearly fits it. Real money (about $0.03 / image), billed to the connected Kie.ai account.
+description: seedream-4 — FreshGen Seedream 4.0 image model. Generate an image with the Seedream 4.0 model (`seedream-4`), best for stylized art, illustration, bold color. Use when the user types /seedream-4, names this model, or the request clearly fits it. Real money (about $0.03 / image), billed to the connected Kie.ai account.
 ---
 
-# FreshGen /seedream-4 — Seedream 4.0
+# seedream-4
+
+**Skill name:** `seedream-4` — FreshGen /seedream-4: Seedream 4.0.
 
 ## What FreshGen is
 

@@ -77,6 +77,8 @@ Two ways to install — pick one:
 - **One skill per command (real `/image`, `/adset`, `/video`… in the slash menu):** upload each `SKILL.md` from [`docs/ask-ai-skill/commands/`](docs/ask-ai-skill/commands/) as its own skill (11 files). Name each skill after its command so the menu reads `/image`, `/adset`, etc. Edit the BRAND block in the five generating commands (`image`, `variations`, `adset`, `video`, `animate`) — they're identical, so paste the same block into each.
 - **One skill per model (optional):** [`docs/ask-ai-skill/models/`](docs/ask-ai-skill/models/) has a skill for each of the twelve models — `/gpt-image-2`, `/nano-banana-pro`, `/kling-3-0`, and so on. Each locks the model, exposes only the flags that model supports, and carries prompting tips written for it. Upload the ones your team will actually use.
 
+**Naming:** Ask AI may auto-name an uploaded skill from its content (you might see "Image Generation Assistant" instead of `gpt-image-2`). Each file now leads with its intended name to steer that — but if a skill still shows a generic name, open **Manage Skills** in Ask AI and rename it to the command (`image`, `gpt-image-2`, …). The name is what shows in the slash menu.
+
 `freshgen-ask-ai-skills.zip` in the same folder has all 23 command + model skills. Everything is generated from the same master and the server's own model definitions, so the rules and prices are identical either way.
 
 ## Environment variables

@@ -1,9 +1,11 @@
 ---
 name: grok-imagine
-description: FreshGen — render a short video with the Grok Imagine model (`grok-imagine`), best for longer cheap clips (6–10s). Use when the user types /grok-imagine, names this model, or the request clearly fits it. Real money (about $0.30 / 6s), billed to the connected Kie.ai account; quote the cost before starting.
+description: grok-imagine — FreshGen Grok Imagine video model. Render a short video with the Grok Imagine model (`grok-imagine`), best for longer cheap clips (6–10s). Use when the user types /grok-imagine, names this model, or the request clearly fits it. Real money (about $0.30 / 6s), billed to the connected Kie.ai account; quote the cost before starting.
 ---
 
-# FreshGen /grok-imagine — Grok Imagine
+# grok-imagine
+
+**Skill name:** `grok-imagine` — FreshGen /grok-imagine: Grok Imagine.
 
 ## What FreshGen is
 

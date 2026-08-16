@@ -1,9 +1,11 @@
 ---
 name: freshgen
-description: Use this skill for any request to create, generate, make, design, animate, or render an image, picture, graphic, photo, ad creative, thumbnail, hero image, banner, social post visual, product shot, or short video clip — and for anything about FreshGen itself, image or video credits/balance, which model to pick, or the /image, /variations, /adset, /video, /animate, /status, /credits, /models, /save, /brand, and /help commands. Covers the six FreshGen MCP tools (generate_image, generate_video, check_status, check_credits, list_models, save_to_media_library) that generate real, billed AI media through the connected Kie.ai account.
+description: freshgen — the FreshGen image & video skill. Use it for any request to create, generate, make, design, animate, or render an image, picture, graphic, photo, ad creative, thumbnail, hero image, banner, social post visual, product shot, or short video clip — and for anything about FreshGen itself, image or video credits/balance, which model to pick, or the /image, /variations, /adset, /video, /animate, /status, /credits, /models, /save, /brand, and /help commands. Covers the six FreshGen MCP tools (generate_image, generate_video, check_status, check_credits, list_models, save_to_media_library) that generate real, billed AI media through the connected Kie.ai account.
 ---
 
-# FreshGen — image & video generation inside GoHighLevel
+# freshgen
+
+**Skill name:** `freshgen` — FreshGen image & video generation inside GoHighLevel (all commands in one skill).
 
 ## 1. What FreshGen is
 

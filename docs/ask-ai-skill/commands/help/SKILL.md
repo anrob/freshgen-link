@@ -1,9 +1,11 @@
 ---
 name: help
-description: FreshGen /help — list every FreshGen slash command and what it does. Use when the user types /help or asks what FreshGen can do.
+description: help — FreshGen /help: list every FreshGen slash command and what it does. Use when the user types /help or asks what FreshGen can do.
 ---
 
-# FreshGen /help — list the commands
+# help
+
+**Skill name:** `help` — FreshGen /help: list the commands.
 
 ## What FreshGen is
 

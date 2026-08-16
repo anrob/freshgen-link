@@ -1,9 +1,11 @@
 ---
 name: imagen-4
-description: FreshGen — generate an image with the Imagen 4 model (`imagen-4`), best for clean commercial photography looks (no reference images). Use when the user types /imagen-4, names this model, or the request clearly fits it. Real money (about $0.03 / image), billed to the connected Kie.ai account.
+description: imagen-4 — FreshGen Imagen 4 image model. Generate an image with the Imagen 4 model (`imagen-4`), best for clean commercial photography looks (no reference images). Use when the user types /imagen-4, names this model, or the request clearly fits it. Real money (about $0.03 / image), billed to the connected Kie.ai account.
 ---
 
-# FreshGen /imagen-4 — Imagen 4
+# imagen-4
+
+**Skill name:** `imagen-4` — FreshGen /imagen-4: Imagen 4.
 
 ## What FreshGen is
 

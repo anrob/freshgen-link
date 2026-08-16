@@ -96,10 +96,12 @@ for (const m of KIE_MODELS) {
   ].filter(Boolean).join(" ");
   const fm = `---
 name: ${m.id}
-description: FreshGen — generate an image with the ${m.label} model (\`${m.id}\`), best for ${m.bestFor}. Use when the user types /${m.id}, names this model, or the request clearly fits it. Real money (${m.priceNote.replace(/^≈ ?/, "about ")}), billed to the connected Kie.ai account.
+description: ${m.id} — FreshGen ${m.label} image model. Generate an image with the ${m.label} model (\`${m.id}\`), best for ${m.bestFor}. Use when the user types /${m.id}, names this model, or the request clearly fits it. Real money (${m.priceNote.replace(/^≈ ?/, "about ")}), billed to the connected Kie.ai account.
 ---
 `;
-  const text = `# FreshGen /${m.id} — ${m.label}
+  const text = `# ${m.id}
+
+**Skill name:** \`${m.id}\` — FreshGen /${m.id}: ${m.label}.
 
 ${sec(1)}
 
@@ -147,10 +149,12 @@ for (const v of VIDEO_MODELS) {
   ].filter(Boolean).join(" ");
   const fm = `---
 name: ${v.id}
-description: FreshGen — render a short video with the ${v.label} model (\`${v.id}\`), best for ${v.bestFor}. Use when the user types /${v.id}, names this model, or the request clearly fits it. Real money (${v.priceNote.replace(/^≈ ?/, "about ")}), billed to the connected Kie.ai account; quote the cost before starting.
+description: ${v.id} — FreshGen ${v.label} video model. Render a short video with the ${v.label} model (\`${v.id}\`), best for ${v.bestFor}. Use when the user types /${v.id}, names this model, or the request clearly fits it. Real money (${v.priceNote.replace(/^≈ ?/, "about ")}), billed to the connected Kie.ai account; quote the cost before starting.
 ---
 `;
-  const text = `# FreshGen /${v.id} — ${v.label}
+  const text = `# ${v.id}
+
+**Skill name:** \`${v.id}\` — FreshGen /${v.id}: ${v.label}.
 
 ${sec(1)}
 

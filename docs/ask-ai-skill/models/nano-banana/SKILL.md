@@ -1,9 +1,11 @@
 ---
 name: nano-banana
-description: FreshGen — generate an image with the Nano Banana (Gemini 2.5) model (`nano-banana`), best for cheap drafts and quick concepts. Use when the user types /nano-banana, names this model, or the request clearly fits it. Real money (about $0.02 / image), billed to the connected Kie.ai account.
+description: nano-banana — FreshGen Nano Banana (Gemini 2.5) image model. Generate an image with the Nano Banana (Gemini 2.5) model (`nano-banana`), best for cheap drafts and quick concepts. Use when the user types /nano-banana, names this model, or the request clearly fits it. Real money (about $0.02 / image), billed to the connected Kie.ai account.
 ---
 
-# FreshGen /nano-banana — Nano Banana (Gemini 2.5)
+# nano-banana
+
+**Skill name:** `nano-banana` — FreshGen /nano-banana: Nano Banana (Gemini 2.5).
 
 ## What FreshGen is
 
