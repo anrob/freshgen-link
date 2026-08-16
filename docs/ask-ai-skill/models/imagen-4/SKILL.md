@@ -1,15 +1,11 @@
 ---
 name: imagen-4
-description: imagen-4 — FreshGen Imagen 4 image model. Generate an image with the Imagen 4 model (`imagen-4`), best for clean commercial photography looks (no reference images). Use when the user types /imagen-4, names this model, or the request clearly fits it. Real money (about $0.03 / image), billed to the connected Kie.ai account.
+description: Commercial Photo Look Generator (Imagen 4) — FreshGen image model skill. Generate an image with the Imagen 4 model (`imagen-4`), best for clean commercial photography looks (no reference images). Use when the user types /imagen-4, names this model, or the request clearly fits it. Real money (about $0.03 / image), billed to the connected Kie.ai account.
 ---
 
-# imagen-4
+# Commercial Photo Look Generator (Imagen 4)
 
-**Skill name:** `imagen-4` — FreshGen /imagen-4: Imagen 4.
-
-## What FreshGen is
-
-FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
+**Commercial Photo Look Generator** — the FreshGen skill for the Imagen 4 model, best for clean commercial photography looks (no reference images). Slash command: `/imagen-4`.
 
 ## The `/imagen-4` command
 
@@ -72,6 +68,10 @@ For video versions of the above, match the same aspect ratio and default to a 5-
 - **Default model:** DEFAULT MODEL ID (e.g. `gpt-image-2`)
 
 Prepend the brand's colors, visual style words, and typography feel to every prompt unless the user explicitly asks for something different. If a request conflicts with a Never rule, follow the Never rule and say why.
+
+## What FreshGen is
+
+FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
 
 ## Money & safety rules
 

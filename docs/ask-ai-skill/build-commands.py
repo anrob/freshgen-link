@@ -43,24 +43,38 @@ NEEDS_SIZES = {"image", "variations", "adset"}
 NEEDS_MODELS = GENERATING | {"models"}
 
 DESCRIPTIONS = {
-    "image": "image — FreshGen /image: generate ONE AI image with generate_image. Use when the user types /image, or asks to create, make, generate, design or render a single picture, photo, graphic, hero image, banner, thumbnail, product shot or social visual.",
-    "variations": "variations — FreshGen /variations: several genuinely different takes on one image concept. Use when the user types /variations, or asks for options, alternatives, a few versions, or 'show me some ideas' for an image.",
-    "adset": "adset — FreshGen /adset: one concept rendered across ad/social sizes (1:1, 9:16, 16:9 by default). Use when the user types /adset, or asks for an ad set, campaign creatives, all the sizes, or the same image for feed + story + banner.",
-    "video": "video — FreshGen /video: start a short AI video render with generate_video. Use when the user types /video, or asks for a clip, reel, short video, motion ad, or animation from a text description.",
-    "animate": "animate — FreshGen /animate: turn an existing image URL into a short video. Use when the user types /animate, or asks to animate, bring to life, or add motion to an image they already have.",
-    "status": "status — FreshGen /status: check whether an image or video generation is finished, using its taskId. Use when the user types /status, asks 'is my video ready', or wants the result of an earlier generation.",
-    "credits": "credits — FreshGen /credits: report the connected Kie.ai balance in credits and dollars. Use when the user types /credits or asks about balance, spend, or how much generation is left.",
-    "models": "models — FreshGen /models: list the available image and video models, what each is best at, and what they cost. Use when the user types /models or asks which model to use, what's available, or prices.",
-    "save": "save — FreshGen /save: copy an image or video URL into the GoHighLevel Media Library permanently. Use when the user types /save or asks to keep, store, or save a generated or external media file.",
-    "brand": "brand — FreshGen /brand: show the brand style block that gets applied to every generation. Use when the user types /brand or asks what brand settings, colors, or style FreshGen is using.",
-    "help": "help — FreshGen /help: list every FreshGen slash command and what it does. Use when the user types /help or asks what FreshGen can do.",
+    "image": "Single Image Generator (FreshGen /image) — generate ONE AI image with generate_image. Use when the user types /image, or asks to create, make, generate, design or render a single picture, photo, graphic, hero image, banner, thumbnail, product shot or social visual.",
+    "variations": "Image Variations Generator (FreshGen /variations) — several genuinely different takes on one image concept. Use when the user types /variations, or asks for options, alternatives, a few versions, or 'show me some ideas' for an image.",
+    "adset": "Ad Set Creator (FreshGen /adset) — one concept rendered across ad/social sizes (1:1, 9:16, 16:9 by default). Use when the user types /adset, or asks for an ad set, campaign creatives, all the sizes, or the same image for feed + story + banner.",
+    "video": "Short Video Generator (FreshGen /video) — start a short AI video render with generate_video. Use when the user types /video, or asks for a clip, reel, short video, motion ad, or animation from a text description.",
+    "animate": "Image-to-Video Animator (FreshGen /animate) — turn an existing image URL into a short video. Use when the user types /animate, or asks to animate, bring to life, or add motion to an image they already have.",
+    "status": "Generation Status Checker (FreshGen /status) — check whether an image or video generation is finished, using its taskId. Use when the user types /status, asks 'is my video ready', or wants the result of an earlier generation.",
+    "credits": "Kie.ai Credit Balance Checker (FreshGen /credits) — report the connected Kie.ai balance in credits and dollars. Use when the user types /credits or asks about balance, spend, or how much generation is left.",
+    "models": "Model Picker and Price List (FreshGen /models) — list the available image and video models, what each is best at, and what they cost. Use when the user types /models or asks which model to use, what's available, or prices.",
+    "save": "Media Library Saver (FreshGen /save) — copy an image or video URL into the GoHighLevel Media Library permanently. Use when the user types /save or asks to keep, store, or save a generated or external media file.",
+    "brand": "Brand Style Viewer (FreshGen /brand) — show the brand style block that gets applied to every generation. Use when the user types /brand or asks what brand settings, colors, or style FreshGen is using.",
+    "help": "FreshGen Command List (FreshGen /help) — list every FreshGen slash command and what it does. Use when the user types /help or asks what FreshGen can do.",
 }
 
+# Human, FUNCTIONAL titles. GoHighLevel's Ask AI ignores the frontmatter name and
+# auto-titles each uploaded skill from its content with a functional phrase (it
+# turned a file headed "gpt-image-2" into "Image Generation Assistant"), so the
+# headline must itself be a distinct functional phrase or every skill collides.
 TITLES = {
-    "image": "one image", "variations": "several different takes", "adset": "one concept, every size",
-    "video": "short video from text", "animate": "video from an existing image", "status": "check a render",
-    "credits": "Kie.ai balance", "models": "which model, what cost", "save": "save to the Media Library",
-    "brand": "show the brand block", "help": "list the commands",
+    "image": "Single Image Generator", "variations": "Image Variations Generator",
+    "adset": "Ad Set Creator", "video": "Short Video Generator",
+    "animate": "Image-to-Video Animator", "status": "Generation Status Checker",
+    "credits": "Kie.ai Credit Balance Checker", "models": "Model Picker and Price List",
+    "save": "Media Library Saver", "brand": "Brand Style Viewer",
+    "help": "FreshGen Command List",
+}
+PURPOSE = {
+    "image": "one image from a prompt", "variations": "several genuinely different takes on one concept",
+    "adset": "one concept rendered in every ad size", "video": "a short video clip from a text prompt",
+    "animate": "a short video from an existing image", "status": "whether an image or video render is finished",
+    "credits": "the connected Kie.ai balance", "models": "which model to use and what each costs",
+    "save": "an image or video URL saved permanently into the GHL Media Library",
+    "brand": "the brand style block applied to every generation", "help": "every FreshGen command",
 }
 
 # ── Assemble ───────────────────────────────────────────────────────────────
@@ -68,11 +82,9 @@ OUT.mkdir(exist_ok=True)
 written = []
 for cmd, (sig, proc) in cmd_blocks.items():
     parts = [
-        f"# {cmd}",
+        f"# {TITLES[cmd]} (FreshGen /{cmd})",
         "",
-        f"**Skill name:** `{cmd}` — FreshGen /{cmd}: {TITLES[cmd]}.",
-        "",
-        sec(1),
+        f"**{TITLES[cmd]}** — the FreshGen skill for {PURPOSE[cmd]}. Slash command: `/{cmd}`.",
         "",
         f"## The `/{cmd}` command",
         "",
@@ -95,7 +107,7 @@ for cmd, (sig, proc) in cmd_blocks.items():
         parts += ["", sec(5)]
     if cmd in GENERATING or cmd == "brand":
         parts += ["", sec(6)]
-    parts += ["", sec(7), "", sec(8), "", sec(9)]
+    parts += ["", sec(1), "", sec(7), "", sec(8), "", sec(9)]
 
     text = "\n".join(parts).rstrip() + "\n"
     fm = f"---\nname: {cmd}\ndescription: {DESCRIPTIONS[cmd]}\n---\n\n"

@@ -1,15 +1,11 @@
 ---
 name: kling-2-6
-description: kling-2-6 — FreshGen Kling 2.6 (audio) video model. Render a short video with the Kling 2.6 (audio) model (`kling-2-6`), best for clips with native audio. Use when the user types /kling-2-6, names this model, or the request clearly fits it. Real money (about $0.50 / 5s), billed to the connected Kie.ai account; quote the cost before starting.
+description: Video with Audio Generator (Kling 2.6 (audio)) — FreshGen video model skill. Render a short video with the Kling 2.6 (audio) model (`kling-2-6`), best for clips with native audio. Use when the user types /kling-2-6, names this model, or the request clearly fits it. Real money (about $0.50 / 5s), billed to the connected Kie.ai account; quote the cost before starting.
 ---
 
-# kling-2-6
+# Video with Audio Generator (Kling 2.6 (audio))
 
-**Skill name:** `kling-2-6` — FreshGen /kling-2-6: Kling 2.6 (audio).
-
-## What FreshGen is
-
-FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
+**Video with Audio Generator** — the FreshGen skill for the Kling 2.6 (audio) video model, best for clips with native audio. Slash command: `/kling-2-6`.
 
 ## The `/kling-2-6` command
 
@@ -49,6 +45,10 @@ When a message begins with this command (or names this model): first state the e
 - **Default model:** DEFAULT MODEL ID (e.g. `gpt-image-2`)
 
 Prepend the brand's colors, visual style words, and typography feel to every prompt unless the user explicitly asks for something different. If a request conflicts with a Never rule, follow the Never rule and say why.
+
+## What FreshGen is
+
+FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
 
 ## Money & safety rules
 

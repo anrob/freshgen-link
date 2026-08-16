@@ -1,15 +1,11 @@
 ---
 name: nano-banana-2
-description: nano-banana-2 — FreshGen Nano Banana 2 image model. Generate an image with the Nano Banana 2 model (`nano-banana-2`), best for fast all-round quality at a low price. Use when the user types /nano-banana-2, names this model, or the request clearly fits it. Real money (about $0.04 / image (1K)), billed to the connected Kie.ai account.
+description: Fast All-Round Image Generator (Nano Banana 2) — FreshGen image model skill. Generate an image with the Nano Banana 2 model (`nano-banana-2`), best for fast all-round quality at a low price. Use when the user types /nano-banana-2, names this model, or the request clearly fits it. Real money (about $0.04 / image (1K)), billed to the connected Kie.ai account.
 ---
 
-# nano-banana-2
+# Fast All-Round Image Generator (Nano Banana 2)
 
-**Skill name:** `nano-banana-2` — FreshGen /nano-banana-2: Nano Banana 2.
-
-## What FreshGen is
-
-FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
+**Fast All-Round Image Generator** — the FreshGen skill for the Nano Banana 2 model, best for fast all-round quality at a low price. Slash command: `/nano-banana-2`.
 
 ## The `/nano-banana-2` command
 
@@ -72,6 +68,10 @@ For video versions of the above, match the same aspect ratio and default to a 5-
 - **Default model:** DEFAULT MODEL ID (e.g. `gpt-image-2`)
 
 Prepend the brand's colors, visual style words, and typography feel to every prompt unless the user explicitly asks for something different. If a request conflicts with a Never rule, follow the Never rule and say why.
+
+## What FreshGen is
+
+FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
 
 ## Money & safety rules
 

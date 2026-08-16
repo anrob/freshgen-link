@@ -1,15 +1,11 @@
 ---
 name: save
-description: save — FreshGen /save: copy an image or video URL into the GoHighLevel Media Library permanently. Use when the user types /save or asks to keep, store, or save a generated or external media file.
+description: Media Library Saver (FreshGen /save) — copy an image or video URL into the GoHighLevel Media Library permanently. Use when the user types /save or asks to keep, store, or save a generated or external media file.
 ---
 
-# save
+# Media Library Saver (FreshGen /save)
 
-**Skill name:** `save` — FreshGen /save: save to the Media Library.
-
-## What FreshGen is
-
-FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
+**Media Library Saver** — the FreshGen skill for an image or video URL saved permanently into the GHL Media Library. Slash command: `/save`.
 
 ## The `/save` command
 
@@ -18,6 +14,10 @@ Signature: `/save <url> [name]`
 When a message begins with this command, follow the procedure below exactly. It also applies when the request is phrased naturally.
 
 Call `save_to_media_library` with `url` (and `name` if given). Finished FreshGen generations are already auto-saved automatically when this deployment has a GHL Media Library connection configured — `/save` is for URLs FreshGen didn't generate, or to force a specific filename.
+
+## What FreshGen is
+
+FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
 
 ## Money & safety rules
 

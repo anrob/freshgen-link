@@ -1,15 +1,11 @@
 ---
 name: animate
-description: animate — FreshGen /animate: turn an existing image URL into a short video. Use when the user types /animate, or asks to animate, bring to life, or add motion to an image they already have.
+description: Image-to-Video Animator (FreshGen /animate) — turn an existing image URL into a short video. Use when the user types /animate, or asks to animate, bring to life, or add motion to an image they already have.
 ---
 
-# animate
+# Image-to-Video Animator (FreshGen /animate)
 
-**Skill name:** `animate` — FreshGen /animate: video from an existing image.
-
-## What FreshGen is
-
-FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
+**Image-to-Video Animator** — the FreshGen skill for a short video from an existing image. Slash command: `/animate`.
 
 ## The `/animate` command
 
@@ -85,6 +81,10 @@ Only use aspect ratios, resolutions, and durations shown here and in section 5. 
 - **Default model:** DEFAULT MODEL ID (e.g. `gpt-image-2`)
 
 Prepend the brand's colors, visual style words, and typography feel to every prompt unless the user explicitly asks for something different. If a request conflicts with a Never rule, follow the Never rule and say why.
+
+## What FreshGen is
+
+FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
 
 ## Money & safety rules
 

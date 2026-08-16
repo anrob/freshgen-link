@@ -1,15 +1,11 @@
 ---
 name: help
-description: help — FreshGen /help: list every FreshGen slash command and what it does. Use when the user types /help or asks what FreshGen can do.
+description: FreshGen Command List (FreshGen /help) — list every FreshGen slash command and what it does. Use when the user types /help or asks what FreshGen can do.
 ---
 
-# help
+# FreshGen Command List (FreshGen /help)
 
-**Skill name:** `help` — FreshGen /help: list the commands.
-
-## What FreshGen is
-
-FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
+**FreshGen Command List** — the FreshGen skill for every FreshGen command. Slash command: `/help`.
 
 ## The `/help` command
 
@@ -38,6 +34,10 @@ When a message begins with one of these commands, follow that command's procedur
 | `/help` | Lists these commands |
 
 Each command is its own skill in this workspace — the user can pick any of them from the slash menu.
+
+## What FreshGen is
+
+FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
 
 ## Money & safety rules
 

@@ -76,6 +76,27 @@ const VIDEO_TIPS: Record<string, string> = {
 - Keep the prompt to one continuous motion; don't expect fine detail at 480p.`,
 };
 
+// Human, FUNCTIONAL titles. Ask AI auto-titles uploaded skills from content with a
+// functional phrase and drops proper nouns ("gpt-image-2" became "Image
+// Generation Assistant"), so each headline must be a distinct functional phrase
+// with the model name in parentheses, or every image-model skill collides.
+const IMAGE_TITLES: Record<string, string> = {
+  "gpt-image-2": "Text and Logo Image Generator",
+  "nano-banana-pro": "Photorealistic Image Generator",
+  "nano-banana": "Cheap Draft Image Generator",
+  "nano-banana-2": "Fast All-Round Image Generator",
+  "seedream-4": "Illustration and Stylized Art Generator",
+  "imagen-4": "Commercial Photo Look Generator",
+};
+const VIDEO_TITLES: Record<string, string> = {
+  "kling-2-1-std": "Fast Cheap Video Generator",
+  "kling-3-0": "Flagship 4K Video Generator",
+  "kling-2-6": "Video with Audio Generator",
+  "seedance-2": "Cinematic Video Generator",
+  "wan-2-6": "Budget HD Video Generator",
+  "grok-imagine": "Long Cheap Video Generator",
+};
+
 // ── Assemble ───────────────────────────────────────────────────────────────
 type Out = { id: string; words: number };
 const outputs: Out[] = [];
@@ -96,14 +117,12 @@ for (const m of KIE_MODELS) {
   ].filter(Boolean).join(" ");
   const fm = `---
 name: ${m.id}
-description: ${m.id} — FreshGen ${m.label} image model. Generate an image with the ${m.label} model (\`${m.id}\`), best for ${m.bestFor}. Use when the user types /${m.id}, names this model, or the request clearly fits it. Real money (${m.priceNote.replace(/^≈ ?/, "about ")}), billed to the connected Kie.ai account.
+description: ${IMAGE_TITLES[m.id] ?? m.label} (${m.label}) — FreshGen image model skill. Generate an image with the ${m.label} model (\`${m.id}\`), best for ${m.bestFor}. Use when the user types /${m.id}, names this model, or the request clearly fits it. Real money (${m.priceNote.replace(/^≈ ?/, "about ")}), billed to the connected Kie.ai account.
 ---
 `;
-  const text = `# ${m.id}
+  const text = `# ${IMAGE_TITLES[m.id] ?? m.label} (${m.label})
 
-**Skill name:** \`${m.id}\` — FreshGen /${m.id}: ${m.label}.
-
-${sec(1)}
+**${IMAGE_TITLES[m.id] ?? m.label}** — the FreshGen skill for the ${m.label} model, best for ${m.bestFor}. Slash command: \`/${m.id}\`.
 
 ## The \`/${m.id}\` command
 
@@ -131,6 +150,8 @@ ${sec(5)}
 
 ${sec(6)}
 
+${sec(1)}
+
 ${sec(7)}
 
 ${sec(8)}
@@ -149,14 +170,12 @@ for (const v of VIDEO_MODELS) {
   ].filter(Boolean).join(" ");
   const fm = `---
 name: ${v.id}
-description: ${v.id} — FreshGen ${v.label} video model. Render a short video with the ${v.label} model (\`${v.id}\`), best for ${v.bestFor}. Use when the user types /${v.id}, names this model, or the request clearly fits it. Real money (${v.priceNote.replace(/^≈ ?/, "about ")}), billed to the connected Kie.ai account; quote the cost before starting.
+description: ${VIDEO_TITLES[v.id] ?? v.label} (${v.label}) — FreshGen video model skill. Render a short video with the ${v.label} model (\`${v.id}\`), best for ${v.bestFor}. Use when the user types /${v.id}, names this model, or the request clearly fits it. Real money (${v.priceNote.replace(/^≈ ?/, "about ")}), billed to the connected Kie.ai account; quote the cost before starting.
 ---
 `;
-  const text = `# ${v.id}
+  const text = `# ${VIDEO_TITLES[v.id] ?? v.label} (${v.label})
 
-**Skill name:** \`${v.id}\` — FreshGen /${v.id}: ${v.label}.
-
-${sec(1)}
+**${VIDEO_TITLES[v.id] ?? v.label}** — the FreshGen skill for the ${v.label} video model, best for ${v.bestFor}. Slash command: \`/${v.id}\`.
 
 ## The \`/${v.id}\` command
 
@@ -179,6 +198,8 @@ When a message begins with this command (or names this model): first state the e
 ${VIDEO_TIPS[v.id] ?? "- Describe one clear motion and one camera move."}
 
 ${sec(6)}
+
+${sec(1)}
 
 ${sec(7)}
 

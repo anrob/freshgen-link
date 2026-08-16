@@ -1,15 +1,11 @@
 ---
 name: seedream-4
-description: seedream-4 — FreshGen Seedream 4.0 image model. Generate an image with the Seedream 4.0 model (`seedream-4`), best for stylized art, illustration, bold color. Use when the user types /seedream-4, names this model, or the request clearly fits it. Real money (about $0.03 / image), billed to the connected Kie.ai account.
+description: Illustration and Stylized Art Generator (Seedream 4.0) — FreshGen image model skill. Generate an image with the Seedream 4.0 model (`seedream-4`), best for stylized art, illustration, bold color. Use when the user types /seedream-4, names this model, or the request clearly fits it. Real money (about $0.03 / image), billed to the connected Kie.ai account.
 ---
 
-# seedream-4
+# Illustration and Stylized Art Generator (Seedream 4.0)
 
-**Skill name:** `seedream-4` — FreshGen /seedream-4: Seedream 4.0.
-
-## What FreshGen is
-
-FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
+**Illustration and Stylized Art Generator** — the FreshGen skill for the Seedream 4.0 model, best for stylized art, illustration, bold color. Slash command: `/seedream-4`.
 
 ## The `/seedream-4` command
 
@@ -73,6 +69,10 @@ For video versions of the above, match the same aspect ratio and default to a 5-
 - **Default model:** DEFAULT MODEL ID (e.g. `gpt-image-2`)
 
 Prepend the brand's colors, visual style words, and typography feel to every prompt unless the user explicitly asks for something different. If a request conflicts with a Never rule, follow the Never rule and say why.
+
+## What FreshGen is
+
+FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
 
 ## Money & safety rules
 

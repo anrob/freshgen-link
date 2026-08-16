@@ -1,15 +1,11 @@
 ---
 name: video
-description: video — FreshGen /video: start a short AI video render with generate_video. Use when the user types /video, or asks for a clip, reel, short video, motion ad, or animation from a text description.
+description: Short Video Generator (FreshGen /video) — start a short AI video render with generate_video. Use when the user types /video, or asks for a clip, reel, short video, motion ad, or animation from a text description.
 ---
 
-# video
+# Short Video Generator (FreshGen /video)
 
-**Skill name:** `video` — FreshGen /video: short video from text.
-
-## What FreshGen is
-
-FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
+**Short Video Generator** — the FreshGen skill for a short video clip from a text prompt. Slash command: `/video`.
 
 ## The `/video` command
 
@@ -85,6 +81,10 @@ Only use aspect ratios, resolutions, and durations shown here and in section 5. 
 - **Default model:** DEFAULT MODEL ID (e.g. `gpt-image-2`)
 
 Prepend the brand's colors, visual style words, and typography feel to every prompt unless the user explicitly asks for something different. If a request conflicts with a Never rule, follow the Never rule and say why.
+
+## What FreshGen is
+
+FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
 
 ## Money & safety rules
 

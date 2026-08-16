@@ -1,15 +1,11 @@
 ---
 name: variations
-description: variations — FreshGen /variations: several genuinely different takes on one image concept. Use when the user types /variations, or asks for options, alternatives, a few versions, or 'show me some ideas' for an image.
+description: Image Variations Generator (FreshGen /variations) — several genuinely different takes on one image concept. Use when the user types /variations, or asks for options, alternatives, a few versions, or 'show me some ideas' for an image.
 ---
 
-# variations
+# Image Variations Generator (FreshGen /variations)
 
-**Skill name:** `variations` — FreshGen /variations: several different takes.
-
-## What FreshGen is
-
-FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
+**Image Variations Generator** — the FreshGen skill for several genuinely different takes on one concept. Slash command: `/variations`.
 
 ## The `/variations` command
 
@@ -96,6 +92,10 @@ For video versions of the above, match the same aspect ratio and default to a 5-
 - **Default model:** DEFAULT MODEL ID (e.g. `gpt-image-2`)
 
 Prepend the brand's colors, visual style words, and typography feel to every prompt unless the user explicitly asks for something different. If a request conflicts with a Never rule, follow the Never rule and say why.
+
+## What FreshGen is
+
+FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
 
 ## Money & safety rules
 

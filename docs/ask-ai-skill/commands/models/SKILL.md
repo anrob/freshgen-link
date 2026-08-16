@@ -1,15 +1,11 @@
 ---
 name: models
-description: models — FreshGen /models: list the available image and video models, what each is best at, and what they cost. Use when the user types /models or asks which model to use, what's available, or prices.
+description: Model Picker and Price List (FreshGen /models) — list the available image and video models, what each is best at, and what they cost. Use when the user types /models or asks which model to use, what's available, or prices.
 ---
 
-# models
+# Model Picker and Price List (FreshGen /models)
 
-**Skill name:** `models` — FreshGen /models: which model, what cost.
-
-## What FreshGen is
-
-FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
+**Model Picker and Price List** — the FreshGen skill for which model to use and what each costs. Slash command: `/models`.
 
 ## The `/models` command
 
@@ -56,6 +52,10 @@ Rules of thumb: the default (`kling-2-1-std`) covers most requests — fast and 
 Unrecognized model ids don't error — the tool silently falls back to the default and says which one it used instead. Treat that note as informational, not a failure.
 
 Only use aspect ratios, resolutions, and durations shown here and in section 5. If genuinely unsure, `1:1`, `16:9`, `9:16`, and `1K` are always safe.
+
+## What FreshGen is
+
+FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie.ai's image and video models directly from this chat. Every call that generates media is **real money**, billed straight to the connected Kie.ai account — never treat a generation as free or reversible. Generated URLs expire in about 14 days; when this deployment has a GHL Media Library connection configured, finished images and video are also copied there automatically as a permanent backup, and `save_to_media_library` exists to save anything else in manually.
 
 ## Money & safety rules
 
