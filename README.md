@@ -186,7 +186,7 @@ No — video takes **2 to 5 minutes** to render. `generate_video` starts the job
 
 **Do I need to know how to code?**
 
-No. You click the deploy button, paste two values, and copy a URL into GHL. If you can fill out a form, you can set this up.
+No. You click the deploy button, paste three values, and copy a URL into GHL. If you can fill out a form, you can set this up.
 
 **Can I run more than one?**
 

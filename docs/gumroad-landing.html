@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- No <meta>/<title>: this file is a Gumroad custom landing page. Gumroad
+     wraps it in its own document (charset, viewport, title come from the
+     product) and its sanitizer strips head tags anyway. -->
+<meta charset="utf-8">
+<style>
+  :root {
+    --paper: #faf9f6;
+    --ink: #141414;
+    --muted: #6b6b66;
+    --accent: #e8501a;
+    --accent-strong: #c2410c;
+    --rule: #e4e2dc;
+    --card: #ffffff;
+    --radius: 3px;
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  p { max-width: 66ch; }
+
+  a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  a:hover { color: var(--accent-strong); }
+
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 12px;
+    top: -60px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    z-index: 10;
+    transition: top 0.15s ease;
+  }
+  .skip-link:focus { top: 12px; }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    background: #f1efe9;
+    border-radius: var(--radius);
+    padding: 1px 6px;
+  }
+
+  /* ── Masthead ── */
+  .site-header {
+    border-bottom: 2px solid var(--ink);
+  }
+  .masthead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 26px 0;
+  }
+  .masthead-left { min-width: 0; }
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 23px;
+    font-weight: 700;
+  }
+  .kicker {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin-top: 4px;
+  }
+  .masthead-buy {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .price-tag {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .price-tag-note {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-left: 4px;
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 11px 22px;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1.2;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+  .btn-lg { padding: 15px 30px; font-size: 16.5px; }
+
+  /* ── Sections ── */
+  .section {
+    padding: 52px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section:last-of-type { border-bottom: none; }
+
+  /* ── Hero ── */
+  .hero h1 {
+    font-size: clamp(30px, 5.4vw, 50px);
+    max-width: 18ch;
+  }
+  .hero .sub {
+    margin-top: 18px;
+    font-size: 18.5px;
+    color: var(--muted);
+    max-width: 52ch;
+  }
+  .hero-actions {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .quiet-line {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* ── The math ── */
+  .math h2 { font-size: clamp(26px, 4vw, 36px); margin-top: 14px; max-width: 20ch; }
+  .num-emphasis {
+    font-size: 1.3em;
+    color: var(--accent-strong);
+  }
+  .sub-note {
+    margin-top: 14px;
+    font-size: 15.5px;
+    color: var(--muted);
+    max-width: 60ch;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    margin-top: 26px;
+  }
+  .price-table {
+    width: 100%;
+    min-width: 480px;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .price-table th {
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid var(--ink);
+    padding: 8px 14px 8px 0;
+  }
+  .price-table td {
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 14px 12px 0;
+    vertical-align: top;
+  }
+  .price-table td:first-child { font-weight: 600; }
+  .price-table .price {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    font-size: 16.5px;
+    font-weight: 600;
+  }
+  .table-caption {
+    margin-top: 14px;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  /* ── How it works ── */
+  .how h2 { font-size: clamp(26px, 4vw, 36px); margin-top: 14px; }
+  .how-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 40px;
+    align-items: start;
+    margin-top: 30px;
+  }
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    display: grid;
+    gap: 24px;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .step::before {
+    counter-increment: step;
+    content: counter(step);
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent-strong);
+    border: 1.5px solid var(--rule);
+    border-radius: var(--radius);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card);
+  }
+  .step h3 { font-size: 18px; }
+  .step p { margin-top: 6px; font-size: 14.5px; color: var(--muted); }
+
+  .diagram-wrap { display: flex; justify-content: center; }
+  .diagram {
+    width: 100%;
+    max-width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 15px;
+  }
+  .diagram-box {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 12px;
+    text-align: center;
+    background: var(--card);
+    border: 1.5px solid var(--accent);
+    border-radius: 3px;
+  }
+  .diagram-box-strong { font-weight: 700; }
+  .diagram-muted {
+    display: block;
+    margin-top: 4px;
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  /* Vertical connector + arrowhead, drawn with borders only. */
+  .diagram-arrow {
+    position: relative;
+    width: 0;
+    height: 28px;
+    border-left: 1.5px solid var(--accent);
+  }
+  .diagram-arrow::after {
+    content: "";
+    position: absolute;
+    left: -6px;
+    bottom: -1px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--accent);
+  }
+  .diagram-caption {
+    padding: 10px 0 2px;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    color: var(--accent-strong);
+    font-weight: 600;
+  }
+
+  @media (max-width: 720px) {
+    .how-grid { grid-template-columns: 1fr; }
+    .diagram-wrap { margin-top: 4px; }
+  }
+
+  /* ── What you get ── */
+  .features h2 { font-size: clamp(26px, 4vw, 36px); margin-top: 14px; }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 44px;
+    margin-top: 30px;
+  }
+  .feature-grid dt {
+    font-family: var(--font-display);
+    font-size: 17.5px;
+    font-weight: 700;
+  }
+  .feature-grid dd {
+    margin-top: 6px;
+    font-size: 14.5px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  @media (max-width: 720px) {
+    .feature-grid { grid-template-columns: 1fr; gap: 22px; }
+  }
+
+  /* ── FAQ ── */
+  .faq h2 { font-size: clamp(26px, 4vw, 36px); margin-top: 14px; }
+  .faq-list { margin-top: 26px; }
+  details {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--card);
+  }
+  details + details { margin-top: 10px; }
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15.5px;
+    padding: 15px 18px;
+    list-style: none;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::before {
+    content: "+";
+    font-family: var(--font-display);
+    color: var(--accent-strong);
+    font-size: 19px;
+    line-height: 1;
+    flex: none;
+  }
+  details[open] summary::before { content: "\2013"; }
+  .details-body {
+    padding: 0 18px 18px 44px;
+    font-size: 14.5px;
+    color: var(--muted);
+  }
+  .details-body code { color: var(--ink); }
+
+  /* ── Pricing ── */
+  .pricing h2 { font-size: clamp(24px, 3.6vw, 30px); margin-top: 14px; }
+  .price-block {
+    display: flex;
+    align-items: baseline;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .price-display {
+    font-family: var(--font-display);
+    font-size: 58px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .price-meta .price-label { font-weight: 600; font-size: 14.5px; }
+  .price-meta p { font-size: 14.5px; color: var(--muted); margin-top: 4px; }
+  .price-meta p:first-child { margin-top: 0; }
+
+  .pricing-details { margin-top: 30px; }
+  .pricing-details h3 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--font-body);
+  }
+  .pricing-details ul {
+    margin-top: 14px;
+    padding-left: 20px;
+    display: grid;
+    gap: 10px;
+    font-size: 15px;
+  }
+  .honesty-line {
+    margin-top: 22px;
+    padding: 14px 18px;
+    background: var(--card);
+    border-left: 3px solid var(--accent-strong);
+    font-size: 14px;
+    max-width: none;
+  }
+  .pricing .btn-lg { margin-top: 30px; }
+  .fine-print {
+    margin-top: 20px;
+    font-size: 12.5px;
+    color: var(--muted);
+    max-width: 60ch;
+  }
+
+  /* ── Footer ── */
+  .site-footer {
+    padding: 30px 0 50px;
+  }
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px 24px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .footer-inner a { color: var(--muted); }
+
+  @media (max-width: 720px) {
+    .section { padding: 40px 0; }
+    p, .sub-note, .table-caption { max-width: none; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container masthead">
+    <div class="masthead-left">
+      <div class="wordmark"><span data-gumroad-field="name">FreshGen Link</span></div>
+      <p class="kicker">For GoHighLevel agencies</p>
+    </div>
+    <div class="masthead-buy">
+      <span class="price-tag"><span data-gumroad-field="price">$47</span><span class="price-tag-note">one-time</span></span>
+      <button type="button" class="btn" data-gumroad-action="buy">Buy FreshGen Link</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="section hero">
+    <div class="container">
+      <h1>GoHighLevel resells you its AI image and video generation. At a markup.</h1>
+      <p class="sub">FreshGen Link is a self-hosted MCP connector you deploy to your own Vercel account. Connect your own Kie.ai key, and every generation bills at Kie's raw wholesale price — straight to your wallet. No subscription, no per-seat fee, no markup.</p>
+      <div class="hero-actions">
+        <button type="button" class="btn btn-lg" data-gumroad-action="buy">Get it now — <span data-gumroad-field="price">$47</span></button>
+        <p class="quiet-line">Deploy &rarr; paste three values &rarr; paste one URL into GoHighLevel. About five minutes, no code.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section math" aria-labelledby="math-h2">
+    <div class="container">
+      <p class="kicker">The math</p>
+      <h2 id="math-h2">Video runs about <span class="num-emphasis">10x</span> cheaper.</h2>
+      <p class="sub-note">Images run 2&ndash;4x cheaper too. GHL's price is a reseller markup on top of the same model providers &mdash; FreshGen Link removes the reseller and bills your own Kie.ai wallet at the raw rate.</p>
+
+      <div class="table-wrap">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th scope="col">What you're generating</th>
+              <th scope="col">GHL native</th>
+              <th scope="col">FreshGen Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Image</td>
+              <td class="price">$0.04 &ndash; $0.12</td>
+              <td class="price">$0.02 &ndash; $0.09</td>
+            </tr>
+            <tr>
+              <td>10-second video</td>
+              <td class="price">$1.50 &ndash; $4.00</td>
+              <td class="price">about $0.25</td>
+            </tr>
+            <tr>
+              <td>Monthly &mdash; 20 ten-second clips</td>
+              <td class="price">$30 &ndash; $80</td>
+              <td class="price">about $5</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-caption">Saved: $25&ndash;$75 a month on video alone, at real agency volume.</p>
+    </div>
+  </section>
+
+  <section class="section how" aria-labelledby="how-h2">
+    <div class="container">
+      <p class="kicker">How it works</p>
+      <h2 id="how-h2">Three steps. About five minutes.</h2>
+
+      <div class="how-grid">
+        <ol class="steps">
+          <li class="step">
+            <div>
+              <h3>Deploy</h3>
+              <p>Click the deploy button, sign into GitHub and Vercel &mdash; both free &mdash; and paste three values: your license key, your Kie.ai API key, and a random secret you make up. The build takes about three minutes.</p>
+            </div>
+          </li>
+          <li class="step">
+            <div>
+              <h3>Prove it works</h3>
+              <p>Open your private dashboard and hit the test-image button. If an image comes back, your Kie.ai key is wired up correctly &mdash; before you touch GoHighLevel at all.</p>
+            </div>
+          </li>
+          <li class="step">
+            <div>
+              <h3>Connect to GHL</h3>
+              <p>In GoHighLevel: Ask AI &rarr; the + icon &rarr; Manage Connectors &rarr; + Add custom MCP. Paste your MCP URL, click Add MCP, then ask your agent for an image.</p>
+            </div>
+          </li>
+        </ol>
+
+        <!-- Plain HTML diagram: Gumroad's sanitizer strips SVG <text>, so
+             boxes are divs and arrows are CSS — nothing here can be removed. -->
+        <div class="diagram-wrap">
+          <div class="diagram" role="img" aria-label="Diagram: GoHighLevel connects to your own Vercel server running FreshGen Link, which connects to Kie.ai. Label under the server reads: your key, your wallet.">
+            <div class="diagram-box">GoHighLevel</div>
+            <div class="diagram-arrow" aria-hidden="true"></div>
+            <div class="diagram-box diagram-box-strong">FreshGen Link<span class="diagram-muted">(your Vercel)</span></div>
+            <div class="diagram-caption">your key &middot; your wallet</div>
+            <div class="diagram-arrow" aria-hidden="true"></div>
+            <div class="diagram-box">Kie.ai</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section features" aria-labelledby="features-h2">
+    <div class="container">
+      <p class="kicker">What you get</p>
+      <h2 id="features-h2">Everything your agent needs, nothing it doesn't.</h2>
+
+      <dl class="feature-grid">
+        <div class="feature">
+          <dt>Five tools, ready to call</dt>
+          <dd><code>generate_image</code>, <code>generate_video</code>, <code>check_status</code>, <code>check_credits</code>, <code>list_models</code> &mdash; your GHL AI agent can use all five right away.</dd>
+        </div>
+        <div class="feature">
+          <dt>Works everywhere GHL allows MCP</dt>
+          <dd>Ask AI, Workflow AI Agents, and Agent Studio Superagents &mdash; all three connector surfaces.</dd>
+        </div>
+        <div class="feature">
+          <dt>Auto-saves to your Media Library</dt>
+          <dd>Finished images and video copy themselves into your GHL Media Library automatically, so nothing expires on you.</dd>
+        </div>
+        <div class="feature">
+          <dt>One deployment, every sub-account</dt>
+          <dd>Serve every client from a single deployment &mdash; each sub-account gets its own URL.</dd>
+        </div>
+        <div class="feature">
+          <dt>A private dashboard</dt>
+          <dd>Live credit balance, a copy-URL button, a one-click test image, and connection walkthroughs.</dd>
+        </div>
+        <div class="feature">
+          <dt>Twelve models</dt>
+          <dd>GPT Image 2, Nano Banana Pro, Seedream 4, Imagen 4, Kling 2.1 / 2.6 / 3.0, Seedance 2, Wan 2.6, Grok Imagine, and more.</dd>
+        </div>
+        <div class="feature">
+          <dt>White-label it</dt>
+          <dd>Swap in your own brand name with a single setting.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section faq" aria-labelledby="faq-h2">
+    <div class="container">
+      <p class="kicker">FAQ</p>
+      <h2 id="faq-h2">Straight answers</h2>
+
+      <div class="faq-list">
+        <details>
+          <summary>Do you resell me Kie.ai credits?</summary>
+          <div class="details-body"><p>No. You pay Kie.ai directly for what you generate. This product doesn't resell you credits and never touches your key &mdash; it lives in your own Vercel account.</p></div>
+        </details>
+        <details>
+          <summary>Is Vercel's free tier enough to run this?</summary>
+          <div class="details-body"><p>Vercel's free tier runs this fine, but their Hobby plan terms are non-commercial. Running it for clients means Vercel Pro, at $20/month.</p></div>
+        </details>
+        <details>
+          <summary>Can one license cover several clients or brands?</summary>
+          <div class="details-body"><p>One license key covers one deployment. Running it for several brands or clients? Message me.</p></div>
+        </details>
+        <details>
+          <summary>Is this a general-purpose AI toolbox?</summary>
+          <div class="details-body"><p>No, on purpose. Images and video only &mdash; this isn't a general-purpose AI toolbox.</p></div>
+        </details>
+        <details>
+          <summary>Do I need to know how to code?</summary>
+          <div class="details-body"><p>No. You click the deploy button, paste a few values, and copy one URL into GHL. If you can fill out a form, you can set this up.</p></div>
+        </details>
+        <details>
+          <summary>What happens if my license key is missing?</summary>
+          <div class="details-body"><p>Generation switches off. The informational tools still work, but <code>generate_image</code>, <code>generate_video</code>, and <code>save_to_media_library</code> return a not-activated message until you add a valid license key in Vercel and redeploy.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pricing" aria-labelledby="pricing-h2">
+    <div class="container">
+      <p class="kicker">Pricing</p>
+      <h2 id="pricing-h2">One license. One deployment.</h2>
+
+      <div class="price-block">
+        <div class="price-display" data-gumroad-field="price">$47</div>
+        <div class="price-meta">
+          <p class="price-label">One-time. Founder pricing.</p>
+          <p>Pays for itself in the first month on video alone.</p>
+        </div>
+      </div>
+
+      <div class="pricing-details">
+        <h3>What you need</h3>
+        <ul>
+          <li>A free GitHub account and a Vercel account &mdash; the deploy button walks you through both.</li>
+          <li>A <a href="https://kie.ai" target="_blank" rel="noreferrer">Kie.ai</a> API key and a few dollars of prepaid credit &mdash; $10 covers a lot of testing.</li>
+          <li>No coding. Click Deploy, paste your values, copy one URL into GoHighLevel.</li>
+        </ul>
+        <p class="honesty-line">Vercel's Hobby plan is free but non-commercial. Running this for clients means Vercel Pro, $20/month, to stay inside the terms.</p>
+      </div>
+
+      <button type="button" class="btn btn-lg" data-gumroad-action="buy">Buy FreshGen Link &mdash; <span data-gumroad-field="price">$47</span></button>
+
+      <p class="fine-print">Source-available license. Your server, your key, at-cost pricing. Kie.ai usage is billed by Kie.ai to your own account.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>Built by Fresh</p>
+    <p><a href="https://github.com/anrob/freshgen-link" target="_blank" rel="noreferrer">Full docs &amp; README on GitHub</a></p>
+    <p>Something broken? Reply to your receipt email.</p>
+  </div>
+</footer>
+
+<!-- No JS on purpose. A scroll-reveal fade was tried and removed: inside
+     Gumroad's sandboxed page the IntersectionObserver did not fire on load,
+     leaving the whole page invisible until the visitor scrolled. -->
+
+</body>
+</html>
