@@ -35,11 +35,21 @@ export default async function Landing() {
             ? "Your own server. Your own Kie.ai key. About four cents an image on GPT Image 2 — no per-seat subscription, no middleman markup."
             : "Your own server. Your own Kie.ai key. Pennies per image, a quarter per video clip — no per-seat subscription, no middleman markup."}
         </p>
-        <p style={{ marginTop: 22 }}>
+        <p style={{ marginTop: 26, display: "flex", gap: 10, flexWrap: "wrap" }}>
           <a className="btn" href="#how">
             How it works
           </a>
+          <a className="btn ghost" href="#models">
+            Models &amp; prices
+          </a>
         </p>
+        <div className="chips" aria-label="Works with">
+          <span className="chip">GoHighLevel Ask AI</span>
+          <span className="chip">Workflow AI Agents</span>
+          <span className="chip">Media Library auto-save</span>
+          <span className="chip">Kie.ai · your key</span>
+          {lite ? <span className="chip">GPT Image 2</span> : <span className="chip">12 image &amp; video models</span>}
+        </div>
       </section>
 
       <section className="section">
@@ -102,7 +112,7 @@ export default async function Landing() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="models">
         <div className="kicker">Models &amp; prices</div>
         <table className="price-table">
           <thead>

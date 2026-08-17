@@ -305,7 +305,7 @@ export default async function Dashboard({
               You&apos;re running <strong>Lite</strong>: images on GPT Image 2,
               one location.
             </p>
-            <div className="three-up" style={{ marginTop: 14 }}>
+            <div className="three-up two" style={{ marginTop: 14 }}>
               <div>
                 <h3>Full — {UPGRADE_PRICE}</h3>
                 <p>
