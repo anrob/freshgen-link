@@ -8,3 +8,6 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 .vercel
+
+# Gumroad listing images — local copies only (CDN URLs are recorded in docs/GUMROAD-LISTING.md)
+docs/gumroad-assets/

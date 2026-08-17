@@ -217,3 +217,14 @@ Add to the Full product's description, top of WHAT YOU GET or as its own line un
 ```
 • Not sure yet? FreshGen Link Lite is free — images on GPT Image 2 only — and your Lite key swaps for a Full one whenever you're ready: https://iamjustfresh.gumroad.com/l/freshgen-link-lite
 ```
+
+## Listing images (uploaded 2026-08-16)
+
+Generated with GPT Image 2 through the prod server itself, using the Full cover/thumbnail as reference images. Local copies live in `docs/gumroad-assets/` (gitignored — 5 MB of PNGs); the permanent copies are on Gumroad's CDN:
+
+| | Cover (2048×1152) | Thumbnail (square) |
+|---|---|---|
+| Full | https://public-files.gumroad.com/r64y0xi08wnmq4y0cagm69z1os1p | https://public-files.gumroad.com/03n420sntl5mop80upevqzuzk3zz |
+| Lite | https://public-files.gumroad.com/l1lq5dev672sqvk6c2l73ppuclld | https://public-files.gumroad.com/obsousaz0toror0v5s9e2vkgjkc9 |
+
+Re-upload if ever needed: `gumroad products covers add <id> --image <file>` · `gumroad products thumbnail set <id> --image <file>`.
