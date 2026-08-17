@@ -241,6 +241,7 @@ Generated with GPT Image 2 through the prod server itself, using the Full cover/
 |---|---|---|
 | Full | https://public-files.gumroad.com/r64y0xi08wnmq4y0cagm69z1os1p | https://public-files.gumroad.com/03n420sntl5mop80upevqzuzk3zz |
 | Lite | https://public-files.gumroad.com/l1lq5dev672sqvk6c2l73ppuclld | https://public-files.gumroad.com/obsousaz0toror0v5s9e2vkgjkc9 |
+| Agency | https://public-files.gumroad.com/relxq4rvwnbbzd53um75x1y0e5yc | https://public-files.gumroad.com/badhpjrcztl7xhqqxh7en7ek9ktl |
 
 Re-upload if ever needed: `gumroad products covers add <id> --image <file>` · `gumroad products thumbnail set <id> --image <file>`.
 
@@ -256,7 +257,7 @@ Created 2026-08-16 as a **draft** via the Gumroad CLI. Product id `TtEQhFkX2y4RA
 
 1. Content tab → **"Generate a unique license key per sale" → ON.**
 2. Post-purchase page: `gumroad products content set 'TtEQhFkX2y4RAnS2Kf5irw==' docs/gumroad/agency-content.json --yes` (steps 1–3 as Full, plus Step 4 per-location URLs + agency PIT and Step 5 brand).
-3. Cover + thumbnail (Agency variants — see Listing images below).
+3. ~~Cover + thumbnail~~ — done 2026-08-16 (see Listing images above).
 4. `gumroad products publish 'TtEQhFkX2y4RAnS2Kf5irw=='`
 5. Test: buy it with a 100%-off code, run a server with the key, confirm the dashboard says **Agency**, shows Per-location URLs + Your brand, and `BRAND_NAME` takes effect.
 
