@@ -141,25 +141,6 @@ lite_body = f"""<body>
     </div>
   </section>
 
-  <section class="section math" aria-labelledby="more-h2">
-    <div class="container">
-      <p class="kicker">When you want more</p>
-      <h2 id="more-h2">Same install. Swap the key.</h2>
-      <p class="sub-note">Lite is the top of a ladder, not a trial. Upgrade any time: buy, paste the new key into <code>LICENSE_KEY</code>, redeploy. Same URL &mdash; nothing in GHL needs reconnecting.</p>
-
-      <dl class="feature-grid">
-        <div class="feature">
-          <dt>Full &mdash; $47 one-time</dt>
-          <dd><strong>Video</strong> (Kling 2.1/2.6/3.0, Seedance 2, Wan 2.6, Grok Imagine &mdash; from about $0.13 a clip, roughly 10x cheaper than GHL native) plus <strong>five more image models</strong> and all 23 Ask AI skills.<br><a href="https://iamjustfresh.gumroad.com/l/freshgen-link">Get Full &rarr;</a></dd>
-        </div>
-        <div class="feature">
-          <dt>Agency &mdash; $147 one-time</dt>
-          <dd>Everything in Full, plus <strong>every sub-account from one deployment</strong> (each gets its own URL, media lands in the right Media Library) and <strong>your brand</strong> on it &mdash; white-label name plus a per-client brand block.<br><a href="https://iamjustfresh.gumroad.com/l/freshgen-link-agency">Get Agency &rarr;</a></dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
   <section class="section faq" aria-labelledby="faq-h2">
     <div class="container">
       <p class="kicker">FAQ</p>
@@ -168,7 +149,7 @@ lite_body = f"""<body>
       <div class="faq-list">
         <details>
           <summary>Is it actually free? What's the catch?</summary>
-          <div class="details-body"><p>Actually free. It does one thing &mdash; images on GPT Image 2 &mdash; and does it well. The only cost is your own Kie.ai usage, about $0.04 an image. Full and Agency exist if you want video, more models, every sub-account or your brand &mdash; you don't need either to use Lite.</p></div>
+          <div class="details-body"><p>Actually free. It does one thing &mdash; images on GPT Image 2 &mdash; and does it well. The only cost is your own Kie.ai usage, about $0.04 an image, billed by Kie.ai to you.</p></div>
         </details>
         <details>
           <summary>Why is it free?</summary>
