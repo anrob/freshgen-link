@@ -1,5 +1,8 @@
 /**
  * Generate one Ask AI skill per model: docs/ask-ai-skill/models/<model-id>/SKILL.md
+ * Also writes the Lite edition of the gpt-image-2 skill to
+ * docs/ask-ai-skill/lite/gpt-image-2/SKILL.md — same file minus the BRAND block,
+ * video references and the model parameter (a Lite server has none of those).
  *
  * Imports the REAL model definitions from lib/kie.ts and lib/kie-video.ts, so
  * ids, prices, resolutions, durations and reference-image support can never
@@ -101,12 +104,33 @@ const VIDEO_TITLES: Record<string, string> = {
 type Out = { id: string; words: number };
 const outputs: Out[] = [];
 
-function write(id: string, fm: string, text: string) {
-  const dir = join(OUT, id);
+function write(id: string, fm: string, text: string, base = OUT, label = id) {
+  const dir = join(base, id);
   mkdirSync(dir, { recursive: true });
   const full = `${fm}\n${text.trimEnd()}\n`;
   writeFileSync(join(dir, "SKILL.md"), full);
-  outputs.push({ id, words: text.split(/\s+/).length });
+  outputs.push({ id: label, words: text.split(/\s+/).length });
+}
+
+// Lite = the gpt-image-2 skill with everything a Lite server can't do cut out:
+// no BRAND block (brand is an Agency feature), no video, no model picker.
+function liteify(text: string): string {
+  return text
+    // Whole BRAND block section (up to the next H2).
+    .replace(/## BRAND block[\s\S]*?(?=\n## )/, "")
+    .replace(/ Prepend the BRAND block style unless the user says otherwise\./, "")
+    // Lite generate_image has no `model` field.
+    .replace(/call `generate_image` with `model: "gpt-image-2"` and `prompt`/, "call `generate_image` with `prompt`")
+    // Video references.
+    .replace(/\n- \*Real-estate listing video\.\*[^\n]*/, "")
+    .replace(/\n\nFor video versions of the above[^\n]*/, "")
+    .replace(/FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie\.ai's image and video models directly from this chat\./, "FreshGen Link Lite gives you four tools — `generate_image` (GPT Image 2 only), `check_status`, `check_credits` and `list_models`, plus `save_to_media_library` when a Media Library connection is configured — that call Kie.ai's GPT Image 2 model directly from this chat. There is no video and no other image model on Lite: if the user asks for either, say so and mention that FreshGen Link Full (\$47 one-time) adds them — https://iamjustfresh.gumroad.com/l/freshgen-link.")
+    .replace(/finished images and video are also copied/, "finished images are also copied")
+    .replace(/- Every `generate_image` and `generate_video` call is real money/, "- Every `generate_image` call is real money")
+    .replace(/\n- For video, quote the estimated cost[^\n]*/, "")
+    .replace(/more than 4 images or more than 2 videos in one turn/, "more than 4 images in one turn")
+    .replace(/\n- `generate_video` never returns the finished clip[^\n]*/, "")
+    .replace(/ \(video: 1–2 more minutes\)/, "");
 }
 
 for (const m of KIE_MODELS) {
@@ -159,6 +183,9 @@ ${sec(8)}
 ${sec(9)}
 `;
   write(m.id, fm, text);
+  if (m.id === "gpt-image-2") {
+    write(m.id, fm, liteify(text), join(HERE, "lite"), "lite/gpt-image-2");
+  }
 }
 
 for (const v of VIDEO_MODELS) {

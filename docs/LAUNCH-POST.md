@@ -28,7 +28,7 @@ Ground rules that keep it from getting taken down:
 >
 > - runs on your own Vercel account (one click, about 5 min)
 > - your own Kie.ai key — around 4 cents an image, no subscription
-> - works in Ask AI, Workflow AI Agents, Agent Studio
+> - works in Ask AI and Workflow AI Agents
 > - no code
 >
 > it's free. link's in the first comment. if it breaks for you, tell me and I'll fix it.
@@ -42,7 +42,7 @@ Ground rules that keep it from getting taken down:
 
 **Shorter version** (for stricter groups, or as a reply when someone asks "any AI image tool for GHL?"):
 
-> I built one for my own sub-accounts and made it free — plugs GPT Image 2 into Ask AI, runs on your own Vercel + your own Kie.ai key (~4¢ an image). works in Workflow AI Agents and Agent Studio too. happy to send the link if you want it.
+> I built one for my own sub-accounts and made it free — plugs GPT Image 2 into Ask AI, runs on your own Vercel + your own Kie.ai key (~4¢ an image). works in Workflow AI Agents too. happy to send the link if you want it.
 
 ---
 
@@ -59,28 +59,28 @@ If they say no: "no worries, thanks for the quick answer" — and post it in the
 Keep them short. Match their energy. Answer, then stop.
 
 **"Is it actually free / what's the catch?"**
-> yeah actually free. it does one thing — images on GPT Image 2 — and does it well. there's a paid version with video + more models + multi-sub-account, but you don't need it to use this. the only cost is your own Kie.ai usage, ~4¢ an image.
+> yeah actually free. it does one thing — images on GPT Image 2 — and does it well. there's a paid version with video + more models ($47) and an agency one that covers all your sub-accounts ($147), but you don't need either to use this. the only cost is your own Kie.ai usage, ~4¢ an image.
 
 **"How do I install it? I don't code."**
 > no code. click the deploy button, paste 3 values (your license key from the free page, your Kie.ai key, a made-up password), wait 3 minutes, copy one URL into Ask AI → Manage Connectors → Add custom MCP. the page walks you through it. if you get stuck, message me and I'll get you through it.
 
 **"Is this allowed / against GHL's ToS?"**
-> it's a standard MCP connector — the same mechanism GHL built for connecting outside tools to Ask AI, Workflows and Agent Studio. nothing is hacked or scraped. it's just your own server on the other end instead of a catalog app.
+> it's a standard MCP connector — the same mechanism GHL built for connecting outside tools to Ask AI and Workflows. nothing is hacked or scraped. it's just your own server on the other end instead of a catalog app.
 
 **"Why not just use Higgsfield / OpenArt from the catalog?"**
 > those are fine. difference is they're their subscription, their account, their pricing. this is your server and your key at Kie's raw price, and it's free. use whichever fits.
 
 **"Does it do video?"**
-> not the free one — that's images only on purpose. the paid version does video (Kling, Seedance etc — about 10x cheaper than GHL native), plus 5 more image models and one deployment for all your sub-accounts. same install, you just swap the key: https://iamjustfresh.gumroad.com/l/freshgen-link
+> not the free one — that's images only on purpose. Full ($47) does video (Kling, Seedance etc — about 10x cheaper than GHL native) plus 5 more image models. same install, you just swap the key: https://iamjustfresh.gumroad.com/l/freshgen-link
 
 **"Is my API key safe?"**
 > it lives in your own Vercel project's env vars. nobody — including me — ever sees it. the code is on GitHub if you want to check.
 
-**"Can I white-label / put my brand on it?"**
-> the free one says FreshGen. the paid one has a BRAND_NAME setting that swaps the name everywhere. that's on the paid page.
+**"Can I white-label / put my brand on it?" / "I run multiple sub-accounts"**
+> that's the Agency version ($147) — one deployment covers every sub-account (each gets its own URL, media lands in the right Media Library) and it takes your brand name everywhere: https://iamjustfresh.gumroad.com/l/freshgen-link-agency
 
-**"Does it work in Workflows / Agent Studio?"**
-> yes — Ask AI, Workflow AI Agents, and Agent Studio Superagents (that one uses an "instant" URL the dashboard gives you, because Superagent times out long calls).
+**"Does it work in Workflows?"**
+> yes — Ask AI and Workflow AI Agents, same URL in both. (Agent Studio isn't offered right now.)
 
 **"The code's public, why would anyone pay for the paid version?"**
 > because they're paying for it to be built, tested and packaged so it deploys in 3 minutes instead of 3 days, plus me when it breaks. same reason people buy cookbooks.
@@ -103,7 +103,7 @@ Keep them short. Match their energy. Answer, then stop.
 - **Post gets removed.** Nothing else happens. Read the reason if they give one, adjust, post it in the next group. Cost: $0.
 - **Zero comments in 24 hours.** Normal for a first post in a big group. Post it in the other two groups. Repost in the first one in 7–10 days with a different opener (e.g. show a specific result: "made this whole ad set for a client inside Ask AI in 4 minutes").
 - **One person signs up.** That's a win. Watch `/s/<secret>/sales` — the Lite sign-ups tile is the scoreboard.
-- **Someone asks for video / multiple sub-accounts.** That's the upgrade conversation happening by itself. Send the Full link, don't oversell.
+- **Someone asks for video / multiple sub-accounts / their brand on it.** That's the upgrade conversation happening by itself. Video → Full link; sub-accounts or brand → Agency link. Don't oversell.
 
 The rep isn't "sell". The rep is "post, then survive whatever happens." Every one of these outcomes is survivable, and three of the four are good.
 

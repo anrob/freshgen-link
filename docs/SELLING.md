@@ -60,22 +60,24 @@ Nobody else is selling "you own the server, you own the key" for GHL AI media ge
 ## Tiers
 
 **Tier 0 — Lite, free** (added 2026-08-16)
-Same repo, same deploy button. A free Gumroad product (`freshgen-link-lite`, product id `qFp7GEt7epSSVWVnIWGDVA==`) mints a Lite key; the server sees which product the key belongs to and turns on the Lite tool set: `generate_image` on GPT Image 2 only, one GHL location, no video, no white-label. Everything else (dashboard, test button, auto-save, Ask AI skills) works.
+Same repo, same deploy button. A free Gumroad product (`freshgen-link-lite`, product id `qFp7GEt7epSSVWVnIWGDVA==`) mints a Lite key; the server sees which product the key belongs to and turns on the Lite tool set: `generate_image` on GPT Image 2 only, one GHL location, no video, no brand, one Ask AI skill (`lite/gpt-image-2`). Everything else (dashboard, test button, auto-save) works.
 
 Why it exists: it's the thing you can post in a GHL Facebook group without it reading as promo. "Built this for my own sub-accounts, it's free if you want it" gets comments, sign-ups, feedback and an email list. Every Lite deployment says "FreshGen" (BRAND_NAME is ignored), the dashboard has an Upgrade card, `list_models` shows what's locked, and the `generate_image` description tells the GHL agent Full exists — so the upsell is inside the product, not in your DMs.
 
-Upgrade path: buy Full → paste the new key into `LICENSE_KEY` → redeploy. Same MCP URL, nothing to reconnect. The seller dashboard (`/s/<secret>/sales`) shows Lite sign-ups next to Full sales.
+Upgrade path (any tier → higher): buy → paste the new key into `LICENSE_KEY` → redeploy. Same MCP URL, nothing to reconnect. The seller dashboard (`/s/<secret>/sales`) shows Full + Agency sales and Lite sign-ups.
 
-**Tier 1 — Self-serve Full, $47 (founder pricing — raise to $97 after three testimonials)**
-Deploy link + docs. They click Deploy, follow the README, connect it themselves. You're selling the packaging, not your time. Delivery: instant, the moment they pay.
+**Tier 1 — Full, $47 one-time** (Gumroad `freshgen-link`, product id `J7GddYMuxwoHag0VPEHI7g==`)
+Every image model + video, all 23 Ask AI skills, one GHL location. No brand, no per-location URLs. Self-serve: they click Deploy, follow the README, connect it themselves. You're selling the packaging, not your time.
 
-**Tier 2 — Done-for-you install, $X**
-You deploy it and connect it on a screen-share. Includes moving them to Vercel Pro so they're not quietly violating Hobby's commercial-use terms. For agency owners who don't want to touch Vercel or GitHub at all. Delivery: one call.
+**Tier 2 — Agency, $147 one-time** (Gumroad `freshgen-link-agency`, product id `TtEQhFkX2y4RAnS2Kf5irw==`, added 2026-08-16)
+Everything in Full plus per-location URLs (one deployment for every sub-account, media lands in the right Media Library) and brand: `BRAND_NAME` white-label + a "Your brand" dashboard section with the paste-ready BRAND block for the skills. This is the tier for anyone running clients in GHL — the $100 step is one client's worth of GHL-native video markup.
 
-**Tier 3 — White-label, $X (top tier)**
-Everything in Tier 2, plus `BRAND_NAME` set to their brand and an accent-color pass so it reads as their own product end to end — landing page, dashboard, all of it. Best pitched to agencies reselling this downstream to their own clients.
+**Tier 3 — Done-for-you install, $X (service)**
+You deploy Agency for them and connect it on a screen-share. Includes moving them to Vercel Pro so they're not quietly violating Hobby's commercial-use terms. For agency owners who don't want to touch Vercel or GitHub at all. Delivery: one call.
 
-**Lead with Lite (Tier 0)** in groups and anywhere you'd feel like you're "selling" — it's a free thing you made, not a pitch. **Lead with Tier 1** in a DM with someone who already has the problem. Upgrade conversations to Tier 2 or 3 tend to happen naturally once someone has seen it work and doesn't want to DIY the Vercel/GitHub part, or wants their own brand on it.
+**Not offered right now:** Agent Studio Superagent. The `?mode=instant` code path still exists (harmless, undocumented) but it's off every buyer-facing surface — it needed the $97/mo GHL plan for Agent Mapping and had timeout quirks. To offer it later: un-hide the docs/dashboard bits (git history has them, commit 323d6a0) and buyers pick it up via **Sync fork** (README → Getting updates). If it ever becomes paid, gate `ctx.mode === "instant"` behind a tier the same way video is.
+
+**Lead with Lite (Tier 0)** in groups and anywhere you'd feel like you're "selling" — it's a free thing you made, not a pitch. **Lead with Full** in a DM with someone who already has the problem, **Agency** the moment they say the word "clients". Done-for-you tends to come up on its own once someone has seen it work and doesn't want to DIY the Vercel/GitHub part.
 
 ## Objection scripts
 
@@ -89,7 +91,7 @@ It's free for personal, non-commercial use — that's Vercel's own terms, not mi
 You can — it's a fine tool. But it's their subscription, their account, their pricing, and none of it belongs to you. This is yours: your server, your API key, at-cost pricing, your brand on it if you want. Different thing entirely.
 
 **"Is this going to break every time GHL changes something?"**
-The three connection paths — Ask AI, Workflow, Superagent — are all standard GHL MCP connectors, not a hack bolted onto the side. If GHL changes how MCP connectors work, that's a platform-wide change GHL has to support either way. This ships fixes like any other tool would.
+The two connection paths — Ask AI and Workflow AI Agents — are standard GHL MCP connectors, not a hack bolted onto the side. If GHL changes how MCP connectors work, that's a platform-wide change GHL has to support either way. This ships fixes like any other tool would.
 
 ## 60-second Loom script
 
@@ -116,6 +118,6 @@ URL: `/s/<secret>/sales` — same secret as the regular `/s/<secret>` control ro
 
 - Images: **$0.02–$0.09** (FreshGen) vs **$0.04–$0.12** (GHL native)
 - Video: **~$0.025/sec measured** (FreshGen) vs **$0.15–$0.40/sec** (GHL native)
-- Vercel Hobby = free but non-commercial only; Pro = $20/mo, included from Tier 2 up
-- Four tiers: Lite (free), Self-serve Full, Done-for-you, White-label
+- Vercel Hobby = free but non-commercial only; Pro = $20/mo, included in Done-for-you
+- Ladder: Lite (free) → Full ($47) → Agency ($147) → Done-for-you (service)
 - The whole pitch in one line: your server, your key, at-cost pricing, no lock-in

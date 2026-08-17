@@ -1,0 +1,282 @@
+[
+ {
+  "title": null,
+  "variant_id": null,
+  "description": {
+   "type": "doc",
+   "content": [
+    {
+     "type": "licenseKey"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "Your license key is at the top of this page and in your receipt email. You'll paste it in during setup \u2014 keep it somewhere safe. This is an Agency key: every model, video, every sub-account, your brand."
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "STEP 1 \u2014 Deploy it"
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "Click the deploy button in the README: "
+      },
+      {
+       "type": "tiptap-link",
+       "attrs": {
+        "href": "https://github.com/anrob/freshgen-link"
+       },
+       "content": [
+        {
+         "type": "text",
+         "text": "https://github.com/anrob/freshgen-link"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "It copies the project into your own GitHub and deploys it to your own Vercel account. Vercel will ask you for three values:"
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "LICENSE_KEY \u2014 the key at the top of this page"
+      }
+     ]
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "KIE_API_KEY \u2014 your key from "
+      },
+      {
+       "type": "tiptap-link",
+       "attrs": {
+        "href": "https://kie.ai/api-key"
+       },
+       "content": [
+        {
+         "type": "text",
+         "text": "https://kie.ai/api-key"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "MCP_SECRET \u2014 30+ random characters you make up (mash the keyboard)"
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "Build takes about three minutes."
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "STEP 2 \u2014 Check it works"
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "Open your private dashboard: "
+      }
+     ]
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "https://YOUR-APP.vercel.app/s/YOUR-MCP-SECRET"
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "You'll see your "
+      },
+      {
+       "type": "tiptap-link",
+       "attrs": {
+        "href": "https://kie.ai"
+       },
+       "content": [
+        {
+         "type": "text",
+         "text": "Kie.ai"
+        }
+       ]
+      },
+      {
+       "type": "text",
+       "text": " balance and a test-image button. Hit it. If an image comes back, everything's wired up."
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "STEP 3 \u2014 Connect it to GoHighLevel"
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "In GHL: Ask AI \u2192 the + icon \u2192 Manage Connectors \u2192 + Add custom MCP. Name it whatever you like, paste your MCP URL from the dashboard, click Add MCP. Then ask your agent for an image."
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "STEP 4 \u2014 Every sub-account (Agency)"
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "Create an agency-level Private Integration Token in GHL (Agency Settings \u2192 Private Integrations \u2192 New, with the View/Edit Media scopes, authorized against the sub-accounts you use) and set it as GHL_PIT in Vercel. Then in your dashboard, paste each sub-account's Location ID into Per-location URLs \u2014 each one gets its own MCP URL, and media generated through it saves into that sub-account's Media Library."
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "STEP 5 \u2014 Your brand (Agency)"
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "Set BRAND_NAME in Vercel and redeploy \u2014 it replaces \"FreshGen\" on the dashboard, landing page and inside GHL. The dashboard's Your brand section also has the paste-ready brand block for the Ask AI skills, so each client's generations match their colors, style and voice."
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "Full docs, including Workflow AI Agents setup, are in the README and docs/GHL-SETUP.md."
+      }
+     ]
+    },
+    {
+     "type": "paragraph"
+    },
+    {
+     "type": "paragraph",
+     "content": [
+      {
+       "type": "text",
+       "text": "Something broken? Reply to your receipt email and I'll sort it out."
+      }
+     ]
+    }
+   ]
+  }
+ }
+]

@@ -1,6 +1,25 @@
-# Gumroad listing copy — FreshGen Link (Tier 1, self-serve)
+# Gumroad listing copy — FreshGen Link (Lite / Full / Agency)
 
-Paste-ready. Field names match Gumroad's product editor.
+Three products, one repo. The HTML descriptions and post-purchase content pages live in `docs/gumroad/` and are applied with the Gumroad CLI (logged in as Fresh):
+
+```
+gumroad products update <id> --description "$(cat docs/gumroad/<tier>-description.html)"
+gumroad products content set <id> docs/gumroad/<tier>-content.json --yes
+```
+
+| Tier | Product id | Slug | Price |
+|---|---|---|---|
+| Full | `J7GddYMuxwoHag0VPEHI7g==` | `freshgen-link` | $47 |
+| Lite | `qFp7GEt7epSSVWVnIWGDVA==` | `freshgen-link-lite` | free |
+| Agency | `TtEQhFkX2y4RAnS2Kf5irw==` | `freshgen-link-agency` | $147 |
+
+**Not offered right now:** anything Agent Studio / Superagent — keep it out of every listing.
+
+---
+
+# Full — $47
+
+Field names match Gumroad's product editor. Source of truth for the description is `docs/gumroad/full-description.html`.
 
 ---
 
@@ -28,7 +47,7 @@ Get instant access
 AI image and video generation inside GoHighLevel — your own server, your own API key, at cost.
 ```
 
-**Description**
+**Description** — `docs/gumroad/full-description.html` (plain text):
 
 ```
 GoHighLevel's built-in AI image and video generation is resold to you at a markup. You're paying a middleman for models you could be buying direct.
@@ -45,11 +64,11 @@ Video runs roughly 10x cheaper. If you're making twenty 10-second clips a month,
 WHAT YOU GET
 
 • Five tools your GHL AI agent can call straight away — generate_image, generate_video, check_status, check_credits, list_models
-• Works everywhere GHL accepts an MCP connector: Ask AI, Workflow AI Agents, and Agent Studio Superagents
+• Works in Ask AI and Workflow AI Agents — the same URL in both
 • Finished media saves itself into your GHL Media Library automatically, so nothing expires on you
 • A private dashboard — live credit balance, copy-URL button, one-click test image, and connection walkthroughs
 • Twelve image and video models: GPT Image 2, Nano Banana Pro, Seedream 4, Imagen 4, Kling 2.1/2.6/3.0, Seedance 2, Wan 2.6, Grok Imagine and more
-• White-label it under your own brand with a single setting
+• All 23 Ask AI skills — /image, /adset, /video, /animate, /variations and one per model
 • Works outside GHL too — it's a standard MCP server, so the same URL works in Claude Desktop, Claude Code and Cursor, and finished media still lands in your GHL Media Library
 
 WHAT YOU NEED
@@ -62,7 +81,9 @@ STRAIGHT ANSWERS
 
 • You pay Kie.ai directly for what you generate. This product does not resell you credits and never touches your key — it lives in your own Vercel account.
 • Vercel's free tier runs this fine, but their Hobby plan terms are non-commercial. Running it for clients means Vercel Pro at $20/mo.
-• One license key covers one deployment. Running it for several brands or clients? Message me.
+• One license key covers one deployment, one GHL location.
+• Run an agency? FreshGen Link Agency ($147) serves every sub-account from one deployment and takes your brand: https://iamjustfresh.gumroad.com/l/freshgen-link-agency
+• Not sure yet? FreshGen Link Lite is free — images on GPT Image 2 only — and your Lite key swaps for a Full one whenever you're ready: https://iamjustfresh.gumroad.com/l/freshgen-link-lite
 • Images and video only, on purpose. This isn't a general-purpose AI toolbox.
 ```
 
@@ -70,9 +91,9 @@ STRAIGHT ANSWERS
 ```
 Setup time        About 5 minutes
 Coding required   None
-Works with        Ask AI · Workflows · Agent Studio
+Works with        Ask AI · Workflow AI Agents
 Models included   12 image + video
-License           1 deployment
+License           1 deployment · 1 location
 Support           Direct from the builder
 ```
 
@@ -116,7 +137,7 @@ Name it whatever you like, paste your MCP URL from the dashboard, click Add MCP.
 
 Then ask your agent for an image.
 
-Full docs, including Workflow AI Agents and Agent Studio setup, are in the README and docs/GHL-SETUP.md.
+Full docs, including Workflow AI Agents setup, are in the README and docs/GHL-SETUP.md.
 
 Something broken? Reply to your receipt email and I'll sort it out.
 ```
@@ -159,9 +180,9 @@ raise it to $97 once you have three testimonials.
 
 ---
 
-# Lite listing — FreshGen Link Lite (Tier 0, free)
+# Lite — free
 
-Created 2026-08-16 as a **draft** via the Gumroad CLI. Product id `qFp7GEt7epSSVWVnIWGDVA==`, slug `freshgen-link-lite` → https://iamjustfresh.gumroad.com/l/freshgen-link-lite. The server already recognises this product id as the Lite tier (`lib/license.ts`).
+Created 2026-08-16 via the Gumroad CLI, published the same night; live at https://iamjustfresh.gumroad.com/l/freshgen-link-lite. Description source: `docs/gumroad/lite-description.html`; content page: `docs/gumroad/lite-content.json`. Product id `qFp7GEt7epSSVWVnIWGDVA==`, slug `freshgen-link-lite` → https://iamjustfresh.gumroad.com/l/freshgen-link-lite. The server already recognises this product id as the Lite tier (`lib/license.ts`).
 
 ## Already set (via CLI)
 
@@ -175,7 +196,7 @@ Created 2026-08-16 as a **draft** via the Gumroad CLI. Product id `qFp7GEt7epSSV
 1. **Content tab → "Generate a unique license key per sale" → ON.** Without this, Lite buyers get no key and can't activate. (The CLI has no flag for it.)
 2. **Content tab → paste the post-purchase page.** Either run
    ```
-   gumroad products content set 'qFp7GEt7epSSVWVnIWGDVA==' docs/gumroad-lite-content.json --yes
+   gumroad products content set 'qFp7GEt7epSSVWVnIWGDVA==' docs/gumroad/lite-content.json --yes
    ```
    from the repo root (it's the Full page's content re-worded for Lite, with the license-key block on top), or paste the plain text below by hand.
 3. **Cover + thumbnail** — reuse the Full ones or a Lite variant. `gumroad products covers add qFp7GEt7epSSVWVnIWGDVA== --image ./cover.png` / `gumroad products thumbnail set qFp7GEt7epSSVWVnIWGDVA== --image ./thumb.png`.
@@ -201,22 +222,16 @@ You'll see your Kie.ai balance and a test-image button. Hit it. If an image come
 
 STEP 3 — Connect it to GoHighLevel
 In GHL: Ask AI → the + icon → Manage Connectors → + Add custom MCP. Name it whatever you like, paste your MCP URL from the dashboard, click Add MCP. Then ask your agent for an image.
-Using an Agent Studio Superagent? Use the instant-mode URL from your dashboard (it's your normal URL with ?mode=instant on the end).
 
-WANT VIDEO, MORE MODELS, EVERY SUB-ACCOUNT, YOUR OWN BRAND?
-That's Full ($47, one-time): https://iamjustfresh.gumroad.com/l/freshgen-link. Paste the new key into LICENSE_KEY, redeploy, and the extra tools show up in GHL on their own.
+WANT VIDEO AND MORE MODELS? EVERY SUB-ACCOUNT AND YOUR BRAND?
+Full ($47, one-time) adds video and five more image models: https://iamjustfresh.gumroad.com/l/freshgen-link
+Agency ($147, one-time) adds every sub-account from one deployment plus your brand on it: https://iamjustfresh.gumroad.com/l/freshgen-link-agency
+Either way: paste the new key into LICENSE_KEY, redeploy, and the extra tools show up in GHL on their own.
 
-Full docs, including Workflow AI Agents and Agent Studio setup, are in the README and docs/GHL-SETUP.md.
+Full docs, including Workflow AI Agents setup, are in the README and docs/GHL-SETUP.md.
 Something broken? Reply to your receipt email and I'll sort it out.
 ```
 
-## Full listing — one line to add
-
-Add to the Full product's description, top of WHAT YOU GET or as its own line under STRAIGHT ANSWERS:
-
-```
-• Not sure yet? FreshGen Link Lite is free — images on GPT Image 2 only — and your Lite key swaps for a Full one whenever you're ready: https://iamjustfresh.gumroad.com/l/freshgen-link-lite
-```
 
 ## Listing images (uploaded 2026-08-16)
 
@@ -228,3 +243,31 @@ Generated with GPT Image 2 through the prod server itself, using the Full cover/
 | Lite | https://public-files.gumroad.com/l1lq5dev672sqvk6c2l73ppuclld | https://public-files.gumroad.com/obsousaz0toror0v5s9e2vkgjkc9 |
 
 Re-upload if ever needed: `gumroad products covers add <id> --image <file>` · `gumroad products thumbnail set <id> --image <file>`.
+
+---
+
+# Agency — $147
+
+Created 2026-08-16 as a **draft** via the Gumroad CLI. Product id `TtEQhFkX2y4RAnS2Kf5irw==`, slug `freshgen-link-agency` → https://iamjustfresh.gumroad.com/l/freshgen-link-agency. The server already recognises this product id as the Agency tier (`lib/license.ts`).
+
+**Already set (via CLI):** name, $147, summary (*AI image and video generation inside GoHighLevel for every sub-account you manage — one deployment, your own key, your own brand.*), description (`docs/gumroad/agency-description.html`), receipt, tags.
+
+**Still to do in the Gumroad UI — same drill as Lite:**
+
+1. Content tab → **"Generate a unique license key per sale" → ON.**
+2. Post-purchase page: `gumroad products content set 'TtEQhFkX2y4RAnS2Kf5irw==' docs/gumroad/agency-content.json --yes` (steps 1–3 as Full, plus Step 4 per-location URLs + agency PIT and Step 5 brand).
+3. Cover + thumbnail (Agency variants — see Listing images below).
+4. `gumroad products publish 'TtEQhFkX2y4RAnS2Kf5irw=='`
+5. Test: buy it with a 100%-off code, run a server with the key, confirm the dashboard says **Agency**, shows Per-location URLs + Your brand, and `BRAND_NAME` takes effect.
+
+**Additional details rows**
+```
+Setup time        About 5 minutes
+Coding required   None
+Works with        Ask AI · Workflow AI Agents
+Sub-accounts      Unlimited from one deployment
+Brand             White-label + per-client brand block
+Models included   12 image + video
+License           1 deployment · every sub-account
+Support           Direct from the builder
+```

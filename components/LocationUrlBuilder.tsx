@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import CopyField from "./CopyField";
 import { LOCATION_ID_RE } from "@/lib/mcp-context";
 
+// Agency-only: builds /mcp/<secret>/<locationId> URLs. (The ?mode=instant
+// variant still works server-side but isn't offered in the UI right now.)
 export default function LocationUrlBuilder({
   baseUrl,
   secret,
@@ -12,15 +14,14 @@ export default function LocationUrlBuilder({
   secret: string;
 }) {
   const [locationId, setLocationId] = useState("");
-  const [instant, setInstant] = useState(false);
 
   const trimmed = locationId.trim();
   const valid = trimmed.length === 0 || LOCATION_ID_RE.test(trimmed);
 
   const url = useMemo(() => {
     const path = LOCATION_ID_RE.test(trimmed) ? `/mcp/${secret}/${trimmed}` : `/mcp/${secret}`;
-    return `${baseUrl}${path}${instant ? "?mode=instant" : ""}`;
-  }, [baseUrl, secret, trimmed, instant]);
+    return `${baseUrl}${path}`;
+  }, [baseUrl, secret, trimmed]);
 
   return (
     <div>
@@ -40,14 +41,6 @@ export default function LocationUrlBuilder({
           Location IDs are 6–64 letters, numbers, underscores or hyphens.
         </p>
       )}
-      <label className="checkbox-row">
-        <input
-          type="checkbox"
-          checked={instant}
-          onChange={(e) => setInstant(e.target.checked)}
-        />
-        Instant mode (use for Agent Studio Superagent)
-      </label>
       <div style={{ marginTop: 14 }}>
         <CopyField value={url} />
         <p className="caption">

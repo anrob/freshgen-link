@@ -1,6 +1,6 @@
 import { KIE_MODELS } from "@/lib/kie";
 import { VIDEO_MODELS } from "@/lib/kie-video";
-import { UPGRADE_PRICE, UPGRADE_URL, brandFor, currentTier } from "@/lib/license";
+import { AGENCY_PRICE, AGENCY_URL, UPGRADE_PRICE, UPGRADE_URL, brandFor, currentTier } from "@/lib/license";
 import { LITE_IMAGE_MODEL } from "@/lib/tools";
 
 // Rendered per request (not at build) so the tier comes from the deployment's
@@ -59,10 +59,10 @@ export default async function Landing() {
             </p>
           </div>
           <div>
-            <h3>Works everywhere in GHL</h3>
+            <h3>Works where you work in GHL</h3>
             <p>
-              Ask AI, Workflow AI Agents, Agent Studio Superagents — anywhere
-              GoHighLevel accepts an MCP connector.
+              Ask AI for on-demand images, Workflow AI Agents for automations —
+              the same URL in both.
             </p>
           </div>
         </div>
@@ -125,11 +125,14 @@ export default async function Landing() {
         {lite ? (
           <p className="caption" style={{ marginTop: 16 }}>
             This is the Lite edition — one image model, no video. Full (
-            {UPGRADE_PRICE}) adds {KIE_MODELS.length - 1} more image models,{" "}
-            {VIDEO_MODELS.length} video models, per-sub-account URLs and
-            white-label:{" "}
+            {UPGRADE_PRICE}) adds {KIE_MODELS.length - 1} more image models and{" "}
+            {VIDEO_MODELS.length} video models:{" "}
             <a href={UPGRADE_URL} rel="noreferrer">
               {UPGRADE_URL.replace(/^https?:\/\//, "")}
+            </a>
+            . Agency ({AGENCY_PRICE}) adds every sub-account and white-label:{" "}
+            <a href={AGENCY_URL} rel="noreferrer">
+              {AGENCY_URL.replace(/^https?:\/\//, "")}
             </a>
           </p>
         ) : (

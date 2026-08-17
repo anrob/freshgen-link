@@ -78,10 +78,11 @@ export default async function SalesPage({
   const verifiedById = new Map<string, VerifyResult | null>();
   toVerify.forEach((sale, i) => verifiedById.set(sale.id, verifyResults[i]));
 
-  const fullSales = sorted.filter((s) => s.tier === "full");
+  const paid = sorted.filter((s) => s.tier !== "lite");
+  const fullCount = sorted.filter((s) => s.tier === "full").length;
+  const agencyCount = sorted.filter((s) => s.tier === "agency").length;
   const liteSignups = sorted.filter((s) => s.tier === "lite").length;
-  const totalSales = fullSales.length;
-  const revenueCents = fullSales.reduce((sum, s) => sum + s.priceCents, 0);
+  const revenueCents = paid.reduce((sum, s) => sum + s.priceCents, 0);
   const badCount = sorted.filter((s) => s.refunded || s.chargebacked).length;
   const activeCount = toVerify.filter(
     (s) => statusFor(s, true, verifiedById.get(s.id) ?? null).label === "Active"
@@ -128,8 +129,12 @@ export default async function SalesPage({
             <div className="kicker">Overview</div>
             <div className="sales-tiles">
               <div className="card">
-                <div className="stat">{totalSales}</div>
-                <div className="stat-sub">Full sales</div>
+                <div className="stat">{fullCount}</div>
+                <div className="stat-sub">Full sales ($47)</div>
+              </div>
+              <div className="card">
+                <div className="stat">{agencyCount}</div>
+                <div className="stat-sub">Agency sales ($147)</div>
               </div>
               <div className="card">
                 <div className="stat">{liteSignups}</div>
@@ -172,7 +177,7 @@ export default async function SalesPage({
                     return (
                       <tr key={sale.id}>
                         <td>{formatDate(sale.createdAt)}</td>
-                        <td>{sale.tier === "lite" ? "Lite" : "Full"}</td>
+                        <td>{sale.tier === "lite" ? "Lite" : sale.tier === "agency" ? "Agency" : "Full"}</td>
                         <td>{sale.email || "—"}</td>
                         <td className="price">{sale.priceDisplay}</td>
                         <td>
@@ -228,7 +233,7 @@ export default async function SalesPage({
       <style>{`
         .sales-tiles {
           display: grid;
-          grid-template-columns: repeat(5, 1fr);
+          grid-template-columns: repeat(6, 1fr);
           gap: 16px;
         }
         .sales-tiles .card {
@@ -280,6 +285,11 @@ export default async function SalesPage({
         .row-actions button {
           padding: 6px 12px;
           font-size: 12.5px;
+        }
+        @media (max-width: 980px) {
+          .sales-tiles {
+            grid-template-columns: repeat(3, 1fr);
+          }
         }
         @media (max-width: 680px) {
           .sales-tiles {

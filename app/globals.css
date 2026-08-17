@@ -280,7 +280,17 @@ a {
   display: flex;
   gap: 8px;
 }
-.copy-field input {
+.copy-field.multiline {
+  align-items: flex-start;
+}
+.copy-field textarea {
+  resize: vertical;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+}
+.copy-field input,
+.copy-field textarea {
   flex: 1;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 13.5px;

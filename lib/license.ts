@@ -5,13 +5,16 @@
 // verdict in module memory for RECHECK_MS (Vercel keeps warm instances around,
 // so in practice this is one ~200ms call every few hours).
 //
-// TWO PRODUCTS, ONE REPO. The same deploy button serves both:
-//   - a key from the paid product   → tier "full" (everything)
-//   - a key from the free product   → tier "lite" (generate_image on GPT
-//     Image 2 only, one location, no video, no white-label)
-// A key is verified against the full product first, then the lite one; the
-// first product that recognises it decides the tier. Upgrading is therefore
-// just "paste the new key, redeploy" — no code or config change.
+// THREE PRODUCTS, ONE REPO. The same deploy button serves all of them:
+//   - a key from the free product     → tier "lite"   (generate_image on GPT
+//     Image 2 only, one location, no video, no brand)
+//   - a key from the $47 product      → tier "full"   (every model, video,
+//     one location, no brand)
+//   - a key from the $147 product     → tier "agency" (Full + per-sub-account
+//     URLs + white-label / brand section)
+// A key is verified against each product in turn; the first that recognises
+// it decides the tier. Upgrading is therefore just "paste the new key,
+// redeploy" — no code or config change.
 //
 // Gumroad's verify endpoint needs NO API token — it is keyed on product id +
 // license key alone. That is deliberate on their side and useful here: the
@@ -27,15 +30,25 @@
 export const GUMROAD_PRODUCT_ID = process.env.GUMROAD_PRODUCT_ID || "J7GddYMuxwoHag0VPEHI7g==";
 export const GUMROAD_LITE_PRODUCT_ID =
   process.env.GUMROAD_LITE_PRODUCT_ID || "qFp7GEt7epSSVWVnIWGDVA==";
+export const GUMROAD_AGENCY_PRODUCT_ID =
+  process.env.GUMROAD_AGENCY_PRODUCT_ID || "TtEQhFkX2y4RAnS2Kf5irw==";
 /** Where a Lite deployment sends people to unlock Full. */
 export const UPGRADE_URL = "https://iamjustfresh.gumroad.com/l/freshgen-link";
 export const UPGRADE_PRICE = "$47 one-time";
+/** Where Lite/Full deployments send people to unlock Agency. */
+export const AGENCY_URL = "https://iamjustfresh.gumroad.com/l/freshgen-link-agency";
+export const AGENCY_PRICE = "$147 one-time";
 
 const VERIFY_URL = "https://api.gumroad.com/v2/licenses/verify";
 const RECHECK_MS = 6 * 60 * 60 * 1000; // 6 hours
 const TIMEOUT_MS = 6_000;
 
-export type Tier = "full" | "lite";
+export type Tier = "lite" | "full" | "agency";
+
+// Order matters for fail-open + unlicensed defaults: the most permissive tier
+// is what we assume when we can't know — a paying Agency customer must never
+// be silently downgraded by a Gumroad outage (see policy note above).
+export const MOST_PERMISSIVE_TIER: Tier = "agency";
 
 export type LicenseState = {
   ok: boolean;
@@ -51,12 +64,20 @@ export type LicenseState = {
 // Ordered: the first product that recognises the key wins.
 const PRODUCTS: { id: string; tier: Tier }[] = [
   { id: GUMROAD_PRODUCT_ID, tier: "full" },
+  { id: GUMROAD_AGENCY_PRODUCT_ID, tier: "agency" },
   { id: GUMROAD_LITE_PRODUCT_ID, tier: "lite" },
 ];
 
 export function productIdForTier(tier: Tier): string {
-  return tier === "lite" ? GUMROAD_LITE_PRODUCT_ID : GUMROAD_PRODUCT_ID;
+  return PRODUCTS.find((p) => p.tier === tier)?.id ?? GUMROAD_PRODUCT_ID;
 }
+
+/** Feature switches per tier — the single place the ladder is defined. */
+export const TIER_FEATURES: Record<Tier, { video: boolean; allImageModels: boolean; multiLocation: boolean; brand: boolean; allSkills: boolean; label: string }> = {
+  lite:   { video: false, allImageModels: false, multiLocation: false, brand: false, allSkills: false, label: "Lite" },
+  full:   { video: true,  allImageModels: true,  multiLocation: false, brand: false, allSkills: true,  label: "Full" },
+  agency: { video: true,  allImageModels: true,  multiLocation: true,  brand: true,  allSkills: true,  label: "Agency" },
+};
 
 let cached: LicenseState | null = null;
 
@@ -93,7 +114,7 @@ export async function licenseStatus(): Promise<LicenseState> {
   if (!key) {
     return {
       ok: false,
-      tier: "full",
+      tier: MOST_PERMISSIVE_TIER,
       reason: "No LICENSE_KEY is set on this deployment.",
       checkedAt: Date.now(),
     };
@@ -133,19 +154,19 @@ export async function licenseStatus(): Promise<LicenseState> {
 
     cached = {
       ok: false,
-      tier: "full",
+      tier: MOST_PERMISSIVE_TIER,
       reason: lastMessage || "This license key was not recognised.",
       checkedAt: Date.now(),
     };
     return cached;
   } catch (err) {
     // Could not reach Gumroad — fail open (see policy note above). Keep the
-    // last known tier if we have one; a paying Full customer must never be
-    // silently downgraded by an outage.
+    // last known tier if we have one; a paying customer must never be silently
+    // downgraded by an outage.
     console.log(`[license] verify unreachable, failing open: ${(err as Error).message}`);
     const state: LicenseState = {
       ok: true,
-      tier: cached?.tier ?? "full",
+      tier: cached?.tier ?? MOST_PERMISSIVE_TIER,
       degraded: true,
       checkedAt: Date.now() - (RECHECK_MS - 5 * 60 * 1000), // retry in ~5 min
     };
@@ -154,20 +175,21 @@ export async function licenseStatus(): Promise<LicenseState> {
   }
 }
 
-/** The tier this deployment runs at. Unlicensed deployments read as "full"
- *  so the tool list (gated at call time anyway) shows what activation unlocks. */
+/** The tier this deployment runs at. Unlicensed deployments read as the most
+ *  permissive tier so the tool list (gated at call time anyway) shows what
+ *  activation unlocks. */
 export async function currentTier(): Promise<Tier> {
   return (await licenseStatus()).tier;
 }
 
 /**
- * The display name for this deployment. White-label (BRAND_NAME) is a Full
- * feature — Lite deployments always read "FreshGen" no matter what the env
- * says. Callers that already hold the tier pass it in; the async form
+ * The display name for this deployment. White-label (BRAND_NAME) is an Agency
+ * feature — Lite and Full deployments always read "FreshGen" no matter what
+ * the env says. Callers that already hold the tier pass it in; the async form
  * resolves it.
  */
 export function brandFor(tier: Tier): string {
-  if (tier === "lite") return "FreshGen";
+  if (!TIER_FEATURES[tier].brand) return "FreshGen";
   return process.env.BRAND_NAME || "FreshGen";
 }
 
@@ -192,5 +214,5 @@ export function notActivatedMessage(reason?: string): string {
 
 /** One-liner appended to Lite tool output where an upsell is natural. */
 export function upgradeNote(): string {
-  return `This is FreshGen Link Lite (GPT Image 2 only). Full (${UPGRADE_PRICE}) adds video, five more image models, per-sub-account URLs and white-label: ${UPGRADE_URL}`;
+  return `This is FreshGen Link Lite (GPT Image 2 only). Full (${UPGRADE_PRICE}) adds video and five more image models: ${UPGRADE_URL} — Agency (${AGENCY_PRICE}) adds every sub-account and white-label: ${AGENCY_URL}`;
 }
