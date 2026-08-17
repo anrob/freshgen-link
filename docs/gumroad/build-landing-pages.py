@@ -23,6 +23,7 @@ FOOTER = """<footer class="site-footer">
     <p><a href="https://github.com/anrob/freshgen-link" target="_blank" rel="noreferrer">Full docs &amp; README on GitHub</a></p>
     <p><a href="https://freshgen-link.vercel.app/terms.html" target="_blank" rel="noreferrer">Terms of Service</a> &middot; <a href="https://freshgen-link.vercel.app/privacy.html" target="_blank" rel="noreferrer">Privacy Policy</a> &mdash; by getting it you agree to the Terms.</p>
     <p>Something broken? Reply to your receipt email.</p>
+    <p class="trademark">GoHighLevel and HighLevel are trademarks of HighLevel Inc. FreshGen Link is an independent product and is not affiliated with, endorsed by, or sponsored by HighLevel. Kie.ai is a trademark of its owner.</p>
   </div>
 </footer>
 
@@ -87,7 +88,7 @@ lite_body = f"""<body>
   <section class="section hero">
     <div class="container">
       <h1>Free AI images, inside your GoHighLevel.</h1>
-      <p class="sub">FreshGen Link Lite is a small connector you deploy to your own Vercel account. Connect your own Kie.ai key, paste one URL into Ask AI, and your GHL agent makes images with GPT Image 2 &mdash; the best model there is for anything with words in it &mdash; at Kie's raw price. About four cents an image. No subscription, no markup, free forever.</p>
+      <p class="sub">FreshGen Link Lite is a small connector you deploy to your own Vercel account. Connect your own Kie.ai key, paste one URL into Ask AI, and your GHL agent makes images with GPT Image 2 &mdash; the best model there is for anything with words in it &mdash; billed by Kie.ai at Kie's own price. About four cents an image. No subscription, nothing added on top, free forever.</p>
       <div class="hero-actions">
         <button type="button" class="btn btn-lg" data-gumroad-action="buy">Get it free &mdash; no card needed</button>
         <p class="quiet-line">Gumroad will show a &ldquo;name a fair price&rdquo; box &mdash; leave it at 0. Deploy &rarr; paste three values &rarr; paste one URL into GoHighLevel. About five minutes, no code.</p>
@@ -165,7 +166,7 @@ lite_body = f"""<body>
         </details>
         <details>
           <summary>Is this allowed by GoHighLevel?</summary>
-          <div class="details-body"><p>It's a standard MCP connector &mdash; the same mechanism GHL built for connecting outside tools to Ask AI and Workflows. Nothing is hacked or scraped; it's just your own server on the other end instead of a catalog app.</p></div>
+          <div class="details-body"><p>Yes &mdash; it uses GoHighLevel's own custom MCP connector feature, the supported way to add outside tools to Ask AI and Workflow AI Agents. Your server on one end, GoHighLevel's connector on the other.</p></div>
         </details>
         <details>
           <summary>What does Vercel cost?</summary>
@@ -240,39 +241,35 @@ agency_body = f"""<body>
 
   <section class="section math" aria-labelledby="math-h2">
     <div class="container">
-      <p class="kicker">The math</p>
-      <h2 id="math-h2">GHL's markup, times every client.</h2>
-      <p class="sub-note">GHL's native generation is a reseller markup on the same model providers &mdash; and you pay it per sub-account. Agency removes the reseller for all of them at once and bills one Kie.ai wallet at the raw rate.</p>
+      <p class="kicker">What it costs</p>
+      <h2 id="math-h2">One Kie.ai wallet. Every client.</h2>
+      <p class="sub-note">Every sub-account generates through your one Kie.ai key, billed by Kie.ai at their published rates. FreshGen Link adds nothing on top &mdash; the license is a one-time fee for the packaged, supported connector, however many sub-accounts it serves.</p>
 
       <div class="table-wrap">
         <table class="price-table">
           <thead>
             <tr>
               <th scope="col">What you're generating</th>
-              <th scope="col">GHL native</th>
-              <th scope="col">FreshGen Link Agency</th>
+              <th scope="col">Kie.ai price, billed to you</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>Image</td>
-              <td class="price">$0.04 &ndash; $0.12</td>
-              <td class="price">$0.02 &ndash; $0.09</td>
+              <td class="price">$0.02 &ndash; $0.09, depending on model</td>
             </tr>
             <tr>
-              <td>10-second video</td>
-              <td class="price">$1.50 &ndash; $4.00</td>
+              <td>10-second video clip</td>
               <td class="price">about $0.25</td>
             </tr>
             <tr>
               <td>Five clients &mdash; 20 clips each, monthly</td>
-              <td class="price">$150 &ndash; $400</td>
               <td class="price">about $25</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p class="table-caption">The $147 is one client's worth of GHL-native video markup. Once.</p>
+      <p class="table-caption">Estimates &mdash; every generation reports its real cost, and any sub-account can check the shared balance with <code>check_credits</code>.</p>
     </div>
   </section>
 
@@ -366,7 +363,7 @@ agency_body = f"""<body>
         <div class="price-display" data-gumroad-field="price">$147</div>
         <div class="price-meta">
           <p class="price-label">One-time. Founder pricing.</p>
-          <p>Pays for itself with one client's first month of video.</p>
+          <p>The only thing you pay us. Kie.ai usage is billed by Kie.ai, at their price, across every sub-account.</p>
         </div>
       </div>
 

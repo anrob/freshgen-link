@@ -1,185 +1,112 @@
-import { KIE_MODELS } from "@/lib/kie";
-import { VIDEO_MODELS } from "@/lib/kie-video";
-import { brandFor, currentTier } from "@/lib/license";
-import { LITE_IMAGE_MODEL } from "@/lib/tools";
+import { TIER_FEATURES, brandFor, currentTier } from "@/lib/license";
+import { gumroadSellerEnabled } from "@/lib/gumroad";
 
-// Rendered per request (not at build) so the tier comes from the deployment's
-// live license verdict, and a build never depends on reaching Gumroad.
+// The root of every deployment. Deliberately small: it is not a sales page
+// (Gumroad is) and it is not the dashboard (/s/<secret> is). It just tells a
+// visitor what this server is and, if they own it, where to go.
 export const dynamic = "force-dynamic";
+
+const GUMROAD = {
+  lite: { url: "https://iamjustfresh.gumroad.com/l/freshgen-link-lite", label: "FreshGen Link Lite — free" },
+  full: { url: "https://iamjustfresh.gumroad.com/l/freshgen-link", label: "FreshGen Link — $47 one-time" },
+  agency: { url: "https://iamjustfresh.gumroad.com/l/freshgen-link-agency", label: "FreshGen Link Agency — $147 one-time" },
+} as const;
 
 export default async function Landing() {
   const tier = await currentTier();
-  const lite = tier === "lite";
+  const f = TIER_FEATURES[tier];
   const brand = brandFor(tier);
-  const imageModels = lite ? KIE_MODELS.filter((m) => m.id === LITE_IMAGE_MODEL) : KIE_MODELS;
+  // A white-labelled (Agency) deployment shouldn't advertise FreshGen to the
+  // agency's own visitors; an un-branded one may point people at its own tier.
+  // The seller's own deployment (the only one with a Gumroad token) lists all
+  // three, since its public URL is the one that ends up in docs and links.
+  const whiteLabelled = brand !== "FreshGen";
+  const seller = gumroadSellerEnabled();
+  const getLinks = seller
+    ? [GUMROAD.lite, GUMROAD.full, GUMROAD.agency]
+    : whiteLabelled
+      ? []
+      : [GUMROAD[tier]];
+
   return (
     <div className="container">
       <header className="masthead">
         <div className="wordmark">
           {brand} <em>Link</em>
         </div>
-        <div className="masthead-note">
-          AI media server for GoHighLevel{lite ? " · Lite" : ""}
-        </div>
+        <div className="masthead-note">AI media server for GoHighLevel</div>
       </header>
 
-      <section className="section hero">
-        <div className="kicker">Self-hosted · Your API key · MCP</div>
-        <h1>
-          {lite
-            ? "AI images, inside your GoHighLevel."
-            : "AI images and video, inside your GoHighLevel."}
+      <section className="section hero" style={{ padding: "52px 48px 44px" }}>
+        <div className="kicker">Self-hosted · MCP · Your own Kie.ai key</div>
+        <h1 style={{ fontSize: "clamp(30px, 4.5vw, 46px)" }}>
+          This is a {brand} Link server.
         </h1>
         <p className="sub">
-          {lite
-            ? "Your own server. Your own Kie.ai key. About four cents an image on GPT Image 2 — no per-seat subscription, no middleman markup."
-            : "Your own server. Your own Kie.ai key. Pennies per image, a quarter per video clip — no per-seat subscription, no middleman markup."}
-        </p>
-        <p style={{ marginTop: 26, display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <a className="btn" href="#how">
-            How it works
-          </a>
-          <a className="btn ghost" href="#models">
-            Models &amp; prices
-          </a>
-        </p>
-        <div className="chips" aria-label="Works with">
-          <span className="chip">GoHighLevel Ask AI</span>
-          <span className="chip">Workflow AI Agents</span>
-          <span className="chip">Media Library auto-save</span>
-          <span className="chip">Kie.ai · your key</span>
-          {lite ? <span className="chip">GPT Image 2</span> : <span className="chip">12 image &amp; video models</span>}
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="three-up">
-          <div>
-            <h3>Own your key</h3>
-            <p>
-              Generations bill straight to your prepaid Kie.ai wallet at cost.
-              No reselling, no markup, no monthly seat fee.
-            </p>
-          </div>
-          <div>
-            <h3>One-click deploy</h3>
-            <p>
-              Lives in your Vercel account, deployed from a button in about
-              three minutes. You own the whole thing.
-            </p>
-          </div>
-          <div>
-            <h3>Works where you work in GHL</h3>
-            <p>
-              Ask AI for on-demand images, Workflow AI Agents for automations —
-              the same URL in both.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="how">
-        <div className="kicker">How it works</div>
-        <div className="steps">
-          <div className="step">
-            <div>
-              <h3>Deploy your server</h3>
-              <p>
-                Click the deploy button, paste your Kie.ai API key, make up a
-                secret. Vercel builds your private server.
-              </p>
-            </div>
-          </div>
-          <div className="step">
-            <div>
-              <h3>Paste your link into GoHighLevel</h3>
-              <p>
-                Ask AI → Connectors → <strong>+ Add custom MCP</strong> → name
-                it, paste your link. That&apos;s the whole setup.
-              </p>
-            </div>
-          </div>
-          <div className="step">
-            <div>
-              <h3>Ask your AI for an image</h3>
-              <p>
-                &ldquo;Make me a 16:9 hero image for a roofing landing
-                page&rdquo; — done in under a minute, saved to your Media
-                Library if you want.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="models">
-        <div className="kicker">Models &amp; prices</div>
-        <table className="price-table">
-          <thead>
-            <tr>
-              <th>Image model</th>
-              <th>Best for</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {imageModels.map((m) => (
-              <tr key={m.id}>
-                <td>{m.label}</td>
-                <td>{m.bestFor}</td>
-                <td className="price">{m.priceNote}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {lite ? null : (
-          <table className="price-table" style={{ marginTop: 28 }}>
-            <thead>
-              <tr>
-                <th>Video model</th>
-                <th>Best for</th>
-                <th>Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {VIDEO_MODELS.map((m) => (
-                <tr key={m.id}>
-                  <td>{m.label}</td>
-                  <td>{m.bestFor}</td>
-                  <td className="price">{m.priceNote}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        <p className="caption" style={{ marginTop: 12, fontSize: 13, color: "var(--muted)" }}>
-          Prices are estimates billed by Kie.ai to your own wallet (1 credit =
-          $0.005). Every result reports its real cost.
+          A private MCP connector that gives GoHighLevel&apos;s Ask AI and Workflow AI
+          Agents image{f.video ? " and video" : ""} generation through its owner&apos;s own
+          Kie.ai account, billed at Kie&apos;s price. It runs on the owner&apos;s Vercel —
+          this page is just its front door. There is nothing to download here.
         </p>
       </section>
 
       <section className="section">
         <div className="card">
-          <h3>Already deployed?</h3>
+          <h3>Own this server?</h3>
           <p style={{ fontSize: 15 }}>
-            Your private dashboard is at{" "}
-            <code>/s/&lt;your-secret&gt;</code> — the <code>MCP_SECRET</code>{" "}
-            you set when deploying. Bookmark it. It is never linked from this
-            page.
+            Your dashboard is at <code>/s/&lt;your-secret&gt;</code> — the{" "}
+            <code>MCP_SECRET</code> you set when deploying. It has your MCP URL, your
+            Kie.ai balance, a test button and the GoHighLevel connection steps. It is
+            never linked from this page on purpose; bookmark it.
+          </p>
+        </div>
+
+        {getLinks.length > 0 && (
+          <div className="card">
+            <h3>Want one of your own?</h3>
+            <p style={{ fontSize: 15 }}>
+              FreshGen Link deploys to your own Vercel account in about five minutes —
+              no code, your own Kie.ai key, your own private URL.
+            </p>
+            <p style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {getLinks.map((g, i) => (
+                <a
+                  key={g.url}
+                  className={i === 0 ? "btn" : "btn ghost"}
+                  href={g.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {g.label}
+                </a>
+              ))}
+            </p>
+          </div>
+        )}
+
+        <div className="card">
+          <h3>Docs</h3>
+          <p style={{ fontSize: 15, display: "flex", gap: 16, flexWrap: "wrap" }}>
+            <a href="https://github.com/anrob/freshgen-link#readme" rel="noreferrer">
+              README &amp; setup guide
+            </a>
+            <a href="/terms.html">Terms</a>
+            <a href="/privacy.html">Privacy</a>
           </p>
         </div>
       </section>
 
-      <footer className="footer">
-        <span>
-          {brand} Link · powered by Kie.ai · runs on your Vercel
-        </span>
-        <span style={{ display: "flex", gap: 16 }}>
-          <a href="https://kie.ai" rel="noreferrer">
-            Get a Kie.ai key
-          </a>
+      <footer className="footer" style={{ flexDirection: "column", gap: 8 }}>
+        <span style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+          <span>{brand} Link · powered by Kie.ai · runs on Vercel</span>
+          <a href="https://kie.ai" rel="noreferrer">Get a Kie.ai key</a>
           <a href="/terms.html">Terms</a>
           <a href="/privacy.html">Privacy</a>
+        </span>
+        <span style={{ fontSize: 12 }}>
+          GoHighLevel and HighLevel are trademarks of HighLevel Inc. {brand} Link is an
+          independent product and is not affiliated with, endorsed by, or sponsored by
+          HighLevel. Kie.ai is a trademark of its owner.
         </span>
       </footer>
     </div>

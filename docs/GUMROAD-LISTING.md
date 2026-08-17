@@ -53,16 +53,13 @@ AI image and video generation inside GoHighLevel — your own server, your own A
 **Description** — `docs/gumroad/full-description.html` (plain text):
 
 ```
-GoHighLevel's built-in AI image and video generation is resold to you at a markup. You're paying a middleman for models you could be buying direct.
+AI images and video inside GoHighLevel — on your own server, at cost.
 
-FreshGen Link cuts the middleman out. It's an MCP connector you deploy to your own Vercel account in about five minutes. You connect your own Kie.ai API key, and every image and video bills at Kie's raw wholesale price — straight to your own wallet. No subscription. No per-seat fee. No markup.
+FreshGen Link is an MCP connector you deploy to your own Vercel account in about five minutes. You connect your own Kie.ai (https://kie.ai) API key, paste one URL into GoHighLevel's Ask AI, and every image and video your GHL agent makes is billed by Kie.ai at Kie's own price — straight to your own wallet. No subscription. No per-seat fee. Nothing added on top.
 
-WHAT YOU ACTUALLY PAY TO GENERATE
+WHAT IT COSTS TO RUN
 
-Image — GHL native: $0.04–$0.12 · FreshGen Link: $0.02–$0.09
-10-second video — GHL native: $1.50–$4.00 · FreshGen Link: about $0.25
-
-Video runs roughly 10x cheaper. If you're making twenty 10-second clips a month, that's the difference between $30–$80 and about $5.
+Image — $0.02–$0.09 depending on model · 10-second video — about $0.25 · twenty 10-second clips a month — about $5. All billed by Kie.ai at their published rates; every generation reports its real cost.
 
 WHAT YOU GET
 
@@ -88,6 +85,8 @@ STRAIGHT ANSWERS
 • Run an agency? FreshGen Link Agency ($147) serves every sub-account from one deployment and takes your brand: https://iamjustfresh.gumroad.com/l/freshgen-link-agency
 • Not sure yet? FreshGen Link Lite is free — images on GPT Image 2 only — and your Lite key swaps for a Full one whenever you're ready: https://iamjustfresh.gumroad.com/l/freshgen-link-lite
 • Images and video only, on purpose. This isn't a general-purpose AI toolbox.
+
+GoHighLevel and HighLevel are trademarks of HighLevel Inc. FreshGen Link is an independent product and is not affiliated with, endorsed by, or sponsored by HighLevel.
 ```
 
 **Additional details** (each is a "+ Add detail" row — label / value)
@@ -170,13 +169,9 @@ Stuck at any point, just reply to this email.
 
 ## Pricing note
 
-$47 is set. Defensible as a launch price with no social proof yet, and it pays for
-itself in the buyer's first month on video alone.
+$47 is set. Defensible as a launch price with no social proof yet.
 
-Worth knowing what you're leaving on the table: by your own math in SELLING.md, an
-agency running twenty 10-second clips a month saves $25–$75 **every month**. A
-one-time $47 is a rounding error against that. $97 is closer to the value, and the
-buyer still breaks even in month two.
+$97 is closer to the value; revisit once there are testimonials.
 
 Suggestion: launch at $47, treat it as founder pricing, say so on the page, and
 raise it to $97 once you have three testimonials.

@@ -124,7 +124,7 @@ Yes, two ways. Paste the exact same MCP URL into multiple sub-accounts and they'
 
 - **Tick every tool during setup.** There are only five or six of them — no reason to leave any unchecked.
 - **Authentication is always "None."** That's not a gap in security — your secret is already baked into the URL. Anyone with the URL can use the tools; nobody without it can even find the endpoint. That's the whole reason the URL is treated like a password.
-- **If tools that used to show up disappear,** remove the connection and re-add it. GHL caches the tool list from your first connection.
+- **If tools that used to show up disappear,** remove the connection and re-add it — the tool list can be cached from your first connection.
 - **Your dashboard has this same walkthrough**, path-specific, if you'd rather follow it on-screen next to your actual GHL tab.
 
 ## What each tool does

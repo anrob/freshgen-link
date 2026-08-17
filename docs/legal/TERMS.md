@@ -134,6 +134,8 @@ We may update these Terms from time to time. We'll post the updated version on o
 
 ## 16. Miscellaneous
 
+**Trademarks.** GoHighLevel and HighLevel are trademarks of HighLevel Inc. FreshGen Link is an independent product and is not affiliated with, endorsed by, or sponsored by HighLevel. Kie.ai and Vercel are trademarks of their respective owners. References to GoHighLevel in the Software and its documentation are for identification and compatibility only.
+
 **Entire agreement.** These Terms, together with the license file referenced in Section 3 and any order details from your Gumroad purchase, are the entire agreement between us about the Software, and replace any earlier discussions or agreements about it.
 
 **Severability.** If any part of these Terms is found unenforceable, the rest stays in effect.

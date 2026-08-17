@@ -11,3 +11,6 @@ next-env.d.ts
 
 # Gumroad listing images — local copies only (CDN URLs are recorded in docs/GUMROAD-LISTING.md)
 docs/gumroad-assets/
+
+# Internal sales notes / support drafts — kept out of the public repo
+docs/private/

@@ -546,6 +546,7 @@
     color: var(--muted);
   }
   .footer-inner a { color: var(--muted); }
+  .footer-inner .trademark { flex-basis: 100%; max-width: none; font-size: 12px; margin-top: 8px; }
 
   @media (max-width: 720px) {
     .section { padding: 40px 0; }
@@ -587,39 +588,35 @@
 
   <section class="section math" aria-labelledby="math-h2">
     <div class="container">
-      <p class="kicker">The math</p>
-      <h2 id="math-h2">GHL's markup, times every client.</h2>
-      <p class="sub-note">GHL's native generation is a reseller markup on the same model providers &mdash; and you pay it per sub-account. Agency removes the reseller for all of them at once and bills one Kie.ai wallet at the raw rate.</p>
+      <p class="kicker">What it costs</p>
+      <h2 id="math-h2">One Kie.ai wallet. Every client.</h2>
+      <p class="sub-note">Every sub-account generates through your one Kie.ai key, billed by Kie.ai at their published rates. FreshGen Link adds nothing on top &mdash; the license is a one-time fee for the packaged, supported connector, however many sub-accounts it serves.</p>
 
       <div class="table-wrap">
         <table class="price-table">
           <thead>
             <tr>
               <th scope="col">What you're generating</th>
-              <th scope="col">GHL native</th>
-              <th scope="col">FreshGen Link Agency</th>
+              <th scope="col">Kie.ai price, billed to you</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>Image</td>
-              <td class="price">$0.04 &ndash; $0.12</td>
-              <td class="price">$0.02 &ndash; $0.09</td>
+              <td class="price">$0.02 &ndash; $0.09, depending on model</td>
             </tr>
             <tr>
-              <td>10-second video</td>
-              <td class="price">$1.50 &ndash; $4.00</td>
+              <td>10-second video clip</td>
               <td class="price">about $0.25</td>
             </tr>
             <tr>
               <td>Five clients &mdash; 20 clips each, monthly</td>
-              <td class="price">$150 &ndash; $400</td>
               <td class="price">about $25</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p class="table-caption">The $147 is one client's worth of GHL-native video markup. Once.</p>
+      <p class="table-caption">Estimates &mdash; every generation reports its real cost, and any sub-account can check the shared balance with <code>check_credits</code>.</p>
     </div>
   </section>
 
@@ -741,7 +738,7 @@
         <div class="price-display" data-gumroad-field="price">$147</div>
         <div class="price-meta">
           <p class="price-label">One-time. Founder pricing.</p>
-          <p>Pays for itself with one client's first month of video.</p>
+          <p>The only thing you pay us. Kie.ai usage is billed by Kie.ai, at their price, across every sub-account.</p>
         </div>
       </div>
 
@@ -770,6 +767,7 @@
     <p><a href="https://github.com/anrob/freshgen-link" target="_blank" rel="noreferrer">Full docs &amp; README on GitHub</a></p>
     <p><a href="https://freshgen-link.vercel.app/terms.html" target="_blank" rel="noreferrer">Terms of Service</a> &middot; <a href="https://freshgen-link.vercel.app/privacy.html" target="_blank" rel="noreferrer">Privacy Policy</a> &mdash; by getting it you agree to the Terms.</p>
     <p>Something broken? Reply to your receipt email.</p>
+    <p class="trademark">GoHighLevel and HighLevel are trademarks of HighLevel Inc. FreshGen Link is an independent product and is not affiliated with, endorsed by, or sponsored by HighLevel. Kie.ai is a trademark of its owner.</p>
   </div>
 </footer>
 

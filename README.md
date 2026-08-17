@@ -1,6 +1,6 @@
 # FreshGen Link
 
-FreshGen Link is a self-hosted MCP server that plugs Kie.ai's image and video generation straight into GoHighLevel's AI tools — Ask AI and Workflow AI Agents. You deploy it to your own Vercel account in one click, connect your own Kie.ai API key, and every generation bills at Kie's raw price straight to your wallet. No subscription, no per-seat fee, no middleman markup.
+FreshGen Link is a self-hosted MCP server that plugs Kie.ai's image and video generation straight into GoHighLevel's AI tools — Ask AI and Workflow AI Agents. You deploy it to your own Vercel account in one click, connect your own Kie.ai API key, and every generation is billed by Kie.ai at Kie's own price, straight to your wallet. No subscription, no per-seat fee, nothing added on top.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanrob%2Ffreshgen-link&env=LICENSE_KEY,KIE_API_KEY,MCP_SECRET&envDescription=Your%20license%20key%20from%20purchase%2C%20your%20Kie.ai%20API%20key%2C%20and%20a%20long%20random%20secret%20that%20becomes%20part%20of%20your%20private%20URL&envLink=https%3A%2F%2Fkie.ai%2Fapi-key&project-name=freshgen-link&repository-name=freshgen-link)
 
@@ -259,14 +259,14 @@ Yes, on purpose. FreshGen Link does one thing — AI image and video generation 
 | Problem | Fix |
 |---|---|
 | **401 error** connecting in GHL | Your secret doesn't match, or there's a trailing space in the pasted URL. Re-copy the URL from your dashboard rather than retyping it. |
-| **Tools not showing up** in GHL | Remove the MCP connection and re-add it. GHL sometimes caches the tool list from the first connection attempt. |
+| **Tools not showing up** in GHL | Remove the MCP connection and re-add it — the tool list can be cached from the first connection attempt. |
 | **"Insufficient credits" error** | Your prepaid Kie.ai balance ran out. Top up at [kie.ai](https://kie.ai). |
 | **Dashboard shows 404** | Wrong secret in the URL. Double-check `https://your-app.vercel.app/s/<secret>` matches your `MCP_SECRET` exactly, no extra characters. |
 | **MCP URL unreachable from GHL** | In Vercel, go to your project → **Settings → Deployment Protection**. It must be **OFF** for production — if it's on, Vercel blocks GHL's servers before they ever reach your MCP endpoint. |
 | **Deploy fails on Vercel** | Almost always a missing required env var. Check `LICENSE_KEY`, `KIE_API_KEY` and `MCP_SECRET` are all set, then redeploy. |
 | **"Not activated" from every generation tool** | `LICENSE_KEY` is missing, mistyped, or the purchase was refunded. Re-copy it from your purchase email, set it in Vercel, and redeploy. |
 | **Test image button does nothing** | Check `check_credits` first — a $0 balance can fail quietly. Top up and try again. |
-| **"Test Connection" times out** in GHL | The first request after idle can be slow (cold start). Wait 10 seconds and try again before assuming it's broken. |
+| **"Test Connection" times out** in GHL | The first request after idle can be slow (Vercel cold start). Wait 10 seconds and try again. |
 | **Everything worked, then suddenly stopped** | Check `check_credits` — the most common cause of a sudden stop is simply running out of balance. |
 | **Media saved to the wrong sub-account** (Agency) | The URL you connected has the wrong (or no) Location ID in it. Build the correct one in your dashboard's **Per-location URLs** section and reconnect with that URL. |
 
@@ -291,6 +291,10 @@ Something not working, and it isn't listed above? Reach out to whoever you bough
 ## License
 
 Source-available, not open source. You may run and modify it for your own business (including white-labeling it) with a valid license key; you may not redistribute it or strip out the license check. Full terms in [LICENSE](LICENSE).
+
+## Trademarks
+
+GoHighLevel and HighLevel are trademarks of HighLevel Inc. FreshGen Link is an independent product and is not affiliated with, endorsed by, or sponsored by HighLevel. Kie.ai and Vercel are trademarks of their respective owners.
 
 ## Terms and privacy
 
