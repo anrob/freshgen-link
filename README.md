@@ -4,7 +4,7 @@ FreshGen Link is a self-hosted MCP server that plugs Kie.ai's image and video ge
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanrob%2Ffreshgen-link&env=LICENSE_KEY,KIE_API_KEY,MCP_SECRET&envDescription=Your%20license%20key%20from%20purchase%2C%20your%20Kie.ai%20API%20key%2C%20and%20a%20long%20random%20secret%20that%20becomes%20part%20of%20your%20private%20URL&envLink=https%3A%2F%2Fkie.ai%2Fapi-key&project-name=freshgen-link&repository-name=freshgen-link)
 
-**Contents:** [What you get](#what-you-get) · [Before you deploy](#before-you-deploy) · [After deploying](#after-deploying) · [Connect to GoHighLevel](#connect-to-gohighlevel) · [Ask AI skill](#ask-ai-skill-optional-recommended) · [Environment variables](#environment-variables) · [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies) · [Which URL for which GHL surface](#which-url-for-which-ghl-surface) · [Which model should I use](#which-model-should-i-use) · [What it costs to run](#what-it-costs-to-run) · [Your media expires](#your-media-expires) · [A note on security](#a-note-on-security) · [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Running it locally](#running-it-locally-optional) · [Support](#support) · [License](#license)
+**Contents:** [What you get](#what-you-get) · [Before you deploy](#before-you-deploy) · [After deploying](#after-deploying) · [Connect to GoHighLevel](#connect-to-gohighlevel) · [Ask AI skill](#ask-ai-skill-optional-recommended) · [Environment variables](#environment-variables) · [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies) · [Which URL for which GHL surface](#which-url-for-which-ghl-surface) · [Works outside GHL too](#works-outside-ghl-too) · [Which model should I use](#which-model-should-i-use) · [What it costs to run](#what-it-costs-to-run) · [Your media expires](#your-media-expires) · [A note on security](#a-note-on-security) · [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Running it locally](#running-it-locally-optional) · [Support](#support) · [License](#license)
 
 ## Quick start
 
@@ -117,6 +117,20 @@ Only deploy a second, fully separate copy of FreshGen Link if a client needs the
 | Agent Studio Superagent | **Instant-mode URL** (`?mode=instant`) | Superagent times out tool calls around 30 seconds and retries them. Instant mode returns a task id immediately instead of getting killed mid-render — the agent (or the auto-save) picks up the finished media afterward. |
 
 Not sure which you're using? If you followed [Connect to GoHighLevel](#connect-to-gohighlevel) Path 1 or 2 above, you want the standard URL. Superagent is its own path — click-by-click steps are in [docs/GHL-SETUP.md](docs/GHL-SETUP.md).
+
+## Works outside GHL too
+
+FreshGen Link is a standard MCP server, so anything that speaks MCP can use the same URL — same Kie.ai key, same billing, and finished media still auto-saves to your GHL Media Library because that happens on the server.
+
+| Client | How to connect |
+|---|---|
+| **Claude Desktop / claude.ai** | Settings → Connectors → **Add custom connector** → paste your standard MCP URL. Needs a paid Claude plan (Pro, Max, or Team). |
+| **Claude Code** | `claude mcp add --transport http freshgen https://your-app.vercel.app/mcp/<secret>` |
+| **Cursor, ChatGPT connectors, other MCP clients** | Add a remote MCP server by URL; transport is Streamable HTTP, no auth header — the secret is in the URL. |
+
+Use the **standard** URL in these clients (they hold a tool call open, so you get the finished image inline), not the instant-mode one. The [Ask AI skill files](#ask-ai-skill-optional-recommended) are the open Agent Skills format, so they work in Claude too — drop a `SKILL.md` into Claude Code's skills folder or upload it in claude.ai and `/adset`, `/gpt-image-2` and friends work there as well.
+
+One caution: it's the same secret URL everywhere. Anyone who has it can spend your Kie.ai balance — don't paste it into shared Claude projects or team workspaces you don't control.
 
 ## Which model should I use
 

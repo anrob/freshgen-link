@@ -50,6 +50,7 @@ WHAT YOU GET
 • A private dashboard — live credit balance, copy-URL button, one-click test image, and connection walkthroughs
 • Twelve image and video models: GPT Image 2, Nano Banana Pro, Seedream 4, Imagen 4, Kling 2.1/2.6/3.0, Seedance 2, Wan 2.6, Grok Imagine and more
 • White-label it under your own brand with a single setting
+• Works outside GHL too — it's a standard MCP server, so the same URL works in Claude Desktop, Claude Code and Cursor, and finished media still lands in your GHL Media Library
 
 WHAT YOU NEED
 
