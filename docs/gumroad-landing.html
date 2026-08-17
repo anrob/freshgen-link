@@ -5,18 +5,30 @@
      wraps it in its own document (charset, viewport, title come from the
      product) and its sanitizer strips head tags anyway. -->
 <meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,500..700,0..100&family=DM+Sans:opsz,wght@9..40,400..700&display=swap">
 <style>
+  /* Gumroad strips <head> tags, so the font request also lives here. Falls back to system faces if blocked. */
+  @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,500..700,0..100&family=DM+Sans:opsz,wght@9..40,400..700&display=swap");
   :root {
-    --paper: #faf9f6;
-    --ink: #141414;
-    --muted: #6b6b66;
-    --accent: #e8501a;
-    --accent-strong: #c2410c;
-    --rule: #e4e2dc;
+    --paper: #ffffff;
+    --paper-2: #f4f2f6;
+    --ink: #312b60;
+    --ink-2: #1a1640;
+    --muted: #6f6b8a;
+    --accent: #6e41e2;
+    --accent-strong: #5a32c9;
+    --accent-soft: #ede8fb;
+    --sky: #93e2ff;
+    --rule: #e6e3ef;
     --card: #ffffff;
-    --radius: 3px;
-    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --radius: 16px;
+    --radius-sm: 12px;
+    --radius-pill: 9999px;
+    --shadow: 0 6px 16px -6px rgba(15, 13, 24, 0.25);
+    --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   }
 
@@ -29,26 +41,29 @@
     font-family: var(--font-body);
     font-size: 16px;
     line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3 {
     font-family: var(--font-display);
     font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
+    font-variation-settings: "SOFT" 100, "opsz" 144;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
   }
 
   p { max-width: 66ch; }
 
   a {
-    color: var(--ink);
+    color: var(--accent);
     text-decoration: underline;
     text-underline-offset: 3px;
   }
   a:hover { color: var(--accent-strong); }
 
   :focus-visible {
-    outline: 2px solid var(--ink);
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
   }
 
@@ -57,9 +72,9 @@
     left: 12px;
     top: -60px;
     background: var(--ink);
-    color: var(--paper);
+    color: #fff;
     padding: 10px 16px;
-    border-radius: var(--radius);
+    border-radius: var(--radius-pill);
     text-decoration: none;
     z-index: 10;
     transition: top 0.15s ease;
@@ -67,7 +82,7 @@
   .skip-link:focus { top: 12px; }
 
   .container {
-    max-width: 880px;
+    max-width: 1080px;
     margin: 0 auto;
     padding: 0 24px;
   }
@@ -75,14 +90,17 @@
   code {
     font-family: var(--font-mono);
     font-size: 0.92em;
-    background: #f1efe9;
-    border-radius: var(--radius);
-    padding: 1px 6px;
+    background: var(--paper-2);
+    border-radius: 6px;
+    padding: 2px 6px;
   }
 
-  /* ── Masthead ── */
+  /* ── Floating nav ── */
   .site-header {
-    border-bottom: 2px solid var(--ink);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 12px 0 0;
   }
   .masthead {
     display: flex;
@@ -90,22 +108,32 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 26px 0;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: saturate(160%) blur(12px);
+    -webkit-backdrop-filter: saturate(160%) blur(12px);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
   }
+  .container.masthead { max-width: 1032px; }
   .masthead-left { min-width: 0; }
   .wordmark {
     font-family: var(--font-display);
-    font-size: 23px;
+    font-variation-settings: "SOFT" 100, "opsz" 32;
+    font-size: 22px;
     font-weight: 700;
+    letter-spacing: -0.01em;
   }
   .kicker {
     font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--accent-strong);
-    margin-top: 4px;
+    color: var(--accent);
+    margin-top: 2px;
   }
+  .masthead .kicker { margin-top: 0; }
   .masthead-buy {
     display: flex;
     align-items: center;
@@ -114,6 +142,7 @@
   }
   .price-tag {
     font-family: var(--font-display);
+    font-variation-settings: "SOFT" 100, "opsz" 32;
     font-size: 20px;
     font-weight: 700;
   }
@@ -133,9 +162,9 @@
     align-items: center;
     justify-content: center;
     border: 1.5px solid var(--ink);
-    border-radius: var(--radius);
+    border-radius: var(--radius-pill);
     background: var(--ink);
-    color: var(--paper);
+    color: #fff;
     font-family: var(--font-body);
     font-size: 15px;
     font-weight: 600;
@@ -143,52 +172,81 @@
     cursor: pointer;
     text-decoration: none;
     line-height: 1.2;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  .btn:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+  .btn:hover { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
   .btn-lg { padding: 15px 30px; font-size: 16.5px; }
 
   /* ── Sections ── */
   .section {
-    padding: 52px 0;
+    padding: 56px 0;
     border-bottom: 1px solid var(--rule);
   }
   .section:last-of-type { border-bottom: none; }
+  .section h2 { font-size: clamp(28px, 4.2vw, 40px); margin-top: 14px; max-width: 22ch; }
 
-  /* ── Hero ── */
+  /* ── Hero: dark rounded band ── */
+  .hero { padding: 24px 0 56px; border-bottom: none; }
+  .hero .container {
+    position: relative;
+    overflow: hidden;
+    padding: 72px 48px 60px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
+    color: #fff;
+  }
+  .hero .container::before,
+  .hero .container::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(10px);
+  }
+  .hero .container::before {
+    width: 62%; padding-top: 62%; right: -22%; bottom: -55%;
+    background: radial-gradient(closest-side, rgba(147, 226, 255, 0.38), transparent 72%);
+  }
+  .hero .container::after {
+    width: 40%; padding-top: 40%; left: -12%; top: -40%;
+    background: radial-gradient(closest-side, rgba(110, 65, 226, 0.55), transparent 72%);
+  }
+  .hero .container > * { position: relative; z-index: 1; }
   .hero h1 {
-    font-size: clamp(30px, 5.4vw, 50px);
-    max-width: 18ch;
+    font-size: clamp(34px, 5.6vw, 58px);
+    max-width: 19ch;
+    color: #fff;
   }
   .hero .sub {
     margin-top: 18px;
     font-size: 18.5px;
-    color: var(--muted);
-    max-width: 52ch;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 56ch;
   }
   .hero-actions {
     margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 14px;
   }
+  .hero .btn { background: #fff; border-color: #fff; color: var(--ink); }
+  .hero .btn:hover { background: #fff; border-color: #fff; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.28); }
   .quiet-line {
     font-size: 14px;
-    color: var(--muted);
+    color: rgba(255, 255, 255, 0.72);
   }
 
   /* ── The math ── */
-  .math h2 { font-size: clamp(26px, 4vw, 36px); margin-top: 14px; max-width: 20ch; }
   .num-emphasis {
-    font-size: 1.3em;
-    color: var(--accent-strong);
+    font-size: 1.15em;
+    color: var(--accent);
   }
   .sub-note {
     margin-top: 14px;
     font-size: 15.5px;
     color: var(--muted);
-    max-width: 60ch;
+    max-width: 62ch;
   }
   .table-wrap {
     overflow-x: auto;
@@ -197,30 +255,39 @@
   .price-table {
     width: 100%;
     min-width: 480px;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 15px;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
   }
   .price-table th {
     text-align: left;
     font-size: 12px;
+    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
-    border-bottom: 2px solid var(--ink);
-    padding: 8px 14px 8px 0;
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 16px;
   }
   .price-table td {
     border-bottom: 1px solid var(--rule);
-    padding: 12px 14px 12px 0;
+    padding: 13px 16px;
     vertical-align: top;
   }
+  .price-table tr:last-child td { border-bottom: none; }
   .price-table td:first-child { font-weight: 600; }
   .price-table .price {
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
-    font-size: 16.5px;
+    font-size: 16px;
     font-weight: 600;
   }
+  .price-table td.price:last-child { color: var(--accent-strong); }
   .table-caption {
     margin-top: 14px;
     font-size: 13.5px;
@@ -228,7 +295,6 @@
   }
 
   /* ── How it works ── */
-  .how h2 { font-size: clamp(26px, 4vw, 36px); margin-top: 14px; }
   .how-grid {
     display: grid;
     grid-template-columns: 1.3fr 1fr;
@@ -240,32 +306,34 @@
     list-style: none;
     counter-reset: step;
     display: grid;
-    gap: 24px;
+    gap: 16px;
   }
   .step {
     display: grid;
     grid-template-columns: 44px 1fr;
-    gap: 16px;
+    gap: 18px;
     align-items: start;
+    background: var(--paper-2);
+    border-radius: var(--radius);
+    padding: 20px 22px;
   }
   .step::before {
     counter-increment: step;
     content: counter(step);
-    font-family: var(--font-display);
-    font-size: 22px;
+    font-family: var(--font-body);
+    font-size: 17px;
     font-weight: 700;
-    color: var(--accent-strong);
-    border: 1.5px solid var(--rule);
-    border-radius: var(--radius);
+    color: #fff;
+    border-radius: 50%;
     width: 44px;
     height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--card);
+    background: var(--ink);
   }
-  .step h3 { font-size: 18px; }
-  .step p { margin-top: 6px; font-size: 14.5px; color: var(--muted); }
+  .step h3 { font-size: 19px; }
+  .step p { margin-top: 4px; font-size: 14.5px; color: var(--muted); }
 
   .diagram-wrap { display: flex; justify-content: center; }
   .diagram {
@@ -285,9 +353,9 @@
     text-align: center;
     background: var(--card);
     border: 1.5px solid var(--accent);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
   }
-  .diagram-box-strong { font-weight: 700; }
+  .diagram-box-strong { font-weight: 700; background: var(--accent-soft); }
   .diagram-muted {
     display: block;
     margin-top: 4px;
@@ -295,7 +363,6 @@
     font-size: 12px;
     color: var(--muted);
   }
-  /* Vertical connector + arrowhead, drawn with borders only. */
   .diagram-arrow {
     position: relative;
     width: 0;
@@ -325,17 +392,32 @@
   }
 
   /* ── What you get ── */
-  .features h2 { font-size: clamp(26px, 4vw, 36px); margin-top: 14px; }
   .feature-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 28px 44px;
+    gap: 18px;
     margin-top: 30px;
+  }
+  .feature {
+    background: var(--paper-2);
+    border-radius: var(--radius);
+    padding: 24px 24px 22px;
   }
   .feature-grid dt {
     font-family: var(--font-display);
-    font-size: 17.5px;
+    font-variation-settings: "SOFT" 100, "opsz" 144;
+    font-size: 19px;
     font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .feature-grid dt::before {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--sky));
+    margin-bottom: 14px;
   }
   .feature-grid dd {
     margin-top: 6px;
@@ -344,11 +426,10 @@
     line-height: 1.6;
   }
   @media (max-width: 720px) {
-    .feature-grid { grid-template-columns: 1fr; gap: 22px; }
+    .feature-grid { grid-template-columns: 1fr; gap: 14px; }
   }
 
   /* ── FAQ ── */
-  .faq h2 { font-size: clamp(26px, 4vw, 36px); margin-top: 14px; }
   .faq-list { margin-top: 26px; }
   details {
     border: 1px solid var(--rule);
@@ -360,31 +441,44 @@
     cursor: pointer;
     font-weight: 600;
     font-size: 15.5px;
-    padding: 15px 18px;
+    padding: 15px 20px;
     list-style: none;
     display: flex;
-    align-items: baseline;
-    gap: 10px;
+    align-items: center;
+    gap: 12px;
   }
   summary::-webkit-details-marker { display: none; }
   summary::before {
     content: "+";
-    font-family: var(--font-display);
-    color: var(--accent-strong);
-    font-size: 19px;
+    font-family: var(--font-body);
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 500;
     line-height: 1;
     flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
-  details[open] summary::before { content: "\2013"; }
+  details[open] summary::before { content: "3"; }
   .details-body {
-    padding: 0 18px 18px 44px;
+    padding: 0 20px 20px 56px;
     font-size: 14.5px;
     color: var(--muted);
   }
   .details-body code { color: var(--ink); }
 
   /* ── Pricing ── */
-  .pricing h2 { font-size: clamp(24px, 3.6vw, 30px); margin-top: 14px; }
+  .pricing .container {
+    background: var(--paper-2);
+    border-radius: 28px;
+    padding: 48px 48px 52px;
+  }
+  .pricing h2 { font-size: clamp(26px, 3.6vw, 34px); }
   .price-block {
     display: flex;
     align-items: baseline;
@@ -394,9 +488,11 @@
   }
   .price-display {
     font-family: var(--font-display);
-    font-size: 58px;
+    font-variation-settings: "SOFT" 100, "opsz" 144;
+    font-size: 64px;
     font-weight: 700;
     line-height: 1;
+    letter-spacing: -0.02em;
   }
   .price-meta .price-label { font-weight: 600; font-size: 14.5px; }
   .price-meta p { font-size: 14.5px; color: var(--muted); margin-top: 4px; }
@@ -404,12 +500,13 @@
 
   .pricing-details { margin-top: 30px; }
   .pricing-details h3 {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
     font-family: var(--font-body);
+    font-variation-settings: normal;
   }
   .pricing-details ul {
     margin-top: 14px;
@@ -422,7 +519,8 @@
     margin-top: 22px;
     padding: 14px 18px;
     background: var(--card);
-    border-left: 3px solid var(--accent-strong);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     font-size: 14px;
     max-width: none;
   }
@@ -437,6 +535,7 @@
   /* ── Footer ── */
   .site-footer {
     padding: 30px 0 50px;
+    border-top: 1px solid var(--rule);
   }
   .footer-inner {
     display: flex;
@@ -450,7 +549,10 @@
 
   @media (max-width: 720px) {
     .section { padding: 40px 0; }
+    .hero .container { padding: 44px 24px 40px; border-radius: 20px; }
+    .pricing .container { padding: 32px 22px 36px; border-radius: 20px; }
     p, .sub-note, .table-caption { max-width: none; }
+    .site-header { position: static; }
   }
 </style>
 </head>

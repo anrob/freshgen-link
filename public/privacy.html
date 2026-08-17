@@ -6,18 +6,28 @@
 <meta name="color-scheme" content="light">
 <title>Privacy Policy &mdash; FreshGen Link</title>
 <meta name="description" content="Privacy Policy for FreshGen Link, a self-hosted MCP server that connects GoHighLevel AI agents to Kie.ai image and video generation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,500..700,0..100&family=DM+Sans:opsz,wght@9..40,400..700&display=swap">
 <style>
   :root {
-    --paper: #faf9f6;
-    --ink: #141414;
-    --muted: #6b6b66;
-    --accent: #e8501a;
-    --accent-strong: #c2410c;
-    --rule: #e4e2dc;
+    --paper: #ffffff;
+    --paper-2: #f4f2f6;
+    --ink: #312b60;
+    --ink-2: #1a1640;
+    --muted: #6f6b8a;
+    --accent: #6e41e2;
+    --accent-strong: #5a32c9;
+    --accent-soft: #ede8fb;
+    --sky: #93e2ff;
+    --rule: #e6e3ef;
     --card: #ffffff;
-    --radius: 3px;
-    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --radius: 16px;
+    --radius-sm: 12px;
+    --radius-pill: 9999px;
+    --shadow: 0 6px 16px -6px rgba(15, 13, 24, 0.25);
+    --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     color-scheme: light;
   }
@@ -64,15 +74,22 @@
   .doc { max-width: 800px; margin: 0 auto; padding: 0 24px; }
 
   /* ── Masthead ── */
-  .site-header { border-bottom: 2px solid var(--ink); }
+  .site-header { position: sticky; top: 0; z-index: 50; padding: 12px 0 0; }
   .masthead {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    padding: 24px 0;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: saturate(160%) blur(12px);
+    -webkit-backdrop-filter: saturate(160%) blur(12px);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
   }
+  .container.masthead { max-width: 992px; }
   .wordmark { font-size: 22px; }
   .kicker {
     font-size: 12px;
@@ -159,7 +176,6 @@
     letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--muted);
-    border-bottom: 2px solid var(--ink);
     padding: 8px 14px 8px 0;
   }
   .data-table td { border-bottom: 1px solid var(--rule); padding: 11px 14px 11px 0; vertical-align: top; }
@@ -194,6 +210,30 @@
     .summary-box { border-color: #999; background: #fff; }
     a { color: var(--ink); text-decoration: underline; }
   }
+
+  /* ── Theme extras (Activepieces-inspired system, shared with the app) ── */
+  body { -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, h4 { font-variation-settings: "SOFT" 100, "opsz" 144; letter-spacing: -0.02em; text-wrap: balance; }
+  .wordmark { font-variation-settings: "SOFT" 100, "opsz" 32; letter-spacing: -0.01em; }
+  a { color: var(--accent); }
+  a:hover { color: var(--accent-strong); }
+  code { border-radius: 6px; background: var(--paper-2); }
+  .skip-link { border-radius: var(--radius-pill); color: #fff; }
+  .rule-list li::before { color: var(--accent); }
+  .data-table th { border-bottom: 1px solid var(--rule); background: var(--paper-2); padding-left: 14px; }
+  .data-table td { padding-left: 14px; }
+  .data-table { border: 1px solid var(--rule); border-radius: var(--radius); border-collapse: separate; border-spacing: 0; overflow: hidden; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .legal-caps, .cmd-cost, .summary-box, .cmd-sig, .install-note { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+  .legal-caps, .cmd-cost, .cmd-sig, .install-note, .example-code, .brand-block-code, pre { background: var(--paper-2); }
+  .summary-box, .legal-caps, .cmd-cost { border-left-color: var(--accent); }
+  .side-nav summary, .cmd-label, .kicker, .updated + .cmd-label { color: var(--accent); }
+  .step::before { font-family: var(--font-body); font-size: 16px; color: #fff; background: var(--ink); border: none; border-radius: 50%; }
+  .step { background: var(--paper-2); border-radius: var(--radius); padding: 16px 18px; }
+  .copy-btn { border-radius: var(--radius-pill); border-color: var(--rule); }
+  .copy-btn:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .site-footer { border-top: 1px solid var(--rule); }
+  @media (max-width: 760px) { .site-header { position: static; } }
 </style>
 </head>
 <body>
