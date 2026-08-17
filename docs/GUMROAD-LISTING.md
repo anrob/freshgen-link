@@ -236,15 +236,15 @@ Something broken? Reply to your receipt email and I'll sort it out.
 ```
 
 
-## Listing images (uploaded 2026-08-16)
+## Listing images (remade 2026-08-17 in the app's palette)
 
-Generated with GPT Image 2 through the prod server itself, using the Full cover/thumbnail as reference images. Local copies live in `docs/gumroad-assets/` (gitignored — 5 MB of PNGs); the permanent copies are on Gumroad's CDN:
+Generated with GPT Image 2 through the prod server (text-only prompts: indigo→navy gradient, violet + sky glows, white Fraunces-style headline, tier tag pill, GHL→FreshGen→Kie diagram). Local copies in `docs/gumroad-assets/` (gitignored — the 2026-08-16 cream/orange set is in `old-editorial/`); the permanent copies are on Gumroad's CDN:
 
-| | Cover (2048×1152) | Thumbnail (square) |
+| | Cover (2048×1152) | Thumbnail (1024²) |
 |---|---|---|
-| Full | https://public-files.gumroad.com/r64y0xi08wnmq4y0cagm69z1os1p | https://public-files.gumroad.com/03n420sntl5mop80upevqzuzk3zz |
-| Lite | https://public-files.gumroad.com/l1lq5dev672sqvk6c2l73ppuclld | https://public-files.gumroad.com/obsousaz0toror0v5s9e2vkgjkc9 |
-| Agency | https://public-files.gumroad.com/relxq4rvwnbbzd53um75x1y0e5yc | https://public-files.gumroad.com/badhpjrcztl7xhqqxh7en7ek9ktl |
+| Full | https://public-files.gumroad.com/rbcle3xmlk0p9cxuu3oimmimrhpy | https://public-files.gumroad.com/4xc33o0g3uu257nt8cdkkb5vyrfb |
+| Lite | https://public-files.gumroad.com/gxpb5vhglev27w7b6lroo4w5h9dh | https://public-files.gumroad.com/pwd74ao6bykz9cjow171lbceawyi |
+| Agency | https://public-files.gumroad.com/7239yfsix5jit9kp2d6jvd6ckd3o | https://public-files.gumroad.com/g3n4b3ivd05i1bs6gyo9w4rhzol8 |
 
 Re-upload if ever needed: `gumroad products covers add <id> --image <file>` · `gumroad products thumbnail set <id> --image <file>`.
 
