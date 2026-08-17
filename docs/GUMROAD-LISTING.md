@@ -1,11 +1,14 @@
 # Gumroad listing copy — FreshGen Link (Lite / Full / Agency)
 
-Three products, one repo. The HTML descriptions and post-purchase content pages live in `docs/gumroad/` and are applied with the Gumroad CLI (logged in as Fresh):
+Three products, one repo. The HTML descriptions and post-purchase content pages live in `docs/gumroad/`, the custom landing pages are `docs/gumroad-landing.html` (Full), `docs/gumroad-landing-lite.html` and `docs/gumroad-landing-agency.html` (both generated from Full's head/CSS by `docs/gumroad/build-landing-pages.py`). Apply with the Gumroad CLI (logged in as Fresh):
 
 ```
 gumroad products update <id> --description "$(cat docs/gumroad/<tier>-description.html)"
 gumroad products content set <id> docs/gumroad/<tier>-content.json --yes
+gumroad products page publish <id> ./docs/gumroad-landing[-lite|-agency].html --yes
 ```
+
+All three custom pages carry the same look as the app (Fraunces/DM Sans via `@import`, indigo/violet). Gumroad forces free products to "$0+" (its API refuses `customizable_price=false`), so the Lite page's own CTA says "Get it free — no card" and tells people to leave the box at 0.
 
 | Tier | Product id | Slug | Price |
 |---|---|---|---|
