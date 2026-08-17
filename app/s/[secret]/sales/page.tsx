@@ -4,7 +4,7 @@ import { pathAuthorized } from "@/lib/auth";
 import {
   GumroadError,
   gumroadSellerEnabled,
-  listSales,
+  listAllSales,
   verifyLicense,
   type Sale,
   type VerifyResult,
@@ -61,7 +61,7 @@ export default async function SalesPage({
   let sales: Sale[] = [];
   let loadError = "";
   try {
-    sales = await listSales();
+    sales = await listAllSales();
   } catch (err) {
     loadError =
       err instanceof GumroadError && err.status === 401
@@ -73,13 +73,15 @@ export default async function SalesPage({
   const sorted = [...sales].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   const toVerify = sorted.slice(0, MAX_VERIFY);
   const verifyResults = await Promise.all(
-    toVerify.map((sale) => (sale.licenseKey ? verifyLicense(sale.licenseKey) : Promise.resolve(null)))
+    toVerify.map((sale) => (sale.licenseKey ? verifyLicense(sale.licenseKey, sale.tier) : Promise.resolve(null)))
   );
   const verifiedById = new Map<string, VerifyResult | null>();
   toVerify.forEach((sale, i) => verifiedById.set(sale.id, verifyResults[i]));
 
-  const totalSales = sorted.length;
-  const revenueCents = sorted.reduce((sum, s) => sum + s.priceCents, 0);
+  const fullSales = sorted.filter((s) => s.tier === "full");
+  const liteSignups = sorted.filter((s) => s.tier === "lite").length;
+  const totalSales = fullSales.length;
+  const revenueCents = fullSales.reduce((sum, s) => sum + s.priceCents, 0);
   const badCount = sorted.filter((s) => s.refunded || s.chargebacked).length;
   const activeCount = toVerify.filter(
     (s) => statusFor(s, true, verifiedById.get(s.id) ?? null).label === "Active"
@@ -117,7 +119,7 @@ export default async function SalesPage({
       ) : sorted.length === 0 ? (
         <section className="section">
           <div className="card">
-            <p>No sales yet.</p>
+            <p>No sales or sign-ups yet.</p>
           </div>
         </section>
       ) : (
@@ -127,7 +129,11 @@ export default async function SalesPage({
             <div className="sales-tiles">
               <div className="card">
                 <div className="stat">{totalSales}</div>
-                <div className="stat-sub">Total sales</div>
+                <div className="stat-sub">Full sales</div>
+              </div>
+              <div className="card">
+                <div className="stat">{liteSignups}</div>
+                <div className="stat-sub">Lite sign-ups (free)</div>
               </div>
               <div className="card">
                 <div className="stat">${(revenueCents / 100).toFixed(2)}</div>
@@ -145,12 +151,13 @@ export default async function SalesPage({
           </section>
 
           <section className="section">
-            <div className="kicker">Sales</div>
+            <div className="kicker">Sales &amp; sign-ups</div>
             <div className="card sales-table-card">
               <table className="sales-table">
                 <thead>
                   <tr>
                     <th>Date</th>
+                    <th>Tier</th>
                     <th>Email</th>
                     <th>Paid</th>
                     <th>License key</th>
@@ -165,6 +172,7 @@ export default async function SalesPage({
                     return (
                       <tr key={sale.id}>
                         <td>{formatDate(sale.createdAt)}</td>
+                        <td>{sale.tier === "lite" ? "Lite" : "Full"}</td>
                         <td>{sale.email || "—"}</td>
                         <td className="price">{sale.priceDisplay}</td>
                         <td>
@@ -182,6 +190,7 @@ export default async function SalesPage({
                               <form action={disableLicenseAction}>
                                 <input type="hidden" name="secret" value={secret} />
                                 <input type="hidden" name="licenseKey" value={sale.licenseKey} />
+                                <input type="hidden" name="tier" value={sale.tier} />
                                 <button className="btn ghost" type="submit">
                                   Disable
                                 </button>
@@ -189,6 +198,7 @@ export default async function SalesPage({
                               <form action={enableLicenseAction}>
                                 <input type="hidden" name="secret" value={secret} />
                                 <input type="hidden" name="licenseKey" value={sale.licenseKey} />
+                                <input type="hidden" name="tier" value={sale.tier} />
                                 <button className="btn ghost" type="submit">
                                   Enable
                                 </button>
@@ -218,7 +228,7 @@ export default async function SalesPage({
       <style>{`
         .sales-tiles {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(5, 1fr);
           gap: 16px;
         }
         .sales-tiles .card {

@@ -15,16 +15,20 @@ import {
   gumroadSellerEnabled,
   type LicenseActionResult,
 } from "@/lib/gumroad";
+import type { Tier } from "@/lib/license";
 
 const LICENSE_KEY_RE = /^[A-Z0-9-]{20,60}$/i;
 
 async function run(
   formData: FormData,
-  action: (key: string) => Promise<LicenseActionResult>,
+  action: (key: string, tier: Tier) => Promise<LicenseActionResult>,
   verb: "disable" | "enable"
 ) {
   const secret = String(formData.get("secret") ?? "");
   const licenseKey = String(formData.get("licenseKey") ?? "");
+  // Which Gumroad product the key belongs to. Anything but "lite" is Full —
+  // an unexpected value can't reach a third product, only the paid one.
+  const tier: Tier = formData.get("tier") === "lite" ? "lite" : "full";
   const path = `/s/${encodeURIComponent(secret)}/sales`;
 
   if (!pathAuthorized(secret) || !gumroadSellerEnabled()) {
@@ -34,7 +38,7 @@ async function run(
     redirect(`${path}?ok=0&msg=${encodeURIComponent("Malformed license key.")}`);
   }
 
-  const result = await action(licenseKey);
+  const result = await action(licenseKey, tier);
   if (!result.ok) {
     redirect(`${path}?ok=0&msg=${encodeURIComponent(result.message || `Could not ${verb} that key.`)}`);
   }

@@ -21,9 +21,19 @@ import {
 } from "./kie-video";
 import { ghlEnabled, ghlSaveMedia } from "./ghl";
 import { kieCallbackUrl } from "./callback";
-import { licenseStatus, notActivatedMessage } from "./license";
+import {
+  UPGRADE_PRICE,
+  UPGRADE_URL,
+  licenseStatus,
+  notActivatedMessage,
+  upgradeNote,
+  type Tier,
+} from "./license";
 import { dedupedTask, requestKey } from "./dedupe";
 import { failResult, mediaResult, pendingResult, usd } from "./results";
+
+/** The one image model a Lite deployment can use. */
+export const LITE_IMAGE_MODEL = "gpt-image-2";
 
 // ── Tunables (adjust after the live-GHL milestone) ──────────────────────────
 // INLINE_WAIT_MS > 1 → generate_image waits for the render and returns the
@@ -146,7 +156,27 @@ export async function generateFrame(opts: {
   return { url: status.resultUrls[0], taskId, credits: status.credits };
 }
 
-export function registerAll(server: McpServer, ctx: McpContext) {
+/**
+ * Registers the tools for a given tier. The MCP handler resolves the tier
+ * once per request (a cached license verdict — one Gumroad call every few
+ * hours) and passes it in, so tests and tooling can inject a tier directly
+ * without a live license check.
+ *
+ * Lite = generate_image on GPT Image 2 only, one location, no video, no
+ * white-label. Everything else (status, credits, models, media-library save)
+ * is shared. Unlicensed deployments register the Full set — every paid tool
+ * is gated at call time anyway, and the list shows what activation unlocks.
+ */
+export function registerTools(server: McpServer, ctx: McpContext, tier: Tier) {
+  const lite = tier === "lite";
+  // Per-location URLs are a Full feature. A Lite deployment that gets a
+  // /mcp/<secret>/<locationId> request still works — it just saves to the
+  // env-default location (if any) instead of the one in the path.
+  if (lite && ctx.locationId) {
+    console.log(`[tier] lite: ignoring path location ${ctx.locationId}`);
+  }
+  const locationId = lite ? undefined : ctx.locationId;
+
   // ?mode=instant on this request forces the same behavior as
   // INLINE_WAIT_MS=1 globally — GHL's Agent Studio Superagent times out tool
   // calls around 30s and retries them, so it needs the taskId-first path
@@ -156,47 +186,68 @@ export function registerAll(server: McpServer, ctx: McpContext) {
   // frame step — both need to give up almost immediately in instant mode so
   // neither can block past a short tool-call timeout.
   const waitMs = inline ? INLINE_WAIT_MS : 1;
-  const autoSave = ghlEnabled(ctx.locationId);
+  const autoSave = ghlEnabled(locationId);
   const autoSaveNote = autoSave
     ? " Finished media is also saved automatically into the GHL Media Library (permanent copy) — mention that to the user."
     : "";
+  const liteNote = lite
+    ? ` ${upgradeNote()} Only mention the upgrade if the user asks for something Lite can't do (a video, a different model).`
+    : "";
 
   // ── generate_image ────────────────────────────────────────────────────────
+  const promptField = z
+    .string()
+    .min(1)
+    .max(5000)
+    .describe(
+      "What to generate, described in detail: subject, style, lighting, composition, any text to render"
+    );
+  const aspectField = looseAspectRatio("1:1").describe(
+    "e.g. 16:9 for banners/heroes, 9:16 for stories/reels, 4:5 for feed posts, 1:1 for square (default)"
+  );
+  const resolutionField = looseImageResolution.describe(
+    "1K, 2K or 4K — higher costs more. Invalid combos (e.g. 4K at 1:1 on gpt-image-2) and unknown values are auto-corrected, never rejected"
+  );
+  const fullImageSchema = z.object({
+    prompt: promptField,
+    model: looseModel.describe(
+      "One of: gpt-image-2 = best for text, logos, typography (default, ~$0.04). nano-banana-pro = best photorealism and likeness (~$0.09). nano-banana = cheapest drafts (~$0.02). nano-banana-2 = fast all-round (~$0.04). seedream-4 = stylized art (~$0.03). imagen-4 = clean commercial looks, no reference images (~$0.03). Unknown values fall back to gpt-image-2"
+    ),
+    aspectRatio: aspectField,
+    resolution: resolutionField,
+    referenceImageUrls: looseUrlList.describe(
+      "Up to 4 image URLs to use as subject/style reference (e.g. a product photo or logo). Not supported by imagen-4 or nano-banana-2"
+    ),
+  });
+  // Lite: no model picker at all — the tool IS GPT Image 2.
+  const liteImageSchema = z.object({
+    prompt: promptField,
+    aspectRatio: aspectField,
+    resolution: resolutionField,
+    referenceImageUrls: looseUrlList.describe(
+      "Up to 4 image URLs to use as subject/style reference (e.g. a product photo or logo)"
+    ),
+  });
+  const costLine = lite
+    ? "Costs real money: about $0.04 per image (GPT Image 2 — the best model for anything with words in it: logos, signs, menus, ad text)."
+    : "Costs real money: about $0.02–$0.09 per image depending on model.";
+
   server.registerTool(
     "generate_image",
     {
       description: inline
-        ? `Generate an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. This call WAITS for the render and usually returns the finished image directly (typically 15–45 seconds — do not abandon it early). If the result contains "Image generated." and a URL, the job is COMPLETE — do NOT call check_status; just show the image to the user. Only if the result says the render is still in progress and gives a taskId (an unusually slow render), call check_status with that taskId ONCE after 30 seconds. When you have the URL, share it as both a markdown image and a plain link; it expires in ~14 days.${autoSaveNote} For multiple images, call this tool once per image.`
-        : "Start generating an AI image from a text prompt using the connected Kie.ai account. Costs real money: about $0.02–$0.09 per image depending on model. This tool returns a taskId IMMEDIATELY — it never returns the finished image. You MUST call check_status with that taskId after 30–60 seconds to get the image URL; if still processing, wait and check again. Tell the user the image is being generated. When you get the URL, share it as both a markdown image and a plain link; it expires in ~14 days, so suggest downloading it (or use save_to_media_library if available). For multiple images, call this tool once per image." +
-          autoSaveNote,
-      inputSchema: z.object({
-        prompt: z
-          .string()
-          .min(1)
-          .max(5000)
-          .describe(
-            "What to generate, described in detail: subject, style, lighting, composition, any text to render"
-          ),
-        model: looseModel.describe(
-          "One of: gpt-image-2 = best for text, logos, typography (default, ~$0.04). nano-banana-pro = best photorealism and likeness (~$0.09). nano-banana = cheapest drafts (~$0.02). nano-banana-2 = fast all-round (~$0.04). seedream-4 = stylized art (~$0.03). imagen-4 = clean commercial looks, no reference images (~$0.03). Unknown values fall back to gpt-image-2"
-        ),
-        aspectRatio: looseAspectRatio("1:1").describe(
-          "e.g. 16:9 for banners/heroes, 9:16 for stories/reels, 4:5 for feed posts, 1:1 for square (default)"
-        ),
-        resolution: looseImageResolution.describe(
-          "1K, 2K or 4K — higher costs more. Invalid combos (e.g. 4K at 1:1 on gpt-image-2) and unknown values are auto-corrected, never rejected"
-        ),
-        referenceImageUrls: looseUrlList.describe(
-          "Up to 4 image URLs to use as subject/style reference (e.g. a product photo or logo). Not supported by imagen-4 or nano-banana-2"
-        ),
-      }),
+        ? `Generate an AI image from a text prompt using the connected Kie.ai account. ${costLine} This call WAITS for the render and usually returns the finished image directly (typically 15–45 seconds — do not abandon it early). If the result contains "Image generated." and a URL, the job is COMPLETE — do NOT call check_status; just show the image to the user. Only if the result says the render is still in progress and gives a taskId (an unusually slow render), call check_status with that taskId ONCE after 30 seconds. When you have the URL, share it as both a markdown image and a plain link; it expires in ~14 days.${autoSaveNote} For multiple images, call this tool once per image.${liteNote}`
+        : `Start generating an AI image from a text prompt using the connected Kie.ai account. ${costLine} This tool returns a taskId IMMEDIATELY — it never returns the finished image. You MUST call check_status with that taskId after 30–60 seconds to get the image URL; if still processing, wait and check again. Tell the user the image is being generated. When you get the URL, share it as both a markdown image and a plain link; it expires in ~14 days, so suggest downloading it (or use save_to_media_library if available). For multiple images, call this tool once per image.${autoSaveNote}${liteNote}`,
+      inputSchema: lite ? liteImageSchema : fullImageSchema,
     },
     async (input) => {
       const blocked = await licenseBlock();
       if (blocked) return blocked;
       try {
-        const model = getImageModel(input.model ?? "gpt-image-2");
-        const note = fallbackNote(input.model, model.id, "image");
+        // The Lite schema has no `model` field; the cast keeps one code path.
+        const requested = lite ? undefined : (input as { model?: string }).model;
+        const model = getImageModel(requested ?? LITE_IMAGE_MODEL);
+        const note = fallbackNote(requested, model.id, "image");
         const refs = model.supportsReference ? input.referenceImageUrls ?? [] : [];
         const droppedRefs =
           !model.supportsReference && (input.referenceImageUrls?.length ?? 0) > 0;
@@ -220,7 +271,7 @@ export function registerAll(server: McpServer, ctx: McpContext) {
             aspectRatio: input.aspectRatio,
             resolution,
             resolutionParam: model.resolutionParam,
-            callBackUrl: kieCallbackUrl(ctx.locationId),
+            callBackUrl: kieCallbackUrl(locationId),
           })
         );
         if (reused) console.log(`[dedupe] image request reused task ${taskId}`);
@@ -279,8 +330,10 @@ export function registerAll(server: McpServer, ctx: McpContext) {
     }
   );
 
-  // ── generate_video ────────────────────────────────────────────────────────
-  server.registerTool(
+  // ── generate_video (Full only) ────────────────────────────────────────────
+  // Not registered at all on Lite: GHL's tool list stays honest and the agent
+  // never tries to call something that can only answer "upgrade".
+  if (!lite) server.registerTool(
     "generate_video",
     {
       description:
@@ -340,7 +393,7 @@ export function registerAll(server: McpServer, ctx: McpContext) {
             prompt: input.prompt,
             aspectRatio: input.aspectRatio,
             waitMs,
-            locationId: ctx.locationId,
+            locationId,
           });
           if (!frame.url) {
             return pendingResult({
@@ -373,7 +426,7 @@ export function registerAll(server: McpServer, ctx: McpContext) {
             duration,
             resolution,
             aspectRatio: input.aspectRatio,
-            callBackUrl: kieCallbackUrl(ctx.locationId),
+            callBackUrl: kieCallbackUrl(locationId),
           })
         );
         if (reused) console.log(`[dedupe] video request reused task ${taskId}`);
@@ -482,30 +535,44 @@ export function registerAll(server: McpServer, ctx: McpContext) {
     },
     async ({ kind }) => {
       const parts: string[] = [];
-      if (kind !== "video") {
+      const imageRow = (m: (typeof KIE_MODELS)[number]) =>
+        `| ${m.id} | ${m.bestFor} | ${m.priceNote} | ${[
+          m.resolutions?.length ? m.resolutions.join("/") : "auto res",
+          m.supportsReference ? "reference images ✓" : "no reference images",
+        ].join(" · ")} |`;
+      const videoRow = (m: (typeof VIDEO_MODELS)[number]) =>
+        `| ${m.id} | ${m.bestFor} | ${m.priceNote} | ${[
+          `${m.durations.join("/")}s`,
+          m.resolutions?.length ? m.resolutions.join("/") : "fixed res",
+          m.supportsEndFrame ? "end frame ✓" : "start frame only",
+        ].join(" · ")} |`;
+      const imageHeader = "| Model | Best for | Price | Options |\n|---|---|---|---|\n";
+
+      if (lite) {
+        // Lite: the one model it has, then everything Full unlocks — this is
+        // the natural place for the agent to learn the upgrade exists.
+        const available = KIE_MODELS.filter((m) => m.id === LITE_IMAGE_MODEL);
+        const locked = KIE_MODELS.filter((m) => m.id !== LITE_IMAGE_MODEL);
+        if (kind !== "video") {
+          parts.push("## Image models (available on this Lite deployment)\n\n" + imageHeader + available.map(imageRow).join("\n"));
+        }
         parts.push(
-          "## Image models\n\n| Model | Best for | Price | Options |\n|---|---|---|---|\n" +
-            KIE_MODELS.map(
-              (m) =>
-                `| ${m.id} | ${m.bestFor} | ${m.priceNote} | ${[
-                  m.resolutions?.length ? m.resolutions.join("/") : "auto res",
-                  m.supportsReference ? "reference images ✓" : "no reference images",
-                ].join(" · ")} |`
-            ).join("\n")
+          `## Locked — unlock with FreshGen Link Full (${UPGRADE_PRICE}): ${UPGRADE_URL}\n\n` +
+            (kind !== "video"
+              ? "More image models:\n\n" + imageHeader + locked.map(imageRow).join("\n") + "\n\n"
+              : "") +
+            (kind !== "image"
+              ? "Video models:\n\n" + imageHeader + VIDEO_MODELS.map(videoRow).join("\n")
+              : "") +
+            "\n\nFull also adds per-sub-account URLs (one deployment for a whole agency) and white-label. Upgrading is: buy, paste the new key into LICENSE_KEY, redeploy."
         );
-      }
-      if (kind !== "image") {
-        parts.push(
-          "## Video models\n\n| Model | Best for | Price | Options |\n|---|---|---|---|\n" +
-            VIDEO_MODELS.map(
-              (m) =>
-                `| ${m.id} | ${m.bestFor} | ${m.priceNote} | ${[
-                  `${m.durations.join("/")}s`,
-                  m.resolutions?.length ? m.resolutions.join("/") : "fixed res",
-                  m.supportsEndFrame ? "end frame ✓" : "start frame only",
-                ].join(" · ")} |`
-            ).join("\n")
-        );
+      } else {
+        if (kind !== "video") {
+          parts.push("## Image models\n\n" + imageHeader + KIE_MODELS.map(imageRow).join("\n"));
+        }
+        if (kind !== "image") {
+          parts.push("## Video models\n\n" + imageHeader + VIDEO_MODELS.map(videoRow).join("\n"));
+        }
       }
       parts.push(
         "Prices are estimates — every generation reports its real cost. 1 credit = $0.005."
@@ -535,7 +602,7 @@ export function registerAll(server: McpServer, ctx: McpContext) {
         const blocked = await licenseBlock();
         if (blocked) return blocked;
         try {
-          const saved = await ghlSaveMedia(url, name, ctx.locationId);
+          const saved = await ghlSaveMedia(url, name, locationId);
           const permanent = saved.ghlUrl;
           return {
             content: [

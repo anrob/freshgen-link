@@ -59,7 +59,14 @@ Nobody else is selling "you own the server, you own the key" for GHL AI media ge
 
 ## Tiers
 
-**Tier 1 — Self-serve, $47 (founder pricing — raise to $97 after three testimonials)**
+**Tier 0 — Lite, free** (added 2026-08-16)
+Same repo, same deploy button. A free Gumroad product (`freshgen-link-lite`, product id `qFp7GEt7epSSVWVnIWGDVA==`) mints a Lite key; the server sees which product the key belongs to and turns on the Lite tool set: `generate_image` on GPT Image 2 only, one GHL location, no video, no white-label. Everything else (dashboard, test button, auto-save, Ask AI skills) works.
+
+Why it exists: it's the thing you can post in a GHL Facebook group without it reading as promo. "Built this for my own sub-accounts, it's free if you want it" gets comments, sign-ups, feedback and an email list. Every Lite deployment says "FreshGen" (BRAND_NAME is ignored), the dashboard has an Upgrade card, `list_models` shows what's locked, and the `generate_image` description tells the GHL agent Full exists — so the upsell is inside the product, not in your DMs.
+
+Upgrade path: buy Full → paste the new key into `LICENSE_KEY` → redeploy. Same MCP URL, nothing to reconnect. The seller dashboard (`/s/<secret>/sales`) shows Lite sign-ups next to Full sales.
+
+**Tier 1 — Self-serve Full, $47 (founder pricing — raise to $97 after three testimonials)**
 Deploy link + docs. They click Deploy, follow the README, connect it themselves. You're selling the packaging, not your time. Delivery: instant, the moment they pay.
 
 **Tier 2 — Done-for-you install, $X**
@@ -68,7 +75,7 @@ You deploy it and connect it on a screen-share. Includes moving them to Vercel P
 **Tier 3 — White-label, $X (top tier)**
 Everything in Tier 2, plus `BRAND_NAME` set to their brand and an accent-color pass so it reads as their own product end to end — landing page, dashboard, all of it. Best pitched to agencies reselling this downstream to their own clients.
 
-**Lead with Tier 1** in cold outreach or DMs — low friction, let the product sell itself. Upgrade conversations to Tier 2 or 3 tend to happen naturally once someone has seen it work and doesn't want to DIY the Vercel/GitHub part, or wants their own brand on it.
+**Lead with Lite (Tier 0)** in groups and anywhere you'd feel like you're "selling" — it's a free thing you made, not a pitch. **Lead with Tier 1** in a DM with someone who already has the problem. Upgrade conversations to Tier 2 or 3 tend to happen naturally once someone has seen it work and doesn't want to DIY the Vercel/GitHub part, or wants their own brand on it.
 
 ## Objection scripts
 
@@ -110,5 +117,5 @@ URL: `/s/<secret>/sales` — same secret as the regular `/s/<secret>` control ro
 - Images: **$0.02–$0.09** (FreshGen) vs **$0.04–$0.12** (GHL native)
 - Video: **~$0.025/sec measured** (FreshGen) vs **$0.15–$0.40/sec** (GHL native)
 - Vercel Hobby = free but non-commercial only; Pro = $20/mo, included from Tier 2 up
-- Three tiers: Self-serve, Done-for-you, White-label
+- Four tiers: Lite (free), Self-serve Full, Done-for-you, White-label
 - The whole pitch in one line: your server, your key, at-cost pricing, no lock-in

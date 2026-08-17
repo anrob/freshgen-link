@@ -156,3 +156,64 @@ buyer still breaks even in month two.
 
 Suggestion: launch at $47, treat it as founder pricing, say so on the page, and
 raise it to $97 once you have three testimonials.
+
+---
+
+# Lite listing — FreshGen Link Lite (Tier 0, free)
+
+Created 2026-08-16 as a **draft** via the Gumroad CLI. Product id `qFp7GEt7epSSVWVnIWGDVA==`, slug `freshgen-link-lite` → https://iamjustfresh.gumroad.com/l/freshgen-link-lite. The server already recognises this product id as the Lite tier (`lib/license.ts`).
+
+## Already set (via CLI)
+
+- Name `FreshGen Link Lite`, price $0, category Other, tags gohighlevel / ai / mcp
+- Summary: *Free AI image generation inside GoHighLevel — your own server, your own Kie.ai key, GPT Image 2 at cost.*
+- Description (the "WHAT LITE DOES / WHAT FULL ADDS / STRAIGHT ANSWERS" copy — see `gumroad products view qFp7GEt7epSSVWVnIWGDVA==`)
+- Receipt message
+
+## Still to do in the Gumroad UI (three clicks, then publish)
+
+1. **Content tab → "Generate a unique license key per sale" → ON.** Without this, Lite buyers get no key and can't activate. (The CLI has no flag for it.)
+2. **Content tab → paste the post-purchase page.** Either run
+   ```
+   gumroad products content set 'qFp7GEt7epSSVWVnIWGDVA==' docs/gumroad-lite-content.json --yes
+   ```
+   from the repo root (it's the Full page's content re-worded for Lite, with the license-key block on top), or paste the plain text below by hand.
+3. **Cover + thumbnail** — reuse the Full ones or a Lite variant. `gumroad products covers add qFp7GEt7epSSVWVnIWGDVA== --image ./cover.png` / `gumroad products thumbnail set qFp7GEt7epSSVWVnIWGDVA== --image ./thumb.png`.
+4. **Publish:** `gumroad products publish qFp7GEt7epSSVWVnIWGDVA==`
+5. **Test it:** grab it yourself for $0, take the key, run a local server with `LICENSE_KEY=<lite key>` (or a second Vercel project) and confirm the dashboard says **Lite** and GHL sees four tools, no `generate_video`.
+
+**Post-purchase content (plain text)**
+
+```
+Your license key is at the top of this page and in your receipt email. You'll paste it in during setup — keep it somewhere safe. This is a Lite key: images on GPT Image 2. If you upgrade to Full later, you just swap the key.
+
+STEP 1 — Deploy it
+Click the deploy button in the README: https://github.com/anrob/freshgen-link
+It copies the project into your own GitHub and deploys it to your own Vercel account. Vercel will ask you for three values:
+  LICENSE_KEY — the key at the top of this page
+  KIE_API_KEY — your key from https://kie.ai/api-key
+  MCP_SECRET — 30+ random characters you make up (mash the keyboard)
+Build takes about three minutes.
+
+STEP 2 — Check it works
+Open your private dashboard: https://YOUR-APP.vercel.app/s/YOUR-MCP-SECRET
+You'll see your Kie.ai balance and a test-image button. Hit it. If an image comes back, everything's wired up.
+
+STEP 3 — Connect it to GoHighLevel
+In GHL: Ask AI → the + icon → Manage Connectors → + Add custom MCP. Name it whatever you like, paste your MCP URL from the dashboard, click Add MCP. Then ask your agent for an image.
+Using an Agent Studio Superagent? Use the instant-mode URL from your dashboard (it's your normal URL with ?mode=instant on the end).
+
+WANT VIDEO, MORE MODELS, EVERY SUB-ACCOUNT, YOUR OWN BRAND?
+That's Full ($47, one-time): https://iamjustfresh.gumroad.com/l/freshgen-link. Paste the new key into LICENSE_KEY, redeploy, and the extra tools show up in GHL on their own.
+
+Full docs, including Workflow AI Agents and Agent Studio setup, are in the README and docs/GHL-SETUP.md.
+Something broken? Reply to your receipt email and I'll sort it out.
+```
+
+## Full listing — one line to add
+
+Add to the Full product's description, top of WHAT YOU GET or as its own line under STRAIGHT ANSWERS:
+
+```
+• Not sure yet? FreshGen Link Lite is free — images on GPT Image 2 only — and your Lite key swaps for a Full one whenever you're ready: https://iamjustfresh.gumroad.com/l/freshgen-link-lite
+```

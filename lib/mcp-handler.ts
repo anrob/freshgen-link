@@ -1,7 +1,8 @@
 import { McpServer, createMcpHandler } from "@modelcontextprotocol/server";
-import { registerAll } from "@/lib/tools";
+import { registerTools } from "@/lib/tools";
 import { authorized } from "@/lib/auth";
 import { parseMcpContext } from "@/lib/mcp-context";
+import { brandFor, currentTier } from "@/lib/license";
 
 // Native SSE framing (event: message / data: {...}) — this is the shape
 // GoHighLevel's own first-party MCP server uses and the only one their
@@ -17,13 +18,18 @@ import { parseMcpContext } from "@/lib/mcp-context";
 // requestInfo.url rather than threaded in as a closure — normalizeRequest
 // below rebuilds the Request but always preserves the original URL, so this
 // is safe.
-const handler = createMcpHandler(({ requestInfo }) => {
+//
+// The factory is async because the tool set depends on the license tier
+// (Lite vs Full) — a cached verdict after the first request, so this costs
+// nothing on warm instances.
+const handler = createMcpHandler(async ({ requestInfo }) => {
+  const tier = await currentTier();
   const server = new McpServer({
-    name: `${process.env.BRAND_NAME || "FreshGen"} Link`,
-    version: "1.0.0",
+    name: `${brandFor(tier)} Link`,
+    version: "1.1.0",
   });
   const ctx = parseMcpContext(requestInfo?.url ?? "");
-  registerAll(server, ctx);
+  registerTools(server, ctx, tier);
   return server;
 });
 

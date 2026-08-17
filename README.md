@@ -4,7 +4,7 @@ FreshGen Link is a self-hosted MCP server that plugs Kie.ai's image and video ge
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanrob%2Ffreshgen-link&env=LICENSE_KEY,KIE_API_KEY,MCP_SECRET&envDescription=Your%20license%20key%20from%20purchase%2C%20your%20Kie.ai%20API%20key%2C%20and%20a%20long%20random%20secret%20that%20becomes%20part%20of%20your%20private%20URL&envLink=https%3A%2F%2Fkie.ai%2Fapi-key&project-name=freshgen-link&repository-name=freshgen-link)
 
-**Contents:** [What you get](#what-you-get) · [Before you deploy](#before-you-deploy) · [After deploying](#after-deploying) · [Connect to GoHighLevel](#connect-to-gohighlevel) · [Ask AI skill](#ask-ai-skill-optional-recommended) · [Environment variables](#environment-variables) · [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies) · [Which URL for which GHL surface](#which-url-for-which-ghl-surface) · [Works outside GHL too](#works-outside-ghl-too) · [Which model should I use](#which-model-should-i-use) · [What it costs to run](#what-it-costs-to-run) · [Your media expires](#your-media-expires) · [A note on security](#a-note-on-security) · [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Running it locally](#running-it-locally-optional) · [Support](#support) · [License](#license)
+**Contents:** [Lite vs Full](#lite-vs-full) · [What you get](#what-you-get) · [Before you deploy](#before-you-deploy) · [After deploying](#after-deploying) · [Connect to GoHighLevel](#connect-to-gohighlevel) · [Ask AI skill](#ask-ai-skill-optional-recommended) · [Environment variables](#environment-variables) · [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies) · [Which URL for which GHL surface](#which-url-for-which-ghl-surface) · [Works outside GHL too](#works-outside-ghl-too) · [Which model should I use](#which-model-should-i-use) · [What it costs to run](#what-it-costs-to-run) · [Your media expires](#your-media-expires) · [A note on security](#a-note-on-security) · [FAQ](#faq) · [Troubleshooting](#troubleshooting) · [Running it locally](#running-it-locally-optional) · [Support](#support) · [License](#license)
 
 ## Quick start
 
@@ -14,9 +14,26 @@ FreshGen Link is a self-hosted MCP server that plugs Kie.ai's image and video ge
 
 Everything below is the detail behind those three steps.
 
+## Lite vs Full
+
+Same repo, same deploy button, same setup. **Your license key decides the edition** — the server checks it against Gumroad on start and turns on the matching tool set.
+
+| | **Lite** — free | **Full** — $47 one-time |
+|---|---|---|
+| Get it | [freshgen-link-lite](https://iamjustfresh.gumroad.com/l/freshgen-link-lite) | [freshgen-link](https://iamjustfresh.gumroad.com/l/freshgen-link) |
+| Image generation | GPT Image 2 only (~$0.04/image — best model for anything with words in it) | 6 image models — GPT Image 2, Nano Banana Pro, Nano Banana, Nano Banana 2, Seedream 4, Imagen 4 |
+| Video generation | — | 6 video models — Kling 2.1/2.6/3.0, Seedance 2, Wan 2.6, Grok Imagine |
+| GHL surfaces | Ask AI · Workflow AI Agents · Agent Studio Superagents | Same |
+| Auto-save to GHL Media Library | Yes (one location) | Yes, plus per-sub-account URLs — one deployment for a whole agency |
+| White-label (`BRAND_NAME`) | — (always "FreshGen") | Yes |
+| Dashboard, test button, Ask AI skills | Yes | Yes |
+| Tools your GHL agent sees | `generate_image`, `check_status`, `check_credits`, `list_models` (+ `save_to_media_library`) | + `generate_video` |
+
+**Upgrading** is: buy Full, paste the new key into `LICENSE_KEY` in Vercel, redeploy. The extra tools appear in GHL on their own — no reconnecting.
+
 ## What you get
 
-- **Five tools your GHL AI agent can call right away:** `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`.
+- **Five tools your GHL AI agent can call right away:** `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`. (Lite: everything except `generate_video`, and images run on GPT Image 2 — see [Lite vs Full](#lite-vs-full).)
 - **Automatic saves to your GHL Media Library** once you connect a GHL Private Integration Token — every finished image and video gets copied into your permanent Media Library on its own, no extra step. (A sixth tool, `save_to_media_library`, also appears for saving arbitrary URLs manually.)
 - **A private dashboard** with a copy-URL button, your live Kie.ai credit balance, a one-click test image, and a walkthrough for connecting to GHL.
 - **Works everywhere GHL accepts an MCP connector:** Ask AI, Workflow AI Agents, and Agent Studio Superagents.
@@ -25,7 +42,7 @@ Everything below is the detail behind those three steps.
 
 You need four things:
 
-- **Your license key.** Emailed to you when you bought FreshGen Link — looks like `85DE7B55-4A6E4E5A-8E5A0FDF-1BE4E0FC`. One key covers one deployment. Generation stays switched off until it's set.
+- **Your license key.** Emailed to you when you got FreshGen Link (Lite or Full) — looks like `85DE7B55-4A6E4E5A-8E5A0FDF-1BE4E0FC`. One key covers one deployment, and the key decides the edition. Generation stays switched off until it's set.
 - **A Kie.ai account and API key.** Grab one at [kie.ai/api-key](https://kie.ai/api-key) — takes about two minutes.
 - **A few dollars of prepaid Kie.ai credit.** Images start around $0.02, video from about $0.13 a clip. $10 covers a lot of testing.
 - **A free GitHub account.** The deploy button clones this repo straight into your own GitHub, then deploys that copy to Vercel. If you don't have GitHub yet, Vercel will prompt you to sign up — free, takes a minute.
@@ -81,20 +98,24 @@ Two ways to install — pick one:
 
 `freshgen-ask-ai-skills.zip` in the same folder has all 23 command + model skills. Everything is generated from the same master and the server's own model definitions, so the rules and prices are identical either way.
 
+**On Lite,** install just `commands/image` and `models/gpt-image-2` — the video, `/animate`, `/adset` and other-model skills call tools a Lite server doesn't have.
+
 ## Environment variables
 
 | Variable | Required | What it does |
 |---|---|---|
-| `LICENSE_KEY` | Yes | Your purchase license key. Generation is disabled without it. |
+| `LICENSE_KEY` | Yes | Your license key — a Lite key runs Lite, a Full key runs Full. Generation is disabled without it. |
 | `KIE_API_KEY` | Yes | Your Kie.ai API key. Every generation bills to this account. |
 | `MCP_SECRET` | Yes | 30+ random characters. Becomes part of your private MCP and dashboard URLs. |
-| `BRAND_NAME` | No | White-labels the landing page, dashboard, and GHL-facing name. Defaults to "FreshGen". |
+| `BRAND_NAME` | No | White-labels the landing page, dashboard, and GHL-facing name. Defaults to "FreshGen". **Full only** — ignored on Lite. |
 | `GHL_PIT` | No | GoHighLevel Private Integration Token. Enables automatic Media Library saves plus the `save_to_media_library` tool once a location is available — either `GHL_LOCATION_ID` below or a per-location URL. |
 | `GHL_LOCATION_ID` | No | The **default** GHL location (sub-account) generated media gets saved into. Optional if you use per-location URLs — see [Multiple sub-accounts (agencies)](#multiple-sub-accounts-agencies). |
 
 Change any of these anytime in Vercel: your project → **Settings → Environment Variables**, then redeploy for the change to take effect.
 
 ## Multiple sub-accounts (agencies)
+
+*Full only — a Lite deployment saves to its one `GHL_LOCATION_ID` and ignores the location in a per-location URL.*
 
 One deployment can serve every sub-account you manage — you don't need a separate Vercel project per client.
 
@@ -204,9 +225,17 @@ The Vercel deploy button requires a public GitHub repo — that's a Vercel limit
 
 The server still connects to GoHighLevel and the informational tools (`list_models`, `check_credits`) keep working, but `generate_image`, `generate_video`, and `save_to_media_library` return an "not activated" message instead of running. Add a valid `LICENSE_KEY` in Vercel and redeploy. Your dashboard shows activation status at a glance.
 
+**What's the difference between Lite and Full?**
+
+Lite is free and does one thing: images on GPT Image 2, saved to one GHL location. Full ($47 one-time) adds video, five more image models, per-sub-account URLs and white-label. Same repo, same deploy — the key decides. Table in [Lite vs Full](#lite-vs-full).
+
+**I have Lite — how do I upgrade?**
+
+Buy Full, paste the new key into `LICENSE_KEY` in Vercel, redeploy. Your MCP URL doesn't change, so nothing in GHL needs reconnecting — `generate_video` and the extra models just show up.
+
 **Can I white-label it?**
 
-Yes — set the `BRAND_NAME` environment variable and it replaces "FreshGen" on the landing page, the dashboard, and inside GHL. Full white-label with a custom accent color is offered as a higher tier — ask if you want that.
+Full only. Set the `BRAND_NAME` environment variable and it replaces "FreshGen" on the landing page, the dashboard, and inside GHL. Full white-label with a custom accent color is offered as a higher tier — ask if you want that.
 
 **My video didn't come back — is something broken?**
 

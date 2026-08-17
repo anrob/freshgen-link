@@ -1,24 +1,39 @@
 import { KIE_MODELS } from "@/lib/kie";
 import { VIDEO_MODELS } from "@/lib/kie-video";
+import { UPGRADE_PRICE, UPGRADE_URL, brandFor, currentTier } from "@/lib/license";
+import { LITE_IMAGE_MODEL } from "@/lib/tools";
 
-const brand = process.env.BRAND_NAME || "FreshGen";
+// Rendered per request (not at build) so the tier comes from the deployment's
+// live license verdict, and a build never depends on reaching Gumroad.
+export const dynamic = "force-dynamic";
 
-export default function Landing() {
+export default async function Landing() {
+  const tier = await currentTier();
+  const lite = tier === "lite";
+  const brand = brandFor(tier);
+  const imageModels = lite ? KIE_MODELS.filter((m) => m.id === LITE_IMAGE_MODEL) : KIE_MODELS;
   return (
     <div className="container">
       <header className="masthead">
         <div className="wordmark">
           {brand} <em>Link</em>
         </div>
-        <div className="masthead-note">AI media server for GoHighLevel</div>
+        <div className="masthead-note">
+          AI media server for GoHighLevel{lite ? " · Lite" : ""}
+        </div>
       </header>
 
       <section className="section hero">
         <div className="kicker">Self-hosted · Your API key · MCP</div>
-        <h1>AI images and video, inside your GoHighLevel.</h1>
+        <h1>
+          {lite
+            ? "AI images, inside your GoHighLevel."
+            : "AI images and video, inside your GoHighLevel."}
+        </h1>
         <p className="sub">
-          Your own server. Your own Kie.ai key. Pennies per image, a quarter per
-          video clip — no per-seat subscription, no middleman markup.
+          {lite
+            ? "Your own server. Your own Kie.ai key. About four cents an image on GPT Image 2 — no per-seat subscription, no middleman markup."
+            : "Your own server. Your own Kie.ai key. Pennies per image, a quarter per video clip — no per-seat subscription, no middleman markup."}
         </p>
         <p style={{ marginTop: 22 }}>
           <a className="btn" href="#how">
@@ -98,7 +113,7 @@ export default function Landing() {
             </tr>
           </thead>
           <tbody>
-            {KIE_MODELS.map((m) => (
+            {imageModels.map((m) => (
               <tr key={m.id}>
                 <td>{m.label}</td>
                 <td>{m.bestFor}</td>
@@ -107,24 +122,36 @@ export default function Landing() {
             ))}
           </tbody>
         </table>
-        <table className="price-table" style={{ marginTop: 28 }}>
-          <thead>
-            <tr>
-              <th>Video model</th>
-              <th>Best for</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {VIDEO_MODELS.map((m) => (
-              <tr key={m.id}>
-                <td>{m.label}</td>
-                <td>{m.bestFor}</td>
-                <td className="price">{m.priceNote}</td>
+        {lite ? (
+          <p className="caption" style={{ marginTop: 16 }}>
+            This is the Lite edition — one image model, no video. Full (
+            {UPGRADE_PRICE}) adds {KIE_MODELS.length - 1} more image models,{" "}
+            {VIDEO_MODELS.length} video models, per-sub-account URLs and
+            white-label:{" "}
+            <a href={UPGRADE_URL} rel="noreferrer">
+              {UPGRADE_URL.replace(/^https?:\/\//, "")}
+            </a>
+          </p>
+        ) : (
+          <table className="price-table" style={{ marginTop: 28 }}>
+            <thead>
+              <tr>
+                <th>Video model</th>
+                <th>Best for</th>
+                <th>Price</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {VIDEO_MODELS.map((m) => (
+                <tr key={m.id}>
+                  <td>{m.label}</td>
+                  <td>{m.bestFor}</td>
+                  <td className="price">{m.priceNote}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
         <p className="caption" style={{ marginTop: 12, fontSize: 13, color: "var(--muted)" }}>
           Prices are estimates billed by Kie.ai to your own wallet (1 credit =
           $0.005). Every result reports its real cost.

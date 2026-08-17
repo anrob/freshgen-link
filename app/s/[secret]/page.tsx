@@ -6,11 +6,9 @@ import CopyField from "@/components/CopyField";
 import RefreshButton from "@/components/RefreshButton";
 import TestImageButton from "@/components/TestImageButton";
 import LocationUrlBuilder from "@/components/LocationUrlBuilder";
-import { licenseStatus } from "@/lib/license";
+import { UPGRADE_PRICE, UPGRADE_URL, brandFor, licenseStatus } from "@/lib/license";
 
 export const dynamic = "force-dynamic";
-
-const brand = process.env.BRAND_NAME || "FreshGen";
 
 function CheckRow({
   ok,
@@ -48,6 +46,8 @@ export default async function Dashboard({
   const mcpUrl = `${proto}://${host}/mcp/${secret}`;
 
   const license = await licenseStatus();
+  const lite = license.ok && license.tier === "lite";
+  const brand = brandFor(license.tier);
 
   let credits: number | null = null;
   let creditsError = "";
@@ -67,6 +67,11 @@ export default async function Dashboard({
       <header className="masthead">
         <div className="wordmark">
           {brand} <em>Control Room</em>
+          {license.ok && (
+            <span className="pill" style={{ marginLeft: 12, verticalAlign: "middle" }}>
+              {lite ? "Lite" : "Full"}
+            </span>
+          )}
         </div>
         <div className="masthead-note">{host}</div>
       </header>
@@ -100,9 +105,11 @@ export default async function Dashboard({
               <>
                 <code>LICENSE_KEY</code> —{" "}
                 {license.ok
-                  ? license.degraded
-                    ? "active (could not reach Gumroad — running on trust)"
-                    : "active"
+                  ? `${lite ? "Lite" : "Full"} license ${
+                      license.degraded
+                        ? "(could not reach Gumroad — running on trust)"
+                        : "active"
+                    }`
                   : "not activated"}
               </>
             }
@@ -127,12 +134,16 @@ export default async function Dashboard({
             fix={envFix}
           />
           <CheckRow
-            ok={Boolean(process.env.BRAND_NAME)}
+            ok={!lite && Boolean(process.env.BRAND_NAME)}
             optional
             label={
               <>
                 <code>BRAND_NAME</code> — white-label name{" "}
-                {process.env.BRAND_NAME ? `(currently "${process.env.BRAND_NAME}")` : "(optional)"}
+                {lite
+                  ? "(Full feature — ignored on Lite)"
+                  : process.env.BRAND_NAME
+                    ? `(currently "${process.env.BRAND_NAME}")`
+                    : "(optional)"}
               </>
             }
           />
@@ -165,26 +176,80 @@ export default async function Dashboard({
         </div>
       </section>
 
-      <section className="section">
-        <div className="kicker">Per-location &amp; Superagent URLs</div>
-        <div className="card">
-          <p>
-            One deployment can serve every sub-account in your agency. Paste a
-            sub-account&apos;s Location ID below to get its own MCP URL — media
-            generated through that URL saves straight into that sub-account&apos;s
-            Media Library. This needs an agency-level Private Integration
-            Token (or a PIT that has access to those sub-accounts) set as{" "}
-            <code>GHL_PIT</code>.
-          </p>
-          <p className="caption" style={{ marginTop: 8 }}>
-            Find a Location ID in GHL: Settings → Business Profile (Location
-            ID).
-          </p>
-          <div style={{ marginTop: 18 }}>
-            <LocationUrlBuilder baseUrl={`${proto}://${host}`} secret={secret} />
+      {lite ? (
+        <>
+          <section className="section">
+            <div className="kicker">Superagent (instant-mode) URL</div>
+            <div className="card">
+              <CopyField value={`${mcpUrl}?mode=instant`} />
+              <p className="caption">
+                Only for Agent Studio Superagents — they time out long tool
+                calls, so this URL returns a task id at once. Use the standard
+                URL above everywhere else.
+              </p>
+            </div>
+          </section>
+
+          <section className="section">
+            <div className="kicker">Upgrade to Full</div>
+            <div className="card">
+              <p>
+                You&apos;re running <strong>Lite</strong>: images on GPT Image 2,
+                one location. Full ({UPGRADE_PRICE}) unlocks:
+              </p>
+              <ul style={{ margin: "12px 0 0 18px", lineHeight: 1.7 }}>
+                <li>
+                  <strong>Video</strong> — Kling 2.1/2.6/3.0, Seedance 2, Wan
+                  2.6, Grok Imagine (5–10s clips from about $0.13)
+                </li>
+                <li>
+                  <strong>Five more image models</strong> — Nano Banana Pro,
+                  Nano Banana, Nano Banana 2, Seedream 4, Imagen 4
+                </li>
+                <li>
+                  <strong>Per-sub-account URLs</strong> — one deployment for a
+                  whole agency, media lands in the right Media Library
+                </li>
+                <li>
+                  <strong>White-label</strong> — your brand on the dashboard
+                  and inside GHL
+                </li>
+              </ul>
+              <p style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <a className="btn" href={UPGRADE_URL} target="_blank" rel="noreferrer">
+                  Get Full — {UPGRADE_PRICE}
+                </a>
+              </p>
+              <p className="caption" style={{ marginTop: 12 }}>
+                After buying: paste the new key into <code>LICENSE_KEY</code> in
+                Vercel and redeploy. The extra tools show up in GHL by
+                themselves — no reconnecting.
+              </p>
+            </div>
+          </section>
+        </>
+      ) : (
+        <section className="section">
+          <div className="kicker">Per-location &amp; Superagent URLs</div>
+          <div className="card">
+            <p>
+              One deployment can serve every sub-account in your agency. Paste a
+              sub-account&apos;s Location ID below to get its own MCP URL — media
+              generated through that URL saves straight into that sub-account&apos;s
+              Media Library. This needs an agency-level Private Integration
+              Token (or a PIT that has access to those sub-accounts) set as{" "}
+              <code>GHL_PIT</code>.
+            </p>
+            <p className="caption" style={{ marginTop: 8 }}>
+              Find a Location ID in GHL: Settings → Business Profile (Location
+              ID).
+            </p>
+            <div style={{ marginTop: 18 }}>
+              <LocationUrlBuilder baseUrl={`${proto}://${host}`} secret={secret} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="section">
         <div className="kicker">Kie.ai balance</div>
@@ -280,10 +345,19 @@ export default async function Dashboard({
               Use the INSTANT-mode URL, not the standard one — Superagent
               times out long tool calls. Instant mode returns a task id at
               once; the finished media auto-saves to the Media Library, or
-              fetch it with <code>check_status</code>. Build one in{" "}
-              <strong>Per-location &amp; Superagent URLs</strong> above (tick{" "}
-              <strong>Instant mode</strong>), or just add{" "}
-              <code>?mode=instant</code> to your standard URL.
+              fetch it with <code>check_status</code>.{" "}
+              {lite ? (
+                <>
+                  Copy it from <strong>Superagent (instant-mode) URL</strong>{" "}
+                  above.
+                </>
+              ) : (
+                <>
+                  Build one in <strong>Per-location &amp; Superagent URLs</strong>{" "}
+                  above (tick <strong>Instant mode</strong>), or just add{" "}
+                  <code>?mode=instant</code> to your standard URL.
+                </>
+              )}
             </div>
             <ol>
               <li>
@@ -313,9 +387,15 @@ export default async function Dashboard({
         <div className="card">
           <p>
             A skill file that teaches Ask AI when and how to use these tools —
-            and adds slash commands like <code>/image</code>, <code>/adset</code>{" "}
-            and <code>/video</code>, plus a BRAND block so every generation
+            and adds slash commands like <code>/image</code>, <code>/adset</code>
+            {lite ? "" : <>{" "}and <code>/video</code></>}, plus a BRAND block so every generation
             matches your style.
+            {lite && (
+              <>
+                {" "}On Lite, install <code>commands/image</code> and{" "}
+                <code>models/gpt-image-2</code> — the others need Full.
+              </>
+            )}
           </p>
           <p style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
             <a className="btn" href="/ask-ai-skill.html">
@@ -334,7 +414,7 @@ export default async function Dashboard({
       </section>
 
       <footer className="footer">
-        <span>{brand} Link v1.0.0</span>
+        <span>{brand} Link v1.1.0 · {lite ? "Lite" : "Full"}</span>
         <span style={{ display: "flex", gap: 16 }}>
           <a href="/ask-ai-skill.html">Skill guide</a>
           <a href="/terms.html">Terms</a>

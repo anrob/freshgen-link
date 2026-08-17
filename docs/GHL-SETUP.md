@@ -25,6 +25,8 @@ Have these two things ready:
 
 That's it. Every path below uses that same URL — you're just pasting it into a different part of GHL depending on how you want to use it.
 
+**Lite or Full?** All three paths work on both. Lite has no video tool and no per-location URLs (the next section is Full-only) — for Superagent on Lite, copy the instant-mode URL your dashboard shows.
+
 ---
 
 ## Per-location URLs (agencies)
