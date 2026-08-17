@@ -137,8 +137,14 @@ export default async function SalesPage({
                 <div className="stat-sub">Agency sales ($147)</div>
               </div>
               <div className="card">
-                <div className="stat">{liteSignups}</div>
-                <div className="stat-sub">Lite sign-ups (free)</div>
+                <div className="stat">{liteSignups > 0 ? liteSignups : "—"}</div>
+                <div className="stat-sub">
+                  Lite sign-ups —{" "}
+                  <a href="https://app.gumroad.com/customers" target="_blank" rel="noreferrer">
+                    count in Gumroad
+                  </a>{" "}
+                  (its API skips free downloads)
+                </div>
               </div>
               <div className="card">
                 <div className="stat">${(revenueCents / 100).toFixed(2)}</div>
@@ -238,6 +244,7 @@ export default async function SalesPage({
         }
         .sales-tiles .card {
           padding: 20px 22px;
+          margin-top: 0;
         }
         .sales-table-card {
           padding: 0;
