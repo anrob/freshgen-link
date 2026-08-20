@@ -111,14 +111,10 @@ export async function listSales(tier: Tier = "full"): Promise<Sale[]> {
   return sales;
 }
 
-/** Full + Agency sales and Lite sign-ups, fetched in parallel and merged. */
+/** Full sales and Lite sign-ups, fetched in parallel and merged. */
 export async function listAllSales(): Promise<Sale[]> {
-  const [full, agency, lite] = await Promise.all([
-    listSales("full"),
-    listSales("agency"),
-    listSales("lite"),
-  ]);
-  return [...full, ...agency, ...lite];
+  const [full, lite] = await Promise.all([listSales("full"), listSales("lite")]);
+  return [...full, ...lite];
 }
 
 export type LicenseActionResult = { ok: boolean; message?: string };

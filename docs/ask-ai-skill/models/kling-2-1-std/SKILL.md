@@ -28,7 +28,7 @@ When a message begins with this command (or names this model): first state the e
 - The default: fastest and cheapest. Describe ONE clear motion and ONE camera move ("steam rises, slow push-in"), keep the subject count low, and let the start image carry the look.
 - Best for social clips, product spins, and quick animations of a hero image.
 
-## BRAND block — the agency/buyer edits this before uploading
+## BRAND block — edit this before uploading
 
 <!-- Replace every ALL-CAPS placeholder below with the real brand details,
      then upload this file in Ask AI's Skills panel. Nothing else in this

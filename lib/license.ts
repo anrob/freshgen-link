@@ -5,13 +5,10 @@
 // verdict in module memory for RECHECK_MS (Vercel keeps warm instances around,
 // so in practice this is one ~200ms call every few hours).
 //
-// THREE PRODUCTS, ONE REPO. The same deploy button serves all of them:
+// TWO PRODUCTS, ONE REPO. The same deploy button serves both of them:
 //   - a key from the free product     → tier "lite"   (generate_image on GPT
-//     Image 2 only, one location, no video, no brand)
-//   - a key from the $47 product      → tier "full"   (every model, video,
-//     one location, no brand)
-//   - a key from the $147 product     → tier "agency" (Full + per-sub-account
-//     URLs + white-label / brand section)
+//     Image 2 only, no video)
+//   - a key from the $17 product      → tier "full"   (every model + video)
 // A key is verified against each product in turn; the first that recognises
 // it decides the tier. Upgrading is therefore just "paste the new key,
 // redeploy" — no code or config change.
@@ -21,34 +18,33 @@
 // buyer's deployment talks to Gumroad directly and carries no credential of
 // ours.
 //
-// FAIL-OPEN POLICY: if Gumroad is unreachable we keep serving. A paying agency
-// losing image generation because Gumroad had an outage is a far worse outcome
-// than an unlicensed deployment working during a rare window. Piracy here is
-// bounded by the buyer's own Kie.ai wallet — they pay for their own usage
-// either way; the license is what pays for the packaging and support.
+// FAIL-OPEN POLICY: if Gumroad is unreachable we keep serving. A paying
+// customer losing image generation because Gumroad had an outage is a far
+// worse outcome than an unlicensed deployment working during a rare window.
+// Piracy here is bounded by the buyer's own Kie.ai wallet — they pay for
+// their own usage either way; the license is what pays for the packaging and
+// support.
 
 export const GUMROAD_PRODUCT_ID = process.env.GUMROAD_PRODUCT_ID || "J7GddYMuxwoHag0VPEHI7g==";
 export const GUMROAD_LITE_PRODUCT_ID =
   process.env.GUMROAD_LITE_PRODUCT_ID || "qFp7GEt7epSSVWVnIWGDVA==";
-export const GUMROAD_AGENCY_PRODUCT_ID =
-  process.env.GUMROAD_AGENCY_PRODUCT_ID || "TtEQhFkX2y4RAnS2Kf5irw==";
 /** Where a Lite deployment sends people to unlock Full. */
 export const UPGRADE_URL = "https://iamjustfresh.gumroad.com/l/freshgen-link";
-export const UPGRADE_PRICE = "$47 one-time";
-/** Where Lite/Full deployments send people to unlock Agency. */
-export const AGENCY_URL = "https://iamjustfresh.gumroad.com/l/freshgen-link-agency";
-export const AGENCY_PRICE = "$147 one-time";
+export const UPGRADE_PRICE = "$17 one-time";
+
+/** The product's display name, everywhere it shows one. */
+export const BRAND = "FreshGen";
 
 const VERIFY_URL = "https://api.gumroad.com/v2/licenses/verify";
 const RECHECK_MS = 6 * 60 * 60 * 1000; // 6 hours
 const TIMEOUT_MS = 6_000;
 
-export type Tier = "lite" | "full" | "agency";
+export type Tier = "lite" | "full";
 
 // Order matters for fail-open + unlicensed defaults: the most permissive tier
-// is what we assume when we can't know — a paying Agency customer must never
-// be silently downgraded by a Gumroad outage (see policy note above).
-export const MOST_PERMISSIVE_TIER: Tier = "agency";
+// is what we assume when we can't know — a paying customer must never be
+// silently downgraded by a Gumroad outage (see policy note above).
+export const MOST_PERMISSIVE_TIER: Tier = "full";
 
 export type LicenseState = {
   ok: boolean;
@@ -64,7 +60,6 @@ export type LicenseState = {
 // Ordered: the first product that recognises the key wins.
 const PRODUCTS: { id: string; tier: Tier }[] = [
   { id: GUMROAD_PRODUCT_ID, tier: "full" },
-  { id: GUMROAD_AGENCY_PRODUCT_ID, tier: "agency" },
   { id: GUMROAD_LITE_PRODUCT_ID, tier: "lite" },
 ];
 
@@ -73,10 +68,9 @@ export function productIdForTier(tier: Tier): string {
 }
 
 /** Feature switches per tier — the single place the ladder is defined. */
-export const TIER_FEATURES: Record<Tier, { video: boolean; allImageModels: boolean; multiLocation: boolean; brand: boolean; allSkills: boolean; label: string }> = {
-  lite:   { video: false, allImageModels: false, multiLocation: false, brand: false, allSkills: false, label: "Lite" },
-  full:   { video: true,  allImageModels: true,  multiLocation: false, brand: false, allSkills: true,  label: "Full" },
-  agency: { video: true,  allImageModels: true,  multiLocation: true,  brand: true,  allSkills: true,  label: "Agency" },
+export const TIER_FEATURES: Record<Tier, { video: boolean; allImageModels: boolean; allSkills: boolean; label: string }> = {
+  lite: { video: false, allImageModels: false, allSkills: false, label: "Lite" },
+  full: { video: true,  allImageModels: true,  allSkills: true,  label: "Full" },
 };
 
 let cached: LicenseState | null = null;
@@ -182,25 +176,10 @@ export async function currentTier(): Promise<Tier> {
   return (await licenseStatus()).tier;
 }
 
-/**
- * The display name for this deployment. White-label (BRAND_NAME) is an Agency
- * feature — Lite and Full deployments always read "FreshGen" no matter what
- * the env says. Callers that already hold the tier pass it in; the async form
- * resolves it.
- */
-export function brandFor(tier: Tier): string {
-  if (!TIER_FEATURES[tier].brand) return "FreshGen";
-  return process.env.BRAND_NAME || "FreshGen";
-}
-
-export async function brandName(): Promise<string> {
-  return brandFor(await currentTier());
-}
-
 /** Message returned by every gated tool when the deployment isn't activated. */
 export function notActivatedMessage(reason?: string): string {
   return [
-    `This ${process.env.BRAND_NAME || "FreshGen"} deployment is not activated.`,
+    `This ${BRAND} deployment is not activated.`,
     reason ? `Reason: ${reason}` : "",
     "",
     "The owner needs to set a valid LICENSE_KEY in their Vercel project:",
@@ -214,5 +193,5 @@ export function notActivatedMessage(reason?: string): string {
 
 /** One-liner appended to Lite tool output where an upsell is natural. */
 export function upgradeNote(): string {
-  return `This is FreshGen Link Lite (GPT Image 2 only). Full (${UPGRADE_PRICE}) adds video and five more image models: ${UPGRADE_URL} — Agency (${AGENCY_PRICE}) adds every sub-account and white-label: ${AGENCY_URL}`;
+  return `This is FreshGen Link Lite (GPT Image 2 only). Full (${UPGRADE_PRICE}) adds video and five more image models: ${UPGRADE_URL}`;
 }

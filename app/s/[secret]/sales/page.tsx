@@ -13,7 +13,7 @@ import { disableLicenseAction, enableLicenseAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-const brand = process.env.BRAND_NAME || "FreshGen";
+const brand = "FreshGen";
 
 // Verifying is a live Gumroad call per key — cap it so a big sales history
 // doesn't turn a page load into 200 sequential-ish network calls.
@@ -80,7 +80,6 @@ export default async function SalesPage({
 
   const paid = sorted.filter((s) => s.tier !== "lite");
   const fullCount = sorted.filter((s) => s.tier === "full").length;
-  const agencyCount = sorted.filter((s) => s.tier === "agency").length;
   const liteSignups = sorted.filter((s) => s.tier === "lite").length;
   const revenueCents = paid.reduce((sum, s) => sum + s.priceCents, 0);
   const badCount = sorted.filter((s) => s.refunded || s.chargebacked).length;
@@ -130,11 +129,7 @@ export default async function SalesPage({
             <div className="sales-tiles">
               <div className="card">
                 <div className="stat">{fullCount}</div>
-                <div className="stat-sub">Full sales ($47)</div>
-              </div>
-              <div className="card">
-                <div className="stat">{agencyCount}</div>
-                <div className="stat-sub">Agency sales ($147)</div>
+                <div className="stat-sub">Full sales ($17)</div>
               </div>
               <div className="card">
                 <div className="stat">{liteSignups > 0 ? liteSignups : "—"}</div>
@@ -183,7 +178,7 @@ export default async function SalesPage({
                     return (
                       <tr key={sale.id}>
                         <td>{formatDate(sale.createdAt)}</td>
-                        <td>{sale.tier === "lite" ? "Lite" : sale.tier === "agency" ? "Agency" : "Full"}</td>
+                        <td>{sale.tier === "lite" ? "Lite" : "Full"}</td>
                         <td>{sale.email || "—"}</td>
                         <td className="price">{sale.priceDisplay}</td>
                         <td>

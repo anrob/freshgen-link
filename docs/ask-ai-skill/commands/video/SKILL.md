@@ -65,7 +65,7 @@ Unrecognized model ids don't error — the tool silently falls back to the defau
 
 Only use aspect ratios, resolutions, and durations shown here and in section 5. If genuinely unsure, `1:1`, `16:9`, `9:16`, and `1K` are always safe.
 
-## BRAND block — the agency/buyer edits this before uploading
+## BRAND block — edit this before uploading
 
 <!-- Replace every ALL-CAPS placeholder below with the real brand details,
      then upload this file in Ask AI's Skills panel. Nothing else in this

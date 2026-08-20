@@ -4,7 +4,7 @@ Two ways to plug FreshGen Link into GoHighLevel. Pick based on what you're build
 
 Quick context: MCP (Model Context Protocol) is just the plumbing that lets GHL's AI call outside tools — in this case, your FreshGen Link server. You don't need to understand how it works to use it. You just need your MCP URL and one of the two paths below.
 
-**Contents:** [Which path do I need?](#which-path-do-i-need) · [Before you start](#before-you-start) · [Per-location URLs (Agency)](#per-location-urls-agency) · [Path 1: Ask AI](#path-1-ask-ai-primary) · [Path 2: Workflow AI Agent](#path-2-workflow-ai-agent) · [If a connection won't work](#if-a-connection-wont-work) · [Notes](#notes) · [What each tool does](#what-each-tool-does)
+**Contents:** [Which path do I need?](#which-path-do-i-need) · [Before you start](#before-you-start) · [Path 1: Ask AI](#path-1-ask-ai-primary) · [Path 2: Workflow AI Agent](#path-2-workflow-ai-agent) · [If a connection won't work](#if-a-connection-wont-work) · [Notes](#notes) · [What each tool does](#what-each-tool-does)
 
 ## Which path do I need?
 
@@ -20,29 +20,11 @@ If you're not sure, you want Path 1. It covers the vast majority of real use —
 Have these two things ready:
 
 - **Your MCP URL** — copy it from your dashboard at `https://your-app.vercel.app/s/<your-secret>`. Use the copy button there rather than typing it from memory.
-- **A name for the connector** — "FreshGen" works fine, or your own brand if you've set `BRAND_NAME`.
+- **A name for the connector** — "FreshGen" works fine.
 
 That's it. Every path below uses that same URL — you're just pasting it into a different part of GHL depending on how you want to use it.
 
-**Lite, Full or Agency?** Both paths work on every tier. Lite has no video tool; per-location URLs (the next section) are Agency-only.
-
----
-
-## Per-location URLs (Agency)
-
-*Agency tier only.* Skip this if you only manage one GHL sub-account, or you're on Lite/Full — go straight to Path 1 below.
-
-Managing several sub-accounts on Agency? You don't need a separate deployment for each one. Add the sub-account's Location ID to your MCP URL and media generated through it saves into that sub-account's Media Library instead of the deployment's default:
-
-```
-https://your-app.vercel.app/mcp/<secret>/<locationId>
-```
-
-Find a Location ID in GHL: **Settings → Business Profile** (Location ID). Your Agency dashboard has a builder for this under **Per-location URLs** — paste the Location ID in, copy the finished URL out.
-
-**Agency-level PIT.** This needs a `GHL_PIT` that has access to every sub-account you'll point a URL at, not just one location's own token. Create it at **Agency Settings → Private Integrations → New**, with the "View/Edit Media" scopes, and make sure it's authorized against the sub-accounts you use.
-
-Use a per-location URL the same way as the standard one in either path below — just paste it in wherever the steps say "your MCP URL."
+**Lite or Full?** Both paths work on both tiers. Lite has no video tool.
 
 ---
 
@@ -54,7 +36,7 @@ Use a per-location URL the same way as the standard one in either path below —
 2. Click the **+** icon → **Manage Connectors**.
 3. Click **+ Add custom MCP**.
 4. Fill in:
-   - **Name:** "FreshGen" (or your brand name)
+   - **Name:** "FreshGen"
    - **MCP server URL:** your `https://your-app.vercel.app/mcp/<secret>` URL
 5. Click **Add MCP**. Leave the Advanced section alone — the defaults are correct.
 6. If GHL shows a tool list after adding, tick every tool.
@@ -89,7 +71,7 @@ Use this when generation needs to happen automatically inside a workflow, not ju
 3. Inside that action, click **Add Tools**.
 4. Go to the **MCP** tab → **Add Connection**.
 5. Fill in:
-   - **Connection Name:** "FreshGen" (or your brand)
+   - **Connection Name:** "FreshGen"
    - **Server URL:** your `https://your-app.vercel.app/mcp/<secret>` URL
    - **Transport Type:** `HTTP Streamable`
    - **Authentication:** `None` — the URL itself carries your secret, there's nothing else to authenticate
@@ -112,13 +94,10 @@ Same fixes apply no matter which path you used — full detail is in the README'
 - **"Test Connection" fails in Path 2** — almost always Transport Type isn't set to `HTTP Streamable`, or Authentication isn't set to `None`. Double-check both fields.
 - **Tools list is empty right after adding the connection** — give it a few seconds and reopen the tool picker. If it's still empty, remove the connection and re-add it.
 
-A couple more that are specific to how GHL handles connections:
-
-**Do I need to reconnect if I change `BRAND_NAME` later?** (Agency)
-No. The MCP URL doesn't change when you update `BRAND_NAME` — only the display name on your landing page, dashboard, and inside GHL changes. Your existing connection keeps working.
+One more that's specific to how GHL handles connections:
 
 **Can I connect the same server to more than one GHL location?**
-Yes, two ways. Paste the exact same MCP URL into multiple sub-accounts and they'll share one Media Library destination (whatever `GHL_LOCATION_ID` is set to, or none). Better on Agency: give each sub-account its own per-location URL instead — see [Per-location URLs (Agency)](#per-location-urls-agency) — same deployment, same Kie.ai balance and spend, but each sub-account's media lands in its own Media Library.
+Yes — paste the exact same MCP URL into multiple sub-accounts. They'll share one Kie.ai balance and one Media Library destination (whatever `GHL_LOCATION_ID` is set to, or none). If each location needs its own Media Library or its own billing, deploy a separate copy per location instead.
 
 ## Notes
 
@@ -136,7 +115,7 @@ Yes, two ways. Paste the exact same MCP URL into multiple sub-accounts and they'
 | `check_status` | Checks whether a generation is finished, using its task ID. |
 | `check_credits` | Checks the remaining Kie.ai balance, in credits and dollars. Free and instant. |
 | `list_models` | Lists every available image and video model — what each is best at and roughly what it costs. |
-| `save_to_media_library` | Only appears if `GHL_PIT` is set and a location is available — either `GHL_LOCATION_ID` or a per-location URL. Copies any file URL into the GHL Media Library so it never expires. Finished generations are saved there automatically — this tool is for manual/extra saves. |
+| `save_to_media_library` | Only appears if `GHL_PIT` and `GHL_LOCATION_ID` are set. Copies any file URL into the GHL Media Library so it never expires. Finished generations are saved there automatically — this tool is for manual/extra saves. |
 
 ## Next steps
 

@@ -1,9 +1,7 @@
 // GoHighLevel Media Library upload. Enabled when GHL_PIT (Private
-// Integration Token) is set AND a location is resolvable — either the
-// env-configured default (GHL_LOCATION_ID) or a per-request one passed down
-// from a /mcp/<secret>/<locationId> URL (see lib/mcp-context.ts). One
-// deployment can therefore save into many different sub-accounts' Media
-// Libraries, as long as GHL_PIT has access to all of them (agency-level PIT).
+// Integration Token) is set AND a location is resolvable — the
+// env-configured GHL_LOCATION_ID (callers may also pass an explicit
+// locationId; today nothing does, so the env default decides).
 //
 // Always downloads the bytes and multipart-uploads them so GHL stores a REAL
 // copy. (GHL's hosted:true mode only bookmarks the external URL — verified
@@ -42,9 +40,7 @@ export async function ghlSaveMedia(
 ): Promise<GhlUpload> {
   const resolvedLocationId = locationId ?? process.env.GHL_LOCATION_ID;
   if (!resolvedLocationId) {
-    throw new Error(
-      "No GHL location to save into — set GHL_LOCATION_ID, or use a /mcp/<secret>/<locationId> URL."
-    );
+    throw new Error("No GHL location to save into — set GHL_LOCATION_ID.");
   }
   const fileName =
     name || `freshgen-${Date.now()}.${url.split("?")[0].split(".").pop() || "png"}`;

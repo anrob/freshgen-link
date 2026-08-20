@@ -29,7 +29,7 @@ When a message begins with this command (or names this model): first state the e
 - Good for reels and product teasers where a silent clip would feel flat.
 - Costs more than the default; say so before running.
 
-## BRAND block — the agency/buyer edits this before uploading
+## BRAND block — edit this before uploading
 
 <!-- Replace every ALL-CAPS placeholder below with the real brand details,
      then upload this file in Ask AI's Skills panel. Nothing else in this

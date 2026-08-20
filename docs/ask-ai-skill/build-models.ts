@@ -113,7 +113,7 @@ function write(id: string, fm: string, text: string, base = OUT, label = id) {
 }
 
 // Lite = the gpt-image-2 skill with everything a Lite server can't do cut out:
-// no BRAND block (brand is an Agency feature), no video, no model picker.
+// no BRAND block, no video, no model picker.
 function liteify(text: string): string {
   return text
     // Whole BRAND block section (up to the next H2).
@@ -124,7 +124,7 @@ function liteify(text: string): string {
     // Video references.
     .replace(/\n- \*Real-estate listing video\.\*[^\n]*/, "")
     .replace(/\n\nFor video versions of the above[^\n]*/, "")
-    .replace(/FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie\.ai's image and video models directly from this chat\./, "FreshGen Link Lite gives you four tools — `generate_image` (GPT Image 2 only), `check_status`, `check_credits` and `list_models`, plus `save_to_media_library` when a Media Library connection is configured — that call Kie.ai's GPT Image 2 model directly from this chat. There is no video and no other image model on Lite: if the user asks for either, say so and mention that FreshGen Link Full (\$47 one-time) adds them — https://iamjustfresh.gumroad.com/l/freshgen-link.")
+    .replace(/FreshGen gives you six tools — `generate_image`, `generate_video`, `check_status`, `check_credits`, `list_models`, and `save_to_media_library` — that call Kie\.ai's image and video models directly from this chat\./, "FreshGen Link Lite gives you four tools — `generate_image` (GPT Image 2 only), `check_status`, `check_credits` and `list_models`, plus `save_to_media_library` when a Media Library connection is configured — that call Kie.ai's GPT Image 2 model directly from this chat. There is no video and no other image model on Lite: if the user asks for either, say so and mention that FreshGen Link Full (\$17 one-time) adds them — https://iamjustfresh.gumroad.com/l/freshgen-link.")
     .replace(/finished images and video are also copied/, "finished images are also copied")
     .replace(/- Every `generate_image` and `generate_video` call is real money/, "- Every `generate_image` call is real money")
     .replace(/\n- For video, quote the estimated cost[^\n]*/, "")

@@ -2,22 +2,18 @@ import { McpServer, createMcpHandler } from "@modelcontextprotocol/server";
 import { registerTools } from "@/lib/tools";
 import { authorized } from "@/lib/auth";
 import { parseMcpContext } from "@/lib/mcp-context";
-import { brandFor, currentTier } from "@/lib/license";
+import { BRAND, currentTier } from "@/lib/license";
 
 // Native SSE framing (event: message / data: {...}) — this is the shape
 // GoHighLevel's own first-party MCP server uses and the only one their
 // client stack is proven against. Anthropic's hosted connector accepts it
 // too. Do NOT flatten to plain JSON (tried; it isn't the compat issue).
 //
-// One handler, shared by both app/mcp/[secret]/route.ts (no location) and
-// app/mcp/[secret]/[locationId]/route.ts (path location) — the SDK invokes
-// this factory fresh per request regardless, so there is nothing to gain by
-// building a separate handler per route. The factory only ever receives what
-// the SDK hands it ({ era, authInfo, requestInfo }), so per-request context
-// (which GHL location, inline vs instant) is parsed straight out of
-// requestInfo.url rather than threaded in as a closure — normalizeRequest
-// below rebuilds the Request but always preserves the original URL, so this
-// is safe.
+// The factory only ever receives what the SDK hands it
+// ({ era, authInfo, requestInfo }), so per-request context (inline vs
+// instant, and any location hint) is parsed straight out of requestInfo.url
+// rather than threaded in as a closure — normalizeRequest below rebuilds the
+// Request but always preserves the original URL, so this is safe.
 //
 // The factory is async because the tool set depends on the license tier
 // (Lite vs Full) — a cached verdict after the first request, so this costs
@@ -25,7 +21,7 @@ import { brandFor, currentTier } from "@/lib/license";
 const handler = createMcpHandler(async ({ requestInfo }) => {
   const tier = await currentTier();
   const server = new McpServer({
-    name: `${brandFor(tier)} Link`,
+    name: `${BRAND} Link`,
     version: "1.1.0",
   });
   const ctx = parseMcpContext(requestInfo?.url ?? "");
@@ -107,11 +103,10 @@ async function normalizeRequest(req: Request, pathLocationId?: string): Promise<
 }
 
 /**
- * Shared entrypoint for both MCP route files. `secret` is the path segment
- * right after /mcp/; `locationId`, when present, is the already Next-parsed
- * and regex-validated segment after that (see
- * app/mcp/[secret]/[locationId]/route.ts) — passed through so the request
- * log line reflects it without re-parsing the URL a second time.
+ * Entrypoint for the MCP route. `secret` is the path segment right after
+ * /mcp/; `locationId` is an optional already-validated location hint from the
+ * caller — passed through so the request log line reflects it without
+ * re-parsing the URL a second time.
  */
 export async function handleMcp(
   req: Request,

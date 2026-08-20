@@ -3,12 +3,11 @@
 // right away) or "inline" (wait for the render) — see lib/mcp-handler.ts.
 //
 // Two ways a caller supplies the location:
-//   - explicitly, via `pathLocationId` — used when the caller already has it
-//     from Next's own route params (already parsed + validated by
-//     app/mcp/[secret]/[locationId]/route.ts).
+//   - explicitly, via `pathLocationId` — for callers that already validated
+//     one from route params (no shipped route does this today).
 //   - parsed out of the URL path itself — the only option available inside
-//     the createMcpHandler factory, which is a module-level singleton shared
-//     by both route files and only ever sees `requestInfo.url` from the SDK.
+//     the createMcpHandler factory, which only ever sees `requestInfo.url`
+//     from the SDK.
 // Either way `?mode=instant` is always read straight off the URL's query
 // string.
 

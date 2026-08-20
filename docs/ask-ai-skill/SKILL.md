@@ -140,7 +140,7 @@ Only use aspect ratios, resolutions, and durations shown here and in section 5. 
 
 For video versions of the above, match the same aspect ratio and default to a 5-second clip unless the user asks for longer.
 
-## 6. BRAND block — the agency/buyer edits this before uploading
+## 6. BRAND block — edit this before uploading
 
 <!-- Replace every ALL-CAPS placeholder below with the real brand details,
      then upload this file in Ask AI's Skills panel. Nothing else in this

@@ -1,10 +1,8 @@
 import { handleMcp } from "@/lib/mcp-handler";
 
-// Standard MCP URL: no path location, so save_to_media_library (and
-// auto-save) fall back to whatever env GHL_LOCATION_ID is set — see
-// app/mcp/[secret]/[locationId]/route.ts for the per-sub-account variant.
-// All the actual auth/normalization/registration logic lives in
-// lib/mcp-handler.ts, shared by both routes.
+// The MCP URL: save_to_media_library (and auto-save) use whatever env
+// GHL_LOCATION_ID is set. All the actual auth/normalization/registration
+// logic lives in lib/mcp-handler.ts.
 async function guarded(
   req: Request,
   ctx: { params: Promise<{ secret: string }> }

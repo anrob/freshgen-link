@@ -28,7 +28,7 @@ When a message begins with this command (or names this model): first state the e
 - Longer, cheap clips: 6 or 10 seconds at 480p/720p. Good for background loops, ambient b-roll, and long social filler.
 - Keep the prompt to one continuous motion; don't expect fine detail at 480p.
 
-## BRAND block — the agency/buyer edits this before uploading
+## BRAND block — edit this before uploading
 
 <!-- Replace every ALL-CAPS placeholder below with the real brand details,
      then upload this file in Ask AI's Skills panel. Nothing else in this

@@ -212,7 +212,7 @@
      "content": [
       {
        "type": "text",
-       "text": "WANT VIDEO AND MORE MODELS? EVERY SUB-ACCOUNT AND YOUR BRAND?"
+       "text": "WANT VIDEO AND MORE MODELS?"
       }
      ]
     },
@@ -224,7 +224,7 @@
      "content": [
       {
        "type": "text",
-       "text": "Full ($47, one-time) adds video and five more image models: "
+       "text": "Full ($17, one-time) adds video and five more image models: "
       },
       {
        "type": "tiptap-link",
@@ -245,28 +245,7 @@
      "content": [
       {
        "type": "text",
-       "text": "Agency ($147, one-time) adds every sub-account from one deployment plus your brand on it: "
-      },
-      {
-       "type": "tiptap-link",
-       "attrs": {
-        "href": "https://iamjustfresh.gumroad.com/l/freshgen-link-agency"
-       },
-       "content": [
-        {
-         "type": "text",
-         "text": "https://iamjustfresh.gumroad.com/l/freshgen-link-agency"
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "type": "paragraph",
-     "content": [
-      {
-       "type": "text",
-       "text": "Either way: paste the new key into LICENSE_KEY, redeploy, and the extra tools show up in GHL on their own."
+       "text": "Paste the new key into LICENSE_KEY, redeploy, and the extra tools show up in GHL on their own."
       }
      ]
     },

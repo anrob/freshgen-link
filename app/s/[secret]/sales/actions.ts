@@ -27,9 +27,9 @@ async function run(
   const secret = String(formData.get("secret") ?? "");
   const licenseKey = String(formData.get("licenseKey") ?? "");
   // Which Gumroad product the key belongs to. Anything unexpected is treated
-  // as Full — it can only ever reach one of our own three products.
+  // as Full — it can only ever reach one of our own two products.
   const raw = formData.get("tier");
-  const tier: Tier = raw === "lite" || raw === "agency" ? raw : "full";
+  const tier: Tier = raw === "lite" ? "lite" : "full";
   const path = `/s/${encodeURIComponent(secret)}/sales`;
 
   if (!pathAuthorized(secret) || !gumroadSellerEnabled()) {

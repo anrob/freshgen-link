@@ -1,7 +1,7 @@
 import { pathAuthorized } from "@/lib/auth";
 import { generateFrame } from "@/lib/tools";
 import { USD_PER_CREDIT } from "@/lib/kie";
-import { brandName } from "@/lib/license";
+import { BRAND } from "@/lib/license";
 
 export const maxDuration = 120;
 export const runtime = "nodejs";
@@ -15,9 +15,8 @@ export async function POST(
     return Response.json({ error: "Not found" }, { status: 404 });
   }
   try {
-    const brand = await brandName();
     const frame = await generateFrame({
-      prompt: `Editorial magazine cover for "${brand}", bold serif typography, single bright orange accent object, clean off-white background, test print`,
+      prompt: `Editorial magazine cover for "${BRAND}", bold serif typography, single bright orange accent object, clean off-white background, test print`,
       aspectRatio: "1:1",
       waitMs: 100_000,
     });

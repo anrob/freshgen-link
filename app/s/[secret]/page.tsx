@@ -5,14 +5,11 @@ import { kieGetCredits, USD_PER_CREDIT } from "@/lib/kie";
 import CopyField from "@/components/CopyField";
 import RefreshButton from "@/components/RefreshButton";
 import TestImageButton from "@/components/TestImageButton";
-import LocationUrlBuilder from "@/components/LocationUrlBuilder";
 import {
-  AGENCY_PRICE,
-  AGENCY_URL,
+  BRAND,
   TIER_FEATURES,
   UPGRADE_PRICE,
   UPGRADE_URL,
-  brandFor,
   licenseStatus,
 } from "@/lib/license";
 
@@ -20,16 +17,6 @@ export const dynamic = "force-dynamic";
 
 const REPO = "https://github.com/anrob/freshgen-link";
 const LITE_SKILL_URL = `${REPO}/blob/main/docs/ask-ai-skill/lite/gpt-image-2/SKILL.md`;
-
-// Paste-ready BRAND block — the same one that sits at the bottom of every
-// generating skill file. Shown on the Agency dashboard so the buyer knows
-// exactly what to fill in, per sub-account.
-const BRAND_BLOCK = `## BRAND block
-- Brand name: ACME ROOFING
-- Colors: navy #0B2545, safety orange #F26419, off-white #F7F5F0
-- Style: clean, photographic, editorial — no clip-art, no neon
-- Voice: plain, confident, local
-- Never: stock-photo handshakes, fake awards, competitor logos`;
 
 function CheckRow({
   ok,
@@ -69,12 +56,10 @@ export default async function Dashboard({
   const license = await licenseStatus();
   const tier = license.tier;
   const f = TIER_FEATURES[tier];
-  const brand = brandFor(tier);
-  // Upgrade cards only make sense on an activated deployment — an unlicensed
-  // one reads as the most permissive tier and just needs its key.
+  const brand = BRAND;
+  // The upgrade card only makes sense on an activated deployment — an
+  // unlicensed one reads as the most permissive tier and just needs its key.
   const lite = license.ok && tier === "lite";
-  const full = license.ok && tier === "full";
-  const agency = license.ok && tier === "agency";
 
   let credits: number | null = null;
   let creditsError = "";
@@ -160,20 +145,6 @@ export default async function Dashboard({
             }
             fix={envFix}
           />
-          {f.brand && (
-            <CheckRow
-              ok={Boolean(process.env.BRAND_NAME)}
-              optional
-              label={
-                <>
-                  <code>BRAND_NAME</code> — white-label name{" "}
-                  {process.env.BRAND_NAME
-                    ? `(currently "${process.env.BRAND_NAME}")`
-                    : "(not set — see Your brand below)"}
-                </>
-              }
-            />
-          )}
           <CheckRow
             ok={Boolean(process.env.GHL_PIT)}
             optional
@@ -183,9 +154,7 @@ export default async function Dashboard({
                 {process.env.GHL_PIT
                   ? process.env.GHL_LOCATION_ID
                     ? "active"
-                    : f.multiLocation
-                      ? "active for per-location URLs (no default location set)"
-                      : "GHL_PIT set but no GHL_LOCATION_ID — set one to save"
+                    : "GHL_PIT set but no GHL_LOCATION_ID — set one to save"
                   : "inactive (optional)"}
               </>
             }
@@ -205,98 +174,6 @@ export default async function Dashboard({
         </div>
       </section>
 
-      {f.multiLocation && (
-        <section className="section">
-          <div className="kicker">Per-location URLs</div>
-          <div className="card">
-            <p>
-              One deployment serves every sub-account in your agency. Paste a
-              sub-account&apos;s Location ID below to get its own MCP URL — media
-              generated through that URL saves straight into that sub-account&apos;s
-              Media Library. This needs an agency-level Private Integration
-              Token (or a PIT that has access to those sub-accounts) set as{" "}
-              <code>GHL_PIT</code>.
-            </p>
-            <p className="caption" style={{ marginTop: 8 }}>
-              Find a Location ID in GHL: Settings → Business Profile (Location
-              ID).
-            </p>
-            <div style={{ marginTop: 18 }}>
-              <LocationUrlBuilder baseUrl={`${proto}://${host}`} secret={secret} />
-            </div>
-          </div>
-        </section>
-      )}
-
-      {agency && (
-        <section className="section">
-          <div className="kicker">Your brand</div>
-          <div className="card">
-            <h3 style={{ marginTop: 0 }}>1. Your name on it (white-label)</h3>
-            <p>
-              Set <code>BRAND_NAME</code> in Vercel → your project →{" "}
-              <strong>Settings → Environment Variables</strong>, then redeploy.
-              It replaces &ldquo;FreshGen&rdquo; on this dashboard, the landing
-              page, and the server name GoHighLevel shows.
-              {process.env.BRAND_NAME ? (
-                <>
-                  {" "}Currently: <strong>{process.env.BRAND_NAME}</strong>.
-                </>
-              ) : (
-                <> Not set yet.</>
-              )}
-            </p>
-            <h3 style={{ marginTop: 22 }}>2. Each client&apos;s look (brand block)</h3>
-            <p>
-              Every generating skill file (<code>/image</code>, <code>/adset</code>,{" "}
-              <code>/video</code>, the model skills) ends with a BRAND block. Fill it
-              in with the client&apos;s details before you upload the skill into
-              that sub-account&apos;s Ask AI — every generation then matches their
-              colors, style and voice without anyone typing it each time. One
-              block per sub-account.
-            </p>
-            <div style={{ marginTop: 12 }}>
-              <CopyField value={BRAND_BLOCK} multiline />
-            </div>
-            <p className="caption" style={{ marginTop: 10 }}>
-              Copy this, replace the example values, paste it over the BRAND
-              block at the bottom of the skill file, upload.
-            </p>
-          </div>
-        </section>
-      )}
-
-      {full && (
-        <section className="section">
-          <div className="kicker">Upgrade to Agency</div>
-          <div className="card">
-            <p>
-              You&apos;re running <strong>Full</strong>: every model, video, one
-              location. Agency ({AGENCY_PRICE}) adds:
-            </p>
-            <ul style={{ margin: "12px 0 0 18px", lineHeight: 1.7 }}>
-              <li>
-                <strong>Every sub-account from this one deployment</strong> — a
-                URL per sub-account, media lands in the right Media Library
-              </li>
-              <li>
-                <strong>Your brand</strong> — white-label name, plus a brand block
-                per client so generations match their look
-              </li>
-            </ul>
-            <p style={{ marginTop: 16 }}>
-              <a className="btn" href={AGENCY_URL} target="_blank" rel="noreferrer">
-                Get Agency — {AGENCY_PRICE}
-              </a>
-            </p>
-            <p className="caption" style={{ marginTop: 12 }}>
-              After buying: paste the new key into <code>LICENSE_KEY</code> in
-              Vercel and redeploy. Same URL — nothing to reconnect.
-            </p>
-          </div>
-        </section>
-      )}
-
       {lite && (
         <section className="section">
           <div className="kicker">Upgrade</div>
@@ -305,35 +182,20 @@ export default async function Dashboard({
               You&apos;re running <strong>Lite</strong>: images on GPT Image 2,
               one location.
             </p>
-            <div className="three-up two" style={{ marginTop: 14 }}>
-              <div>
-                <h3>Full — {UPGRADE_PRICE}</h3>
-                <p>
-                  <strong>Video</strong> (Kling 2.1/2.6/3.0, Seedance 2, Wan 2.6,
-                  Grok Imagine — from about $0.13 a clip) plus{" "}
-                  <strong>five more image models</strong> (Nano Banana Pro, Nano
-                  Banana, Nano Banana 2, Seedream 4, Imagen 4) and all 23 Ask AI
-                  skills.
-                </p>
-                <p style={{ marginTop: 10 }}>
-                  <a className="btn" href={UPGRADE_URL} target="_blank" rel="noreferrer">
-                    Get Full
-                  </a>
-                </p>
-              </div>
-              <div>
-                <h3>Agency — {AGENCY_PRICE}</h3>
-                <p>
-                  Everything in Full, plus <strong>every sub-account</strong> from
-                  one deployment and <strong>your brand</strong> on it
-                  (white-label + per-client brand blocks).
-                </p>
-                <p style={{ marginTop: 10 }}>
-                  <a className="btn ghost" href={AGENCY_URL} target="_blank" rel="noreferrer">
-                    Get Agency
-                  </a>
-                </p>
-              </div>
+            <div style={{ marginTop: 14 }}>
+              <h3>Full — {UPGRADE_PRICE}</h3>
+              <p>
+                <strong>Video</strong> (Kling 2.1/2.6/3.0, Seedance 2, Wan 2.6,
+                Grok Imagine — from about $0.13 a clip) plus{" "}
+                <strong>five more image models</strong> (Nano Banana Pro, Nano
+                Banana, Nano Banana 2, Seedream 4, Imagen 4) and all 23 Ask AI
+                skills.
+              </p>
+              <p style={{ marginTop: 10 }}>
+                <a className="btn" href={UPGRADE_URL} target="_blank" rel="noreferrer">
+                  Get Full — {UPGRADE_PRICE}
+                </a>
+              </p>
             </div>
             <p className="caption" style={{ marginTop: 14 }}>
               After buying: paste the new key into <code>LICENSE_KEY</code> in
@@ -467,12 +329,6 @@ export default async function Dashboard({
                 and add slash commands like <code>/image</code>, <code>/adset</code>{" "}
                 and <code>/video</code>, plus one skill per model (<code>/gpt-image-2</code>,{" "}
                 <code>/nano-banana-pro</code>, <code>/kling-3-0</code>…).
-                {agency && (
-                  <>
-                    {" "}Fill in the BRAND block (see <strong>Your brand</strong> above)
-                    per sub-account before uploading.
-                  </>
-                )}
               </p>
               <p style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <a className="btn" href="/ask-ai-skill.html">

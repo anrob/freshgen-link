@@ -22,8 +22,6 @@ import {
 import { ghlEnabled, ghlSaveMedia } from "./ghl";
 import { kieCallbackUrl } from "./callback";
 import {
-  AGENCY_PRICE,
-  AGENCY_URL,
   TIER_FEATURES,
   UPGRADE_PRICE,
   UPGRADE_URL,
@@ -166,9 +164,8 @@ export async function generateFrame(opts: {
  * without a live license check.
  *
  * The ladder lives in TIER_FEATURES (lib/license.ts):
- *   Lite   = generate_image on GPT Image 2 only, one location, no video
- *   Full   = every model + video, one location
- *   Agency = Full + per-sub-account URLs (+ white-label, handled by brandFor)
+ *   Lite   = generate_image on GPT Image 2 only, no video
+ *   Full   = every model + video
  * Everything else (status, credits, models, media-library save) is shared.
  * Unlicensed deployments register the most permissive set — every paid tool
  * is gated at call time anyway, and the list shows what activation unlocks.
@@ -176,13 +173,7 @@ export async function generateFrame(opts: {
 export function registerTools(server: McpServer, ctx: McpContext, tier: Tier) {
   const features = TIER_FEATURES[tier];
   const lite = !features.allImageModels;
-  // Per-location URLs are an Agency feature. A Lite/Full deployment that gets
-  // a /mcp/<secret>/<locationId> request still works — it just saves to the
-  // env-default location (if any) instead of the one in the path.
-  if (!features.multiLocation && ctx.locationId) {
-    console.log(`[tier] ${tier}: ignoring path location ${ctx.locationId}`);
-  }
-  const locationId = features.multiLocation ? ctx.locationId : undefined;
+  const locationId = ctx.locationId;
 
   // ?mode=instant on this request forces the same behavior as
   // INLINE_WAIT_MS=1 globally — GHL's Agent Studio Superagent times out tool
@@ -337,7 +328,7 @@ export function registerTools(server: McpServer, ctx: McpContext, tier: Tier) {
     }
   );
 
-  // ── generate_video (Full + Agency) ────────────────────────────────────────
+  // ── generate_video (Full only) ────────────────────────────────────────────
   // Not registered at all on Lite: GHL's tool list stays honest and the agent
   // never tries to call something that can only answer "upgrade".
   if (features.video) server.registerTool(
@@ -571,7 +562,7 @@ export function registerTools(server: McpServer, ctx: McpContext, tier: Tier) {
             (kind !== "image"
               ? "Video models:\n\n" + imageHeader + VIDEO_MODELS.map(videoRow).join("\n")
               : "") +
-            `\n\nAgency (${AGENCY_PRICE}) adds every sub-account from one deployment plus white-label: ${AGENCY_URL}. Upgrading is: buy, paste the new key into LICENSE_KEY, redeploy.`
+            `\n\nUpgrading is: buy, paste the new key into LICENSE_KEY, redeploy.`
         );
       } else {
         if (kind !== "video") {

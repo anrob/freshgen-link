@@ -1,4 +1,4 @@
-import { TIER_FEATURES, brandFor, currentTier } from "@/lib/license";
+import { BRAND, TIER_FEATURES, currentTier } from "@/lib/license";
 import { gumroadSellerEnabled } from "@/lib/gumroad";
 
 // The root of every deployment. Deliberately small: it is not a sales page
@@ -8,25 +8,18 @@ export const dynamic = "force-dynamic";
 
 const GUMROAD = {
   lite: { url: "https://iamjustfresh.gumroad.com/l/freshgen-link-lite", label: "FreshGen Link Lite — free" },
-  full: { url: "https://iamjustfresh.gumroad.com/l/freshgen-link", label: "FreshGen Link — $47 one-time" },
-  agency: { url: "https://iamjustfresh.gumroad.com/l/freshgen-link-agency", label: "FreshGen Link Agency — $147 one-time" },
+  full: { url: "https://iamjustfresh.gumroad.com/l/freshgen-link", label: "FreshGen Link — $17 one-time" },
 } as const;
 
 export default async function Landing() {
   const tier = await currentTier();
   const f = TIER_FEATURES[tier];
-  const brand = brandFor(tier);
-  // A white-labelled (Agency) deployment shouldn't advertise FreshGen to the
-  // agency's own visitors; an un-branded one may point people at its own tier.
-  // The seller's own deployment (the only one with a Gumroad token) lists all
-  // three, since its public URL is the one that ends up in docs and links.
-  const whiteLabelled = brand !== "FreshGen";
+  const brand = BRAND;
+  // The seller's own deployment (the only one with a Gumroad token) lists
+  // both tiers, since its public URL is the one that ends up in docs and
+  // links; a buyer's deployment just points people at its own tier.
   const seller = gumroadSellerEnabled();
-  const getLinks = seller
-    ? [GUMROAD.lite, GUMROAD.full, GUMROAD.agency]
-    : whiteLabelled
-      ? []
-      : [GUMROAD[tier]];
+  const getLinks = seller ? [GUMROAD.lite, GUMROAD.full] : [GUMROAD[tier]];
 
   return (
     <div className="container">

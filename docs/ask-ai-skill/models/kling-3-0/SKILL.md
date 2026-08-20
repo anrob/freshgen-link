@@ -29,7 +29,7 @@ When a message begins with this command (or names this model): first state the e
 - Give it cinematic direction: shot type, camera movement, pacing, light changes. It rewards specificity.
 - Quote the cost before starting — it's several times the default model.
 
-## BRAND block — the agency/buyer edits this before uploading
+## BRAND block — edit this before uploading
 
 <!-- Replace every ALL-CAPS placeholder below with the real brand details,
      then upload this file in Ask AI's Skills panel. Nothing else in this

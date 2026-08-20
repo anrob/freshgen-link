@@ -1,26 +1,27 @@
-# Gumroad listing copy — FreshGen Link (Lite / Full / Agency)
+# Gumroad listing copy — FreshGen Link (Lite / Full)
 
-Three products, one repo. The HTML descriptions and post-purchase content pages live in `docs/gumroad/`, the custom landing pages are `docs/gumroad-landing.html` (Full), `docs/gumroad-landing-lite.html` and `docs/gumroad-landing-agency.html` (both generated from Full's head/CSS by `docs/gumroad/build-landing-pages.py`). Apply with the Gumroad CLI (logged in as Fresh):
+Two products, one repo. The HTML descriptions and post-purchase content pages live in `docs/gumroad/`, the custom landing pages are `docs/gumroad-landing.html` (Full) and `docs/gumroad-landing-lite.html` (generated from Full's head/CSS by `docs/gumroad/build-landing-pages.py`). Apply with the Gumroad CLI (logged in as Fresh):
 
 ```
 gumroad products update <id> --description "$(cat docs/gumroad/<tier>-description.html)"
 gumroad products content set <id> docs/gumroad/<tier>-content.json --yes
-gumroad products page publish <id> ./docs/gumroad-landing[-lite|-agency].html --yes
+gumroad products page publish <id> ./docs/gumroad-landing[-lite].html --yes
 ```
 
-All three custom pages carry the same look as the app (Fraunces/DM Sans via `@import`, indigo/violet). Gumroad forces free products to "$0+" (its API refuses `customizable_price=false`), so the Lite page's own CTA says "Get it free — no card" and tells people to leave the box at 0.
+Both custom pages carry the same look as the app (Fraunces/DM Sans via `@import`, indigo/violet). Gumroad forces free products to "$0+" (its API refuses `customizable_price=false`), so the Lite page's own CTA says "Get it free — no card" and tells people to leave the box at 0.
 
 | Tier | Product id | Slug | Price |
 |---|---|---|---|
-| Full | `J7GddYMuxwoHag0VPEHI7g==` | `freshgen-link` | $47 |
+| Full | `J7GddYMuxwoHag0VPEHI7g==` | `freshgen-link` | $17 |
 | Lite | `qFp7GEt7epSSVWVnIWGDVA==` | `freshgen-link-lite` | free |
-| Agency | `TtEQhFkX2y4RAnS2Kf5irw==` | `freshgen-link-agency` | $147 |
+
+**Retired 2026-08-20:** the Agency tier ($147, product id `TtEQhFkX2y4RAnS2Kf5irw==`) — unpublished on Gumroad, zero sales, tier/feature code removed from the repo. To ever bring it back: git history has everything (this commit's parent).
 
 **Not offered right now:** anything Agent Studio / Superagent — keep it out of every listing.
 
 ---
 
-# Full — $47
+# Full — $17
 
 Field names match Gumroad's product editor. Source of truth for the description is `docs/gumroad/full-description.html`.
 
@@ -82,7 +83,6 @@ STRAIGHT ANSWERS
 • You pay Kie.ai directly for what you generate. This product does not resell you credits and never touches your key — it lives in your own Vercel account.
 • Vercel's free tier runs this fine, but their Hobby plan terms are non-commercial. Running it for clients means Vercel Pro at $20/mo.
 • One license key covers one deployment, one GHL location.
-• Run an agency? FreshGen Link Agency ($147) serves every sub-account from one deployment and takes your brand: https://iamjustfresh.gumroad.com/l/freshgen-link-agency
 • Not sure yet? FreshGen Link Lite is free — images on GPT Image 2 only — and your Lite key swaps for a Full one whenever you're ready: https://iamjustfresh.gumroad.com/l/freshgen-link-lite
 • Images and video only, on purpose. This isn't a general-purpose AI toolbox.
 
@@ -169,12 +169,9 @@ Stuck at any point, just reply to this email.
 
 ## Pricing note
 
-$47 is set. Defensible as a launch price with no social proof yet.
-
-$97 is closer to the value; revisit once there are testimonials.
-
-Suggestion: launch at $47, treat it as founder pricing, say so on the page, and
-raise it to $97 once you have three testimonials.
+$17 is set (dropped from $47 on 2026-08-20, pre-launch). Impulse-buy territory —
+no approval needed, no comparison shopping, and the real revenue is volume plus
+the Kie.ai usage habit it creates. Revisit once there are testimonials.
 
 ---
 
@@ -221,10 +218,9 @@ You'll see your Kie.ai balance and a test-image button. Hit it. If an image come
 STEP 3 — Connect it to GoHighLevel
 In GHL: Ask AI → the + icon → Manage Connectors → + Add custom MCP. Name it whatever you like, paste your MCP URL from the dashboard, click Add MCP. Then ask your agent for an image.
 
-WANT VIDEO AND MORE MODELS? EVERY SUB-ACCOUNT AND YOUR BRAND?
-Full ($47, one-time) adds video and five more image models: https://iamjustfresh.gumroad.com/l/freshgen-link
-Agency ($147, one-time) adds every sub-account from one deployment plus your brand on it: https://iamjustfresh.gumroad.com/l/freshgen-link-agency
-Either way: paste the new key into LICENSE_KEY, redeploy, and the extra tools show up in GHL on their own.
+WANT VIDEO AND MORE MODELS?
+Full ($17, one-time) adds video and five more image models: https://iamjustfresh.gumroad.com/l/freshgen-link
+Paste the new key into LICENSE_KEY, redeploy, and the extra tools show up in GHL on their own.
 
 Full docs, including Workflow AI Agents setup, are in the README and docs/GHL-SETUP.md.
 Something broken? Reply to your receipt email and I'll sort it out.
@@ -239,34 +235,5 @@ Generated with GPT Image 2 through the prod server (text-only prompts: indigo→
 |---|---|---|
 | Full | https://public-files.gumroad.com/rbcle3xmlk0p9cxuu3oimmimrhpy | https://public-files.gumroad.com/4xc33o0g3uu257nt8cdkkb5vyrfb |
 | Lite | https://public-files.gumroad.com/gxpb5vhglev27w7b6lroo4w5h9dh | https://public-files.gumroad.com/pwd74ao6bykz9cjow171lbceawyi |
-| Agency | https://public-files.gumroad.com/7239yfsix5jit9kp2d6jvd6ckd3o | https://public-files.gumroad.com/g3n4b3ivd05i1bs6gyo9w4rhzol8 |
 
 Re-upload if ever needed: `gumroad products covers add <id> --image <file>` · `gumroad products thumbnail set <id> --image <file>`.
-
----
-
-# Agency — $147
-
-Created 2026-08-16 as a **draft** via the Gumroad CLI. Product id `TtEQhFkX2y4RAnS2Kf5irw==`, slug `freshgen-link-agency` → https://iamjustfresh.gumroad.com/l/freshgen-link-agency. The server already recognises this product id as the Agency tier (`lib/license.ts`).
-
-**Already set (via CLI):** name, $147, summary (*AI image and video generation inside GoHighLevel for every sub-account you manage — one deployment, your own key, your own brand.*), description (`docs/gumroad/agency-description.html`), receipt, tags.
-
-**Still to do in the Gumroad UI — same drill as Lite:**
-
-1. Content tab → **"Generate a unique license key per sale" → ON.**
-2. Post-purchase page: `gumroad products content set 'TtEQhFkX2y4RAnS2Kf5irw==' docs/gumroad/agency-content.json --yes` (steps 1–3 as Full, plus Step 4 per-location URLs + agency PIT and Step 5 brand).
-3. ~~Cover + thumbnail~~ — done 2026-08-16 (see Listing images above).
-4. `gumroad products publish 'TtEQhFkX2y4RAnS2Kf5irw=='`
-5. Test: buy it with a 100%-off code, run a server with the key, confirm the dashboard says **Agency**, shows Per-location URLs + Your brand, and `BRAND_NAME` takes effect.
-
-**Additional details rows**
-```
-Setup time        About 5 minutes
-Coding required   None
-Works with        Ask AI · Workflow AI Agents
-Sub-accounts      Unlimited from one deployment
-Brand             White-label + per-client brand block
-Models included   12 image + video
-License           1 deployment · every sub-account
-Support           Direct from the builder
-```
